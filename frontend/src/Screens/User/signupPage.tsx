@@ -1,6 +1,68 @@
+import { useState,FormEvent } from "react";
 import { Link } from "react-router-dom"
+import validator from 'validator';
+
+interface Errors{
+  name?:string;
+  email?:string;
+  phone?:string,
+  password?:string;
+  confirmPassword?:string;
+}
 
 function signupPage() {
+
+  const [name,setName]=useState<string>('')
+  const [email,setEmail]=useState<string>('')
+  const [phone,setPhone]=useState<string>('')
+  const [password,setPassword]=useState<string>('')
+  const [confirmPassword,setConfirmPassword]=useState<string>('')
+  const [errors,setErrors]=useState<Errors>({})
+
+
+  const validateForm=()=>{
+    const newErrors: Errors = {};
+
+    if (!name.trim()) {
+      newErrors.name = 'Name is required';
+    }
+
+    if (!email.trim() || !validator.isEmail(email)) {
+      newErrors.email = 'Valid email is required';
+    }
+
+    if(!phone.trim()){
+      newErrors.phone="Phone is required";
+    }else if(phone.length<10){
+      newErrors.phone="Phone number must contain 10 numbers"
+    }
+
+    if (!password.trim()) {
+      newErrors.password = 'Password is required';
+    } else if (password.length < 6) {
+      newErrors.password = 'Password must contain at least 6 characters';
+    }
+
+    if (password !== confirmPassword) {
+      newErrors.confirmPassword = 'Passwords do not match';
+    }
+
+    setErrors(newErrors);
+    return Object.keys(newErrors).length === 0;
+  }
+
+
+  const submitHandler=async(e:FormEvent<HTMLFormElement>): Promise<void> =>{
+
+    e.preventDefault();
+    const isValid=validateForm();
+
+    if(isValid){
+      console.log("hello")
+    }
+  }
+
+
   return (
    <>
     <div className="flex flex-row w-full">
@@ -18,28 +80,32 @@ function signupPage() {
         <h1 className="sm:hidden mr-28" style={{fontSize:"25px",fontWeight:"bold"}}>Create account</h1>
         <div className="mt-8  sm:w-full sm:max-w-md">
           <div className="bg-white py-8  px-4  shadow-xl rounded-lg  sm:rounded-lg sm:px-10">
-            <form className="space-y-6 ">
+            <form className="space-y-6 " onSubmit={submitHandler}>
             
                 <div className="mt-1">
                   <input
                     id="firstName"
                     name="firstName"
                     type="text"
-                    placeholder="Please enter your FullName"
-                    required
+                    value={name}
+                    onChange={(e)=>setName(e.target.value)}
+                    placeholder="Please enter your full name"
                     className="bg-gray-100 appearance-none block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm placeholder-gray-400 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm"
                   />
+                  {errors && <p className="text-red-500">{errors.name}</p>}
                 </div>
-
-                <div className="mt-1">
+                
+                 <div className="mt-1">
                   <input
                     id="email"
                     name="email"
                     type="email"
+                    value={email}
+                    onChange={(e)=>setEmail(e.target.value)}
                     placeholder="Please enter your email"
-                    required
                     className="bg-gray-100 appearance-none block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm placeholder-gray-400 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm"
                   />
+                  {errors && <p className="text-red-500">{errors.email}</p>}
                 </div>
 
               
@@ -48,10 +114,12 @@ function signupPage() {
                     id="phone"
                     name="phone"
                     type="mobile"
+                    value={phone}
+                    onChange={(e)=>setPhone(e.target.value)}
                     placeholder="Please enter your mobile"
-                    required
                     className=" bg-gray-100 appearance-none block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm placeholder-gray-400 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm"
                   />
+                  {errors && <p className="text-red-500">{errors.phone}</p>}
                 </div>
 
                 <div className="mt-1">
@@ -59,10 +127,12 @@ function signupPage() {
                     id="password"
                     name="password"
                     type="password"
+                    value={password}
+                    onChange={(e)=>setPassword(e.target.value)}
                     placeholder="Please enter your Password"
-                    required
                     className="bg-gray-100 appearance-none block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm placeholder-gray-400 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm"
                   />
+                  {errors && <p className="text-red-500">{errors.password}</p>}
                 </div>
 
               
@@ -71,10 +141,12 @@ function signupPage() {
                     id="cpassword"
                     name="cpassword"
                     type="password"
+                    value={confirmPassword}
+                    onChange={(e)=>setConfirmPassword(e.target.value)}
                     placeholder="Please confirm your password"
-                    required
                     className=" bg-gray-100 appearance-none block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm placeholder-gray-400 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm"
                   />
+                  {errors && <p className="text-red-500">{errors.confirmPassword}</p>}
                 </div>
 
               <div className="flex items-center justify-between">
@@ -92,7 +164,7 @@ function signupPage() {
               <div>
                 <button
                   type="submit"
-                  className="w-full flex justify-center py-2 px-4 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-customColor hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500"
+                  className="w-full flex justify-center py-2 px-4 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-customColor hover:bg-teal-400"
                 >
                   Sign up
                 </button>
@@ -106,7 +178,7 @@ function signupPage() {
                 </div>
                 <div className="relative flex justify-center text-sm">
                   <span className="px-2 bg-white text-gray-500">
-                    Or continue with
+                    Or
                   </span>
                 </div>
               </div>
