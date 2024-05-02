@@ -1,5 +1,6 @@
 import { useState,FormEvent } from "react";
-import { Link } from "react-router-dom"
+import { Link } from "react-router-dom";
+import { signup } from "../../api/user";
 import validator from 'validator';
 
 interface Errors{
@@ -53,13 +54,25 @@ function signupPage() {
 
 
   const submitHandler=async(e:FormEvent<HTMLFormElement>): Promise<void> =>{
+    try {
+      e.preventDefault();
+      const isValid=validateForm();
 
-    e.preventDefault();
-    const isValid=validateForm();
+      const userData = {
+        email:email,
+        name: name,
+        phone:phone,
+        password:password,
+      };
 
-    if(isValid){
-      console.log("hello")
+      const response=await signup(userData)
+      console.log(response)
+      
+    } catch (error) {
+      
     }
+
+
   }
 
 
