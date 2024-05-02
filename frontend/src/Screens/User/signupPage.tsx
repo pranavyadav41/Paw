@@ -1,5 +1,5 @@
-import { useState,FormEvent } from "react";
-import { Link } from "react-router-dom";
+import { useState,FormEvent} from "react";
+import { Link ,useNavigate} from "react-router-dom";
 import { signup } from "../../api/user";
 import validator from 'validator';
 
@@ -19,6 +19,8 @@ function signupPage() {
   const [password,setPassword]=useState<string>('')
   const [confirmPassword,setConfirmPassword]=useState<string>('')
   const [errors,setErrors]=useState<Errors>({})
+
+  const navigate=useNavigate()
 
 
   const validateForm=()=>{
@@ -58,15 +60,21 @@ function signupPage() {
       e.preventDefault();
       const isValid=validateForm();
 
-      const userData = {
-        email:email,
-        name: name,
-        phone:phone,
-        password:password,
-      };
+      if(isValid){
+        const userData = {
+          email:email,
+          name: name,
+          phone:phone,
+          password:password,
+        };
+  
+        const response=await signup(userData)
+  
+        if(response){
 
-      const response=await signup(userData)
-      console.log(response)
+          navigate('/Otp')
+        }
+      }
       
     } catch (error) {
       
