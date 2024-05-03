@@ -1,6 +1,33 @@
-import React from 'react'
+import { useEffect, useState } from "react";
+import { useNavigate } from "react-router-dom"
+import { useSelector,useDispatch } from "react-redux"
+import { setCredentials } from "../../redux/slices/authSlice";
+import { logout } from "../../redux/slices/authSlice";
+import { otpVerify } from "../../api/user"
+
+
 
 function otp() {
+
+  const [otp,setOtp] = useState(0)
+  const navigate = useNavigate()
+  const dispatch = useDispatch()
+
+  const {userInfo}  = useSelector((state:any)=>state.auth)
+
+  useEffect(() => {
+    if (userInfo) {
+      console.log("Navigated to homepage");
+    }
+  },[userInfo,navigate]);
+
+
+  const submitOtp =async()=>{
+
+    const response:any=await otpVerify({otp})
+    dispatch(setCredentials(response.data))
+}
+
   return (
     <div className="flex flex-row w-full ">
       <div className="hidden sm:block w-2/5 bg-white">
@@ -19,13 +46,14 @@ function otp() {
           <input
                     id="otp"
                     name="otp"
-                    type="text"
+                    type="number"
                     placeholder='Enter your otp'
+                    onChange={(e) => setOtp(parseInt(e.target.value, 10))}
                     required
                     className="bg-gray-100 appearance-none block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm placeholder-gray-400 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm"
                   />
             <button
-                  type="submit"
+                  onClick={submitOtp}
                   className="mt-7 w-full flex justify-center py-2 px-4 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-customColor hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500"
                 >
                   Verify
