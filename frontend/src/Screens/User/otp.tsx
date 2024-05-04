@@ -24,7 +24,9 @@ function otp() {
   const submitOtp =async()=>{
 
     const response:any=await otpVerify({otp})
-    dispatch(setCredentials(response.data))
+    console.log(response)
+    localStorage.setItem('token', response.data.token)
+    dispatch(setCredentials(response.data.data))
     navigate('/home')
 }
 

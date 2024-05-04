@@ -1,6 +1,13 @@
-import {FormEvent, useState } from 'react'
+import {FormEvent, useEffect, useState } from 'react'
 import { Link } from "react-router-dom";
+import { useNavigate } from 'react-router-dom';
 import validator from 'validator';
+import { useSelector,useDispatch } from "react-redux"
+import {  useGoogleLogin } from '@react-oauth/google';
+import { setCredentials } from "../../redux/slices/authSlice";
+import { setAdminCredentials } from '../../redux/slices/adminSlice';
+import axios from 'axios'
+import {login} from '../../api/user'
 
 interface Errors{
   email?:string;
@@ -9,10 +16,28 @@ interface Errors{
 
 function loginPage() {
 
+  const navigate=useNavigate()
+  const dispatch = useDispatch()
+
+  let {userInfo} = useSelector((state:any)=>state.auth)
+  let {adminInfo} = useSelector((state:any)=>state.adminAuth)
+
+
   const [email,setEmail]=useState<string>('')
   const [password,setPassword]=useState<string>('')
   const [errors,setErrors]=useState<Errors>({})
 
+
+  useEffect(()=>{
+    if(userInfo){
+      navigate('/home')
+    }
+    if(adminInfo){
+      navigate('/admin')
+    }
+  },[userInfo,adminInfo])
+
+  
 
   const validateForm =()=>{
     const newErrors: Errors = {};
@@ -39,9 +64,60 @@ function loginPage() {
     const isValid=validateForm()
 
     if(isValid){
-      console.log("done")
+      const data={
+        email:email,
+        password:password
+      }
+      const response=await login(data)
+
+      if(response){
+
+        if(response.data.data.isAdmin){
+          
+          localStorage.setItem('adminToken',response.data.data.token)
+          dispatch(setAdminCredentials(response.data.data.message))
+          navigate('/admin')
+        }else{
+          localStorage.setItem('token', response.data.data.token)
+          dispatch(setCredentials(response.data.data.message))
+          navigate('/home')
+      }
+
+      }
     }
   }
+
+  const Glogin =useGoogleLogin({
+    onSuccess: async (response) => {
+      try {
+        const res = await axios.get(
+          `https://www.googleapis.com/oauth2/v3/userinfo?access_token=${response.access_token}`
+        );
+  
+        const data = {
+          email: res.data.email,
+          password:"qwerty123"
+        };
+  
+        const response2 = await login(data);
+        if (response2) {
+          if(response2.data.data.isAdmin){
+            localStorage.setItem('adminToken',response2.data.data.token)
+            dispatch(setAdminCredentials(response2.data.data.message))
+            navigate('/admin')
+          }else{
+            localStorage.setItem('token', response2.data.data.token)
+            dispatch(setCredentials(response2.data.data.message))
+            navigate("/home");
+          }
+          
+        }
+      } catch (error) {
+        console.log(error);
+      }
+    },
+  
+  });
 
 
 
@@ -136,7 +212,7 @@ function loginPage() {
               <div className="mt-6 grid grid-cols-1 gap-3 ">
                 
 
-                <div>
+                <div onClick={()=>Glogin()}>
                   <a
                     href="#"
                     className="w-full inline-flex justify-center py-2 px-4 border border-gray-300 rounded-md shadow-sm bg-white text-sm font-medium text-gray-500 hover:bg-gray-50"

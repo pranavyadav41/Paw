@@ -9,6 +9,11 @@ interface userFormData {
     password?:string
 }
 
+interface loginData {
+    email?:string,
+    password?:string
+}
+
  
 
 export const signup = async (userData:userFormData) =>{
@@ -29,5 +34,18 @@ export const otpVerify = async (otp:{otp:number}) =>{
     } catch (error) {
         const err:Error = error as Error;
         return errorHandle(err)
+    }
+}
+
+export const login = async (userData:loginData) =>{
+    try {
+
+        const response = await Api.post(userRoutes.userLogin,userData)
+        return response
+        
+    } catch (error) {
+        const err:Error = error as Error;
+        return errorHandle(err)
+        
     }
 }

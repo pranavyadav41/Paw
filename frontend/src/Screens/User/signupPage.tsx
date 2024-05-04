@@ -1,8 +1,9 @@
 import { useState,FormEvent, useEffect} from "react";
 import { Link ,useNavigate} from "react-router-dom";
 import {  useGoogleLogin } from '@react-oauth/google';
+import { useSelector,useDispatch } from "react-redux"
+import { setCredentials } from "../../redux/slices/authSlice";
 import axios from 'axios'
-import {toast} from 'react-toastify'
 import { signup } from "../../api/user";
 import validator from 'validator';
 
@@ -25,14 +26,9 @@ function signupPage() {
   const [password,setPassword]=useState<string>('')
   const [confirmPassword,setConfirmPassword]=useState<string>('')
   const [errors,setErrors]=useState<Errors>({})
-  const [user,setUser]=useState<any>([])
-  const [profile,setProfile]=useState<any>([])
-
-  console.log(user,"this is first")
-
-  console.log(profile,"this is second")
 
   const navigate=useNavigate()
+  const dispatch=useDispatch()
 
 
   const validateForm=()=>{
@@ -125,9 +121,11 @@ function signupPage() {
       };
 
       const response2 = await signup(data);
+      console.log(response2)
       if (response2) {
-        toast.success(response2.data.message);
-        navigate("/user-login");
+        localStorage.setItem('token', response2.data.token)
+        dispatch(setCredentials(response2.data.data))
+        navigate("/home");
       }
     } catch (error) {
       console.log(error);

@@ -1,4 +1,4 @@
-/** @type {import('tailwindcss').Config} */
+import withMT from "@material-tailwind/react/utils/withMT";
 export default {
   content: [
     "./index.html",
@@ -8,7 +8,8 @@ export default {
     extend: {
       colors: {
         customColor: '#86D2CD',
-        customColor1:'#4753B9'
+        customColor1:'#4753B9',
+        customColor3:'#FFD404'
       }
     },
   },
