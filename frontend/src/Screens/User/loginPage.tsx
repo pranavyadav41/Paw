@@ -60,7 +60,7 @@ function loginPage() {
       <h1 className="ml-32 hidden sm:block md:overflow-x-hidden" style={{fontSize:"30px",fontWeight:"bold"}}>Hi, Welcome! 👋</h1>
         <h1 className="sm:hidden" style={{fontSize:"25px",fontWeight:"bold"}}>Hi, Welcome! 👋</h1>
         <div className="mt-8  sm:w-full sm:max-w-md">
-          <div className="bg-white py-8  px-4  shadow-xl rounded-lg  sm:rounded-lg sm:px-10">
+          <div className="bg-white py-8  px-4  rounded-lg  sm:rounded-lg sm:px-10" style={{"boxShadow": "rgba(0, 0, 0, 0.35) 0px 5px 20px"}}>
             <form className="space-y-6 " onSubmit={submitHandler}>
               <div>
                 <label

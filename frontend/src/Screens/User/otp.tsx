@@ -2,7 +2,6 @@ import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom"
 import { useSelector,useDispatch } from "react-redux"
 import { setCredentials } from "../../redux/slices/authSlice";
-import { logout } from "../../redux/slices/authSlice";
 import { otpVerify } from "../../api/user"
 
 
@@ -26,6 +25,7 @@ function otp() {
 
     const response:any=await otpVerify({otp})
     dispatch(setCredentials(response.data))
+    navigate('/home')
 }
 
   return (
