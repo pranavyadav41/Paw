@@ -8,7 +8,6 @@ interface userFormData {
     mobile?:string,
     password?:string
 }
-
 interface loginData {
     email?:string,
     password?:string

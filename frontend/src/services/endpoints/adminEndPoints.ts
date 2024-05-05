@@ -1,8 +1,8 @@
 const adminRoutes={
 
-    getUserDetails:'/admin/get_user_details',
-    adminLogin:'/admin/admin_login',
-    adminLogout:'/admin/admin_logout'
+    getUserDetails:'/admin/users',
+    blockUser:'/admin/blockUser',
+    unBlockUser:'/admin/unBlockUser'
 }
 
 export default adminRoutes

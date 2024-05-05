@@ -9,7 +9,7 @@ function AdminRoutes() {
     <Routes>
       <Route element={<AdminProtected />}>
         <Route element={<AdminLayout />}>
-        <Route path="/" element={<Dashboard />} />
+        <Route path="/dashboard" element={<Dashboard />} />
           <Route path="/users" element={<Users/>} />
         </Route>
       </Route>

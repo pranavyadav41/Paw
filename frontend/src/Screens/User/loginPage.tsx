@@ -2,6 +2,8 @@ import {FormEvent, useEffect, useState } from 'react'
 import { Link } from "react-router-dom";
 import { useNavigate } from 'react-router-dom';
 import validator from 'validator';
+import { IoEyeSharp } from "react-icons/io5";
+import { IoEyeOffSharp } from "react-icons/io5";
 import { useSelector,useDispatch } from "react-redux"
 import {  useGoogleLogin } from '@react-oauth/google';
 import { setCredentials } from "../../redux/slices/authSlice";
@@ -25,6 +27,7 @@ function loginPage() {
 
   const [email,setEmail]=useState<string>('')
   const [password,setPassword]=useState<string>('')
+  const [showPassword, setShowPassword] = useState<boolean>(false);
   const [errors,setErrors]=useState<Errors>({})
 
 
@@ -33,9 +36,13 @@ function loginPage() {
       navigate('/home')
     }
     if(adminInfo){
-      navigate('/admin')
+      navigate('/admin/dashboard')
     }
   },[userInfo,adminInfo])
+
+  const handlePasswordVisibility = () => {
+    setShowPassword(!showPassword);
+  };
 
   
 
@@ -160,24 +167,34 @@ function loginPage() {
               </div>
 
               <div>
-                <label
-                  htmlFor="password"
-                  className="block text-sm font-medium text-gray-700"
-                >
-                  Password
-                </label>
-                <div className="mt-1">
-                  <input
-                    id="password"
-                    name="password"
-                    type="password"
-                    value={password}
-                    onChange={(e)=>setPassword(e.target.value)}
-                    className=" bg-gray-100 appearance-none block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm placeholder-gray-400 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm"
-                  />
-                </div>
-                {errors && <p className="text-red-500">{errors.password}</p>}
-              </div>
+      <label htmlFor="password" className="block text-sm font-medium text-gray-700">
+        Password
+      </label>
+      <div className="mt-1 relative">
+        <input
+          id="password"
+          name="password"
+          type={showPassword ? 'text' : 'password'}
+          value={password}
+          onChange={(e) => setPassword(e.target.value)}
+          className="bg-gray-100 appearance-none block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm placeholder-gray-400 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm"
+        />
+        <div className="absolute inset-y-0 right-0 pr-3 flex items-center">
+          <button
+            type="button"
+            onClick={handlePasswordVisibility}
+            className="focus:outline-none"
+          >
+            {showPassword ? (
+              <IoEyeOffSharp />
+            ) : (
+              <IoEyeSharp />
+            )}
+          </button>
+        </div>
+      </div>
+      {errors && <p className="text-red-500">{errors.password}</p>}
+    </div>
 
               <div className="flex items-center justify-between">
                 <div className="text-sm">

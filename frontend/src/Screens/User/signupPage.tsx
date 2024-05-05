@@ -2,6 +2,8 @@ import { useState,FormEvent, useEffect} from "react";
 import { Link ,useNavigate} from "react-router-dom";
 import {  useGoogleLogin } from '@react-oauth/google';
 import { useSelector,useDispatch } from "react-redux"
+import { IoEyeSharp } from "react-icons/io5";
+import { IoEyeOffSharp } from "react-icons/io5";
 import { setCredentials } from "../../redux/slices/authSlice";
 import axios from 'axios'
 import { signup } from "../../api/user";
@@ -25,10 +27,20 @@ function signupPage() {
   const [phone,setPhone]=useState<string>('')
   const [password,setPassword]=useState<string>('')
   const [confirmPassword,setConfirmPassword]=useState<string>('')
+  const [showPassword, setShowPassword] = useState<boolean>(false);
+  const [showConfirmPassword, setShowConfirmPassword] = useState<boolean>(false);
   const [errors,setErrors]=useState<Errors>({})
 
   const navigate=useNavigate()
   const dispatch=useDispatch()
+
+  const handlePasswordVisibility = () => {
+    setShowPassword(!showPassword);
+  };
+
+  const handleConfirmPasswordVisibility = () => {
+    setShowConfirmPassword(!showConfirmPassword);
+  };
 
 
   const validateForm=()=>{
@@ -193,32 +205,58 @@ function signupPage() {
                   {errors && <p className="text-red-500">{errors.phone}</p>}
                 </div>
 
-                <div className="mt-1">
-                  <input
-                    id="password"
-                    name="password"
-                    type="password"
-                    value={password}
-                    onChange={(e)=>setPassword(e.target.value)}
-                    placeholder="Please enter your Password"
-                    className="bg-gray-100 appearance-none block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm placeholder-gray-400 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm"
-                  />
-                  {errors && <p className="text-red-500">{errors.password}</p>}
-                </div>
+                <div className="mt-1 relative">
+        <input
+          id="password"
+          name="password"
+          type={showPassword ? 'text' : 'password'}
+          value={password}
+          onChange={(e) => setPassword(e.target.value)}
+          placeholder="Please enter your Password"
+          className="bg-gray-100 appearance-none block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm placeholder-gray-400 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm"
+        />
+        <div className="absolute inset-y-0 right-0 pr-3 flex items-center">
+          <button
+            type="button"
+            onClick={handlePasswordVisibility}
+            className="focus:outline-none"
+          >
+            {showPassword ? (
+              <IoEyeOffSharp />
+            ) : (
+              <IoEyeSharp />
+            )}
+          </button>
+        </div>
+        {errors && <p className="text-red-500">{errors.password}</p>}
+      </div>
 
               
-                <div className="mt-1">
-                  <input
-                    id="cpassword"
-                    name="cpassword"
-                    type="password"
-                    value={confirmPassword}
-                    onChange={(e)=>setConfirmPassword(e.target.value)}
-                    placeholder="Please confirm your password"
-                    className=" bg-gray-100 appearance-none block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm placeholder-gray-400 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm"
-                  />
-                  {errors && <p className="text-red-500">{errors.confirmPassword}</p>}
-                </div>
+      <div className="mt-1 relative">
+        <input
+          id="cpassword"
+          name="cpassword"
+          type={showConfirmPassword ? 'text' : 'password'}
+          value={confirmPassword}
+          onChange={(e) => setConfirmPassword(e.target.value)}
+          placeholder="Please confirm your password"
+          className="bg-gray-100 appearance-none block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm placeholder-gray-400 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm"
+        />
+        <div className="absolute inset-y-0 right-0 pr-3 flex items-center">
+          <button
+            type="button"
+            onClick={handleConfirmPasswordVisibility}
+            className="focus:outline-none"
+          >
+            {showConfirmPassword ? (
+             <IoEyeOffSharp />
+            ) : (
+              <IoEyeSharp />
+            )}
+          </button>
+        </div>
+        {errors && <p className="text-red-500">{errors.confirmPassword}</p>}
+      </div>
 
               <div className="flex items-center justify-between">
                 <div className="text-sm">
