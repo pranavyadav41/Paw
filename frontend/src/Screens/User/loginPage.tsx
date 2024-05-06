@@ -79,14 +79,14 @@ function loginPage() {
 
       if(response){
 
-        if(response.data.data.isAdmin){
+        if(response.data.isAdmin){
           
-          localStorage.setItem('adminToken',response.data.data.token)
-          dispatch(setAdminCredentials(response.data.data.message))
-          navigate('/admin')
+          localStorage.setItem('adminToken',response.data.token)
+          dispatch(setAdminCredentials(response.data.message))
+          navigate('/admin/dashboard')
         }else{
-          localStorage.setItem('token', response.data.data.token)
-          dispatch(setCredentials(response.data.data.message))
+          localStorage.setItem('token', response.data.token)
+          dispatch(setCredentials(response.data.message))
           navigate('/home')
       }
 
@@ -108,9 +108,9 @@ function loginPage() {
   
         const response2 = await login(data);
         if (response2) {
-          if(response2.data.data.isAdmin){
-            localStorage.setItem('adminToken',response2.data.data.token)
-            dispatch(setAdminCredentials(response2.data.data.message))
+          if(response2.data.isAdmin){
+            localStorage.setItem('adminToken',response2.data.token)
+            dispatch(setAdminCredentials(response2.data.message))
             navigate('/admin')
           }else{
             localStorage.setItem('token', response2.data.data.token)
@@ -198,12 +198,12 @@ function loginPage() {
 
               <div className="flex items-center justify-between">
                 <div className="text-sm">
-                  <a
-                    href="#"
+                  <Link
+                    to="/verifyEmail"
                     className=" font-medium text-indigo-600 hover:text-indigo-500"
                   >
                     Forgot your password?
-                  </a>
+                  </Link>
                 </div>
               </div>
 
@@ -223,6 +223,9 @@ function loginPage() {
                   <div className="w-full border-t border-gray-300" />
                 </div>
                 <div className="relative flex justify-center text-sm">
+                <span className="px-2 bg-white text-gray-500">
+                    Or
+                  </span>
                 </div>
               </div>
 

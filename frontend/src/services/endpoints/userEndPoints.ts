@@ -5,7 +5,8 @@ const userRoutes={
     userOtpVerify:'/user/verify',
     userOtpResend:'user/resend_otp',
     userLogin:'user/login',
-    userLogout:'user/logout'
+    userForgotPass:'/user/verifyEmail',
+    userResetPassword:'/user/resetPassword'
 }
 
 export default userRoutes

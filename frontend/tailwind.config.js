@@ -9,7 +9,9 @@ export default {
       colors: {
         customColor: '#86D2CD',
         customColor1:'#4753B9',
-        customColor3:'#FFD404'
+        customColor3:'#FFD404',
+        customColor4:'#FABA18',
+        Home:"#4653b8"
       }
     },
   },

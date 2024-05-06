@@ -1,10 +1,11 @@
 import { useState,FormEvent, useEffect} from "react";
 import { Link ,useNavigate} from "react-router-dom";
 import {  useGoogleLogin } from '@react-oauth/google';
-import { useSelector,useDispatch } from "react-redux"
+import { useDispatch } from "react-redux"
 import { IoEyeSharp } from "react-icons/io5";
 import { IoEyeOffSharp } from "react-icons/io5";
 import { setCredentials } from "../../redux/slices/authSlice";
+import { toast } from "react-toastify";
 import axios from 'axios'
 import { signup } from "../../api/user";
 import validator from 'validator';
@@ -91,7 +92,8 @@ function signupPage() {
         const response=await signup(userData)
   
         if(response){
-
+          
+          toast.success(response.data.message)
           navigate('/Otp')
         }
       }

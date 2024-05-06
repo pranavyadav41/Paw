@@ -4,6 +4,8 @@ import SignupPage from "../Screens/User/signupPage";
 import Otp from "../Screens/User/otp";
 import UserLayout from "../layout/userLayout/userLayout";
 import Home from "../Components/Home";
+import ForgetEmail from "../Components/common/ForgetEmail";
+import ResetPassword from "../Components/common/ResetPassword"
   
 function UserRoutes() {
   return (
@@ -15,6 +17,8 @@ function UserRoutes() {
       <Route path="login" element={<LoginPage />} />
       <Route path="register" element={<SignupPage />} />
       <Route path="Otp" element={<Otp />} />
+      <Route path="verifyEmail" element={<ForgetEmail/>} />
+      <Route path="resetPassword" element={<ResetPassword />} />
     </Routes>
   );
 }
