@@ -1,13 +1,15 @@
-import React from "react";
 import { NavLink } from "react-router-dom";
 import { FcAreaChart } from "react-icons/fc";
 import { FcConferenceCall } from "react-icons/fc";
+import { FcAbout } from "react-icons/fc";
 
 function sideBar() {
   const activeStyle = {
-    backgroundColor: "#9ca3af",
-    color: "#1e293b",
+    backgroundColor: "#0F1015",
+    color: "white ",
   };
+
+
   return (
     <div className="mt-20">
       <button
@@ -38,14 +40,14 @@ function sideBar() {
         aria-label="Sidebar"
       >
         <div
-          className="h-full px-3 py-4 overflow-y-auto bg-gray-50 dark:bg-gray-800"
+          className="h-full px-3 py-4 overflow-y-auto bg-gray-50 dark:bg-[#191C24]"
           style={{ marginTop: "72px" }}
         >
           <ul className="space-y-2 font-medium">
             <li>
               <NavLink
                 to="/admin/dashboard"
-                className="flex items-center p-2 text-gray-900 rounded-lg dark:text-white hover:bg-gray-100 dark:hover:bg-gray-700 group"
+                className="flex items-center p-2 text-gray-900 rounded-lg dark:text-[#5F7093] hover:bg-gray-100 dark:hover:bg-gray-700 group"
                 style={({ isActive }) => (isActive ? activeStyle : undefined)}
               >
                 <FcAreaChart />
@@ -55,7 +57,7 @@ function sideBar() {
             <li>
               <NavLink
                 to="/admin/users"
-                className="flex items-center p-2 text-gray-900 rounded-lg dark:text-white hover:bg-gray-100 dark:hover:bg-gray-700 group"
+                className="flex items-center p-2 text-[#5F7093] rounded-lg dark:text-[#5F7093] hover:bg-gray-100 dark:hover:bg-gray-700 group"
                 style={({ isActive }) => (isActive ? activeStyle : undefined)}
               >
                 <FcConferenceCall />
@@ -66,19 +68,11 @@ function sideBar() {
             </li>
             <li>
               <NavLink
-                to="#"
-                className="flex items-center p-2 text-gray-900 rounded-lg dark:text-white hover:bg-gray-100 dark:hover:bg-gray-700 group"
-                // style={({ isActive }) => (isActive ? activeStyle : undefined)}
+                to="/admin/requests"
+                className="flex items-center p-2 text-gray-900 rounded-lg dark:text-[#5F7093] hover:bg-gray-100 dark:hover:bg-gray-700 group"
+                style={({ isActive }) => (isActive ? activeStyle : undefined)}
               >
-                <svg
-                  className="flex-shrink-0 w-5 h-5 text-gray-500 transition duration-75 dark:text-gray-400 group-hover:text-gray-900 dark:group-hover:text-white"
-                  aria-hidden="true"
-                  xmlns="http://www.w3.org/2000/svg"
-                  fill="currentColor"
-                  viewBox="0 0 20 20"
-                >
-                  <path d="m17.418 3.623-.018-.008a6.713 6.713 0 0 0-2.4-.569V2h1a1 1 0 1 0 0-2h-2a1 1 0 0 0-1 1v2H9.89A6.977 6.977 0 0 1 12 8v5h-2V8A5 5 0 1 0 0 8v6a1 1 0 0 0 1 1h8v4a1 1 0 0 0 1 1h2a1 1 0 0 0 1-1v-4h6a1 1 0 0 0 1-1V8a5 5 0 0 0-2.582-4.377ZM6 12H4a1 1 0 0 1 0-2h2a1 1 0 0 1 0 2Z" />
-                </svg>
+               <FcAbout />
                 <span className="flex-1 ms-3 whitespace-nowrap">
                   Franchise reqests
                 </span>
@@ -88,9 +82,10 @@ function sideBar() {
               </NavLink>
             </li>
             <li>
-              <a
-                href="#"
-                className="flex items-center p-2 text-gray-900 rounded-lg dark:text-white hover:bg-gray-100 dark:hover:bg-gray-700 group"
+              <NavLink
+                to="/admin/franchises"
+                className="flex items-center p-2 text-gray-900 rounded-lg dark:text-[#5F7093] hover:bg-gray-100 dark:hover:bg-gray-700 group"
+                style={({ isActive }) => (isActive ? activeStyle : undefined)}
               >
                 <svg
                   className="flex-shrink-0 w-5 h-5 text-gray-500 transition duration-75 dark:text-gray-400 group-hover:text-gray-900 dark:group-hover:text-white"
@@ -104,7 +99,7 @@ function sideBar() {
                 <span className="flex-1 ms-3 whitespace-nowrap">
                   Franchise list
                 </span>
-              </a>
+              </NavLink>
             </li>
           </ul>
         </div>

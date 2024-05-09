@@ -12,9 +12,9 @@ export const getUsers = async () => {
   }
 };
 
-export const blockUser = async (userId:{userId: string}) => {
+export const blockUser = async (userId: { userId: string }) => {
   try {
-    const response = await Api.post(adminRoutes.blockUser,userId);
+    const response = await Api.post(adminRoutes.blockUser, userId);
     return response;
   } catch (error) {
     const err: Error = error as Error;
@@ -22,9 +22,46 @@ export const blockUser = async (userId:{userId: string}) => {
   }
 };
 
-export const unBlockUser = async (userId:{userId: string}) => {
+export const unBlockUser = async (userId: { userId: string }) => {
   try {
-    const response = await Api.post(adminRoutes.unBlockUser,userId);
+    const response = await Api.post(adminRoutes.unBlockUser, userId);
+    return response;
+  } catch (error) {
+    const err: Error = error as Error;
+    return errorHandle(err);
+  }
+};
+export const getRequests = async () => {
+  try {
+    const response = await Api.get(adminRoutes.getRequests);
+    return response;
+  } catch (error) {
+    const err: Error = error as Error;
+    return errorHandle(err);
+  }
+};
+export const approveRequest = async (reqId: { reqId: string }) => {
+  try {
+    const response = await Api.post(adminRoutes.approveRequest, reqId);
+    return response;
+  } catch (error) {
+    const err: Error = error as Error;
+    return errorHandle(err);
+  }
+};
+
+export const rejectRequest = async (reqId: { reqId: string }) => {
+  try {
+    const response = await Api.post(adminRoutes.rejectRequest, reqId);
+    return response;
+  } catch (error) {
+    const err: Error = error as Error;
+    return errorHandle(err);
+  }
+};
+export const getFranchises = async () => {
+  try {
+    const response = await Api.get(adminRoutes.getFranchises);
     return response;
   } catch (error) {
     const err: Error = error as Error;

@@ -57,7 +57,7 @@ function signupPage() {
 
     if(!phone.trim()){
       newErrors.phone="Phone is required";
-    }else if(phone.length<10){
+    }else if(phone.length<10 || phone.length>10){
       newErrors.phone="Phone number must contain 10 numbers"
     }
 

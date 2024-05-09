@@ -17,7 +17,7 @@ function UserRoutes() {
       <Route path="login" element={<LoginPage />} />
       <Route path="register" element={<SignupPage />} />
       <Route path="Otp" element={<Otp />} />
-      <Route path="verifyEmail" element={<ForgetEmail/>} />
+      <Route path="verifyEmail" element={<ForgetEmail/>} /> 
       <Route path="resetPassword" element={<ResetPassword />} />
     </Routes>
   );

@@ -6,7 +6,8 @@ const userRoutes={
     userOtpResend:'user/resend_otp',
     userLogin:'user/login',
     userForgotPass:'/user/verifyEmail',
-    userResetPassword:'/user/resetPassword'
+    userResetPassword:'/user/resetPassword',
+    resendOtp:'/user/resendOtp'
 }
 
 export default userRoutes

@@ -4,7 +4,7 @@ function Dashboard() {
   return (
     
 
-        <div className='p-4 bg-sky-400 h-screen w-full'>
+        <div className='p-4 bg-black h-screen w-full'>
 
         </div>
       

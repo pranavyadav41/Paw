@@ -3,7 +3,7 @@ function Home() {
     <>
       <div className="h-80 bg-white flex justify-around">
         <div className="flex items-center ">
-          <img className="h-[250px]" src="/public/logo/5527355.jpg" alt="" />
+          <img className="h-[250px]"  src="/public/logo/file.png" alt="" />
         </div>
         <div className="flex items-center gap-3">
           <h1 className="text-2xl text-customColor1 font-bold">
@@ -14,9 +14,7 @@ function Home() {
           </button>
         </div>
       </div>
-      <div className="flex justify-center bg-Home">
-        <img className="h-[500px]" src="/public/logo/homePage1.png" alt="" />
-      </div>
+     
     </>
   );
 }

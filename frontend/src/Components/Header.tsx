@@ -1,19 +1,38 @@
 import { useSelector, useDispatch } from "react-redux";
+import { useState } from "react";
 import { useNavigate } from "react-router-dom";
-import { FaUserAlt } from "react-icons/fa";
 import { logout } from "../redux/slices/authSlice";
+import { FaUserAlt, FaCaretDown } from "react-icons/fa";
 import { toast } from "react-toastify";
 
 function Header() {
   let { userInfo } = useSelector((state: any) => state.auth);
+  const [isDropdownOpen, setIsDropdownOpen] = useState(false);
+  const [isHamburger, setIsHamburger] = useState(false);
+  const [userDropdown,setIsDropdown] = useState(false);
   let navigate = useNavigate();
   let dispatch = useDispatch();
 
   let handleLogout = () => {
+    setIsDropdownOpen(false);
+    setIsDropdown(false)
+    setIsHamburger(false)
     localStorage.removeItem("token");
     dispatch(logout());
     toast.success("Logged out succesfully");
   };
+
+  const toggleDropdown = () => {
+    setIsDropdownOpen(!isDropdownOpen);
+  };
+
+  const dropDownMenu = () => {
+    setIsHamburger(!isHamburger);
+  };
+
+  const dropDown=()=>{
+    setIsDropdown(!userDropdown)
+  }
 
   let redirect = () => {
     navigate("/login");
@@ -48,39 +67,45 @@ function Header() {
               </li>
             </ul>
           </div>
-          <div className="flex items-center gap-x-1">
-            {userInfo ? (
-              <button
-                className="hidden px-4 py-2 font-sans text-xs font-bold text-center text-gray-900 uppercase align-middle transition-all rounded-lg select-none hover:bg-gray-900/10 active:bg-gray-900/20 disabled:pointer-events-none disabled:opacity-50 disabled:shadow-none lg:inline-block"
-                type="button"
-              >
-                <div className="flex gap-2">
+          <div className="relative">
+            <button
+              className="flex items-center gap-2 px-4 py-2 font-sans lg:visible invisible text-xs font-bold text-gray-900 uppercase rounded-lg hover:bg-gray-900/10 active:bg-gray-900/20 disabled:pointer-events-none disabled:opacity-50 disabled:shadow-none"
+              type="button"
+              onClick={userInfo ? toggleDropdown : redirect}
+            >
+              {userInfo ? (
+                <>
                   <FaUserAlt />
                   <span>{userInfo.name}</span>
+                  <FaCaretDown />
+                </>
+              ) : (
+                <span>Login</span>
+              )}
+            </button>
+            {isDropdownOpen && (
+              <div className="absolute  right-0 mt-2 py-2 w-48 bg-gray-600 rounded-lg shadow-lg z-10">
+                <div>
+                  <a
+                    href="/profile"
+                    className="block px-4 py-2 text-white hover:bg-gray-800"
+                  >
+                    Profile
+                  </a>
                 </div>
-              </button>
-            ) : null}
-            {userInfo ? (
-              <button
-                className="hidden select-none rounded-lg bg-gradient-to-tr from-gray-900 to-gray-800 py-2 px-4 text-center align-middle font-sans text-xs font-bold uppercase text-white shadow-md shadow-gray-900/10 transition-all hover:shadow-lg hover:shadow-gray-900/20 active:opacity-[0.85] disabled:pointer-events-none disabled:opacity-50 disabled:shadow-none lg:inline-block"
-                type="button"
-                onClick={handleLogout}
-              >
-                <span>logout</span>
-              </button>
-            ) : (
-              <button
-                className="hidden select-none rounded-lg bg-gradient-to-tr from-gray-900 to-gray-800 py-2 px-4 text-center align-middle font-sans text-xs font-bold uppercase text-white shadow-md shadow-gray-900/10 transition-all hover:shadow-lg hover:shadow-gray-900/20 active:opacity-[0.85] disabled:pointer-events-none disabled:opacity-50 disabled:shadow-none lg:inline-block"
-                type="button"
-                onClick={redirect}
-              >
-                <span>login</span>
-              </button>
+                <button
+                  className="block w-full px-4 py-2 text-left text-white hover:bg-gray-800"
+                  onClick={handleLogout}
+                >
+                  Logout
+                </button>
+              </div>
             )}
           </div>
           <button
             className="relative ml-auto h-6 max-h-[40px] w-6 max-w-[40px] select-none rounded-lg text-center align-middle font-sans text-xs font-medium uppercase text-inherit transition-all hover:bg-transparent focus:bg-transparent active:bg-transparent disabled:pointer-events-none disabled:opacity-50 disabled:shadow-none lg:hidden"
             type="button"
+            onClick={dropDownMenu}
           >
             <span className="absolute transform -translate-x-1/2 -translate-y-1/2 top-1/2 left-1/2">
               <svg
@@ -98,6 +123,79 @@ function Header() {
               </svg>
             </span>
           </button>
+          {isHamburger && (
+            <div className="absolute right-5 mt-60   py-2 w-48 bg-gray-600  shadow-lg z-10">
+              <div>
+                <button
+                  className="flex items-center gap-2 px-4 py-2 font-sans  text-xs font-bold text-gray-900 uppercase rounded-lg hover:bg-gray-900/10 active:bg-gray-900/20 disabled:pointer-events-none disabled:opacity-50 disabled:shadow-none"
+                  type="button"
+                  onClick={userInfo ? dropDown : redirect}
+                >
+                  {userInfo ? (
+                    <>
+                      <FaUserAlt />
+                      <span className="text-white text-xs ">{userInfo.name}</span>
+                      <FaCaretDown />
+                    </>
+                  ) : (
+                    <span className="text-white text-xs">Login</span>
+                  )}
+                </button>
+              </div>
+             {userDropdown && (
+               <div className="absolute  right-0 mt-2 py-2 w-48 bg-gray-600 rounded-lg shadow-lg z-10">
+               <div>
+                 <a
+                   href="/profile"
+                   className="block px-4 py-2 text-white hover:bg-gray-800"
+                 >
+                   Profile
+                 </a>
+               </div>
+               <button
+                 className="block w-full px-4 py-2 text-left text-white hover:bg-gray-800"
+                 onClick={handleLogout}
+               >
+                 Logout
+               </button>
+             </div>
+             )}
+              
+
+              <div>
+                <a
+                  href="/profile"
+                  className="block px-4 py-2 text-white hover:bg-gray-800"
+                >
+                  Home
+                </a>
+              </div>
+              <div>
+                <a
+                  href="/profile"
+                  className="block px-4 py-2 text-white hover:bg-gray-800"
+                >
+                  Services
+                </a>
+              </div>
+              <div>
+                <a
+                  href="/profile"
+                  className="block px-4 py-2 text-white hover:bg-gray-800"
+                >
+                  Bookings
+                </a>
+              </div>
+              <div>
+                <a
+                  href="/profile"
+                  className="block px-4 py-2 text-white hover:bg-gray-800"
+                >
+                  Franchise
+                </a>
+              </div>
+            </div>
+          )}
         </div>
       </div>
     </nav>

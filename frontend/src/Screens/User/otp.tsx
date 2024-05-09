@@ -3,31 +3,26 @@ import { useLocation, useNavigate } from "react-router-dom";
 import { useSelector, useDispatch } from "react-redux";
 import { setCredentials } from "../../redux/slices/authSlice";
 import { otpVerify } from "../../api/user";
+import { resendOTP } from "../../api/user";
 import { toast } from "react-toastify";
 
 function otp() {
   const [otp, setOtp] = useState(0);
+  const [resendButton, setShowResendButton] = useState(true);
+  const [timerValue, setTimerValue] = useState(60);
   const navigate = useNavigate();
   const dispatch = useDispatch();
 
-  const { userInfo } = useSelector((state: any) => state.auth);
   const location = useLocation();
-  const data = location.state?.userId;
-
-  useEffect(() => {
-    if (userInfo) {
-      console.log("Navigated to homepage");
-    }
-  }, [userInfo, navigate]);
+  const data = location.state?.userId ?? 'default value';
 
   const submitOtp = async () => {
-    if (data) {
+    if (data !=='default value') {
       const response: any = await otpVerify(
         { otp: otp },
         { userId: data.userId }
       );
       if (response) {
-        console.log(response);
         toast.success(response.data.message);
         navigate("/resetPassword", {
           state: { userId: data },
@@ -39,6 +34,33 @@ function otp() {
       localStorage.setItem("token", response.data.token);
       dispatch(setCredentials(response.data.data));
       navigate("/home");
+    }
+  };
+  useEffect(() => {
+    let interval: NodeJS.Timeout | null = null;
+
+    if (!resendButton && timerValue > 0) {
+      interval = setInterval(() => {
+        setTimerValue(timerValue - 1);
+      }, 1000);
+    } else if (timerValue === 0) {
+      setShowResendButton(true);
+    }
+
+    return () => {
+      if (interval) {
+        clearInterval(interval);
+      }
+    };
+  }, [resendButton, timerValue]);
+
+  const handleResendOtp = async () => {
+    setShowResendButton(false);
+    setTimerValue(60);
+    let response: any = await resendOTP();
+    if (response) {
+      console.log(response)
+      toast.success(response.message);
     }
   };
 
@@ -80,6 +102,16 @@ function otp() {
             >
               Verify
             </button>
+            <div className="mt-3 text-sm flex gap-1">
+              <p>Didn't receive OTP?</p>
+              {resendButton ? (
+                <button className="text-blue-800" onClick={handleResendOtp}>
+                  RESEND OTP
+                </button>
+              ) : (
+                <span className="text-blue-800">Resend otp in {timerValue}</span>
+              )}
+            </div>
           </div>
         </div>
       </div>

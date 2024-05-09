@@ -14,7 +14,7 @@ const Header: React.FC<any> = () => {
     toast.success("Logged out successfully");
   };
   return (
-    <header className="bg-gray-800 py-4 px-6 flex justify-between items-center fixed left-0 right-0 top-0">
+    <header className="bg-[#191C24] py-4 px-6 flex justify-between items-center fixed left-0 right-0 top-0 z-50">
       <div className="text-white font-bold text-xl flex items-center gap-3">
         <span className="text-green-500 text-2xl">Paw</span>
         <FaPaw />

@@ -67,3 +67,14 @@ export const resetPassword = async (password: { password: string },userId:{userI
     return errorHandle(err);
   }
 };
+export const resendOTP = async ()=>{
+  try {
+    const response = await Api.post(userRoutes.resendOtp)
+    console.log(response)
+    
+  } catch (error) {
+    const err: Error = error as Error;
+    return errorHandle(err);
+    
+  }
+}
