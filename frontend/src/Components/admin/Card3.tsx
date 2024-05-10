@@ -8,12 +8,13 @@ interface Franchise{
   city:string,
   district:string,
   state:string,
-  pincode:string 
+  pincode:string ,
+  isBlocked:boolean
 }
 
 interface UserCard3Props {
   franchise:Franchise;
-  state:(data: boolean) => void
+  state:(data: string) => void
 }
 
 const UserCard3:React.FC<UserCard3Props> = ({franchise,state}) => {
@@ -21,7 +22,7 @@ const UserCard3:React.FC<UserCard3Props> = ({franchise,state}) => {
   const viewDetail =(franchiseId:string)=>{
 
     console.log(franchiseId)
-    state(true)
+    state(franchiseId)
 
   } 
   return (
@@ -41,9 +42,9 @@ const UserCard3:React.FC<UserCard3Props> = ({franchise,state}) => {
             <span className="text-gray-200">LOCATION: </span>
             {franchise.city},{franchise.district}
           </p>
-          <p className="text-md font-medium text-white">
+          <p className={franchise.isBlocked?"text-md font-medium text-red-500":"text-md font-medium text-green-500"}>
             <span className="text-gray-200">STATUS: </span>
-            BLOCKED
+            {franchise.isBlocked?"Blocked":"Active"}
           </p>
         </div>
         <button onClick={()=>viewDetail(franchise._id)} className="bg-lime-600 hover:bg-lime-700 text-white font-semibold py-2 px-4 rounded">View Details</button>

@@ -1,4 +1,3 @@
-import { rejectRequest } from "../../api/admin"
 
 const adminRoutes={
 
@@ -8,7 +7,9 @@ const adminRoutes={
     getRequests:'/admin/getRequests',
     approveRequest:'/admin/approveRequest',
     rejectRequest:'/admin/rejectRequest',
-    getFranchises:'/admin/getFranchises'
+    getFranchises:'/admin/getFranchises',
+    blockFranchise:'/admin/blockFranchise',
+    unBlockFranchise:'/admin/unBlockFranchise'
 }
 
 export default adminRoutes

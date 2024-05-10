@@ -1,0 +1,20 @@
+.custom-modal {
+    .modal-content {
+      position: fixed;
+      top: 40%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      border: 1px solid #ccc;
+      background: yellowgreen;
+      overflow: auto;
+      WebkitOverflowScrolling: touch;
+      borderRadius: 4px;
+      outline: none;
+      padding: 20px;
+    }
+  }
+
+  body.modal-open {
+    overflow: hidden;
+  }
+  

@@ -68,3 +68,21 @@ export const getFranchises = async () => {
     return errorHandle(err);
   }
 };
+export const blockFranchise = async (franchiseId:{franchiseId: string}) => {
+  try {
+    const response = await Api.post(adminRoutes.blockFranchise, franchiseId);
+    return response;
+  } catch (error) {
+    const err: Error = error as Error;
+    return errorHandle(err);
+  }
+};
+export const unBlockFranchise = async (franchiseId:{franchiseId: string}) => {
+  try {
+    const response = await Api.post(adminRoutes.unBlockFranchise, franchiseId);
+    return response;
+  } catch (error) {
+    const err: Error = error as Error;
+    return errorHandle(err);
+  }
+};
