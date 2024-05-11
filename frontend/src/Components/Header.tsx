@@ -3,6 +3,7 @@ import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { logout } from "../redux/slices/authSlice";
 import { FaUserAlt, FaCaretDown } from "react-icons/fa";
+import { NavLink } from "react-router-dom";
 import { toast } from "react-toastify";
 
 function Header() {
@@ -39,31 +40,31 @@ function Header() {
   };
 
   return (
-    <nav className="sticky top-0 z-10 block w-full max-w-full h-[85px]  px-4 py-2 text-white bg-customColor  rounded-none shadow-md h-max   backdrop-blur-2xl backdrop-saturate-200 lg:px-8 lg:py-4">
+    <nav className="sticky top-0 z-10 block w-full max-w-full   px-4 py-2 text-white bg-customColor  rounded-none shadow-md h-max   backdrop-blur-2xl backdrop-saturate-200 lg:px-8 lg:py-4">
       <div className="flex items-center justify-between text-blue-gray-900">
         <img className="h-[65px]" src="/public/logo/cut and PASTE.png" alt="" />
         <div className="flex items-center gap-4">
           <div className="hidden mr-4 lg:block">
             <ul className="flex flex-col gap-2 mt-2 mb-4 lg:mb-0 lg:mt-0 lg:flex-row lg:items-center lg:gap-6">
-              <li className="block p-1 font-sans text-sm antialiased font-normal leading-normal text-blue-gray-900">
+              <li className="block p-1 font-sans text-md antialiased font-normal leading-normal text-blue-gray-900">
                 <a href="#" className="flex items-center">
                   Home
                 </a>
               </li>
-              <li className="block p-1 font-sans text-sm antialiased font-normal leading-normal text-blue-gray-900">
+              <li className="block p-1 font-sans text-md antialiased font-normal leading-normal text-blue-gray-900">
                 <a href="#" className="flex items-center">
                   Services
                 </a>
               </li>
-              <li className="block p-1 font-sans text-sm antialiased font-normal leading-normal text-blue-gray-900">
+              <li className="block p-1 font-sans text-md antialiased font-normal leading-normal text-blue-gray-900">
                 <a href="#" className="flex items-center">
                   Bookings
                 </a>
               </li>
-              <li className="block p-1 font-sans text-sm antialiased font-normal leading-normal text-blue-gray-900">
-                <a href="#" className="flex items-center">
+              <li className="block p-1 font-sans text-md antialiased font-normal leading-normal text-blue-gray-900">
+                <NavLink to="/franchise" className="flex items-center">
                   Franchise
-                </a>
+                </NavLink>
               </li>
             </ul>
           </div>
@@ -80,7 +81,7 @@ function Header() {
                   <FaCaretDown />
                 </>
               ) : (
-                <span>Login</span>
+                <span className="text-base">Login</span>
               )}
             </button>
             {isDropdownOpen && (

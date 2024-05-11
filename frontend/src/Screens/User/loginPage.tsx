@@ -81,7 +81,7 @@ function loginPage() {
 
         if(response.data.isAdmin){
           
-          localStorage.setItem('adminToken',response.data.token)
+          localStorage.setItem('token',response.data.token)
           dispatch(setAdminCredentials(response.data.message))
           navigate('/admin/dashboard')
         }else{

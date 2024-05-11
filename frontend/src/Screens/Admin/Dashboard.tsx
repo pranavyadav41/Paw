@@ -1,15 +1,5 @@
-import React from 'react'
-
 function Dashboard() {
-  return (
-    
-
-        <div className='p-4 bg-black h-screen w-full'>
-
-        </div>
-      
-    
-  )
+  return <div className="p-4 bg-black h-screen w-full"></div>;
 }
 
-export default Dashboard
+export default Dashboard;

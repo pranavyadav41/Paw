@@ -2,6 +2,17 @@ import Api from "../services/axios";
 import adminRoutes from "../services/endpoints/adminEndPoints";
 import errorHandle from "./error";
 
+interface Service {
+  category: string;
+  services: string[];
+  price: {
+    small: string;
+    medium: string;
+    large: string;
+    xLarge: string;
+  };
+}
+
 export const getUsers = async () => {
   try {
     const response = await Api.get(adminRoutes.getUserDetails);
@@ -68,7 +79,7 @@ export const getFranchises = async () => {
     return errorHandle(err);
   }
 };
-export const blockFranchise = async (franchiseId:{franchiseId: string}) => {
+export const blockFranchise = async (franchiseId: { franchiseId: string }) => {
   try {
     const response = await Api.post(adminRoutes.blockFranchise, franchiseId);
     return response;
@@ -77,9 +88,29 @@ export const blockFranchise = async (franchiseId:{franchiseId: string}) => {
     return errorHandle(err);
   }
 };
-export const unBlockFranchise = async (franchiseId:{franchiseId: string}) => {
+export const unBlockFranchise = async (franchiseId: {
+  franchiseId: string;
+}) => {
   try {
     const response = await Api.post(adminRoutes.unBlockFranchise, franchiseId);
+    return response;
+  } catch (error) {
+    const err: Error = error as Error;
+    return errorHandle(err);
+  }
+};
+export const addServices = async (service: { service: Service }) => {
+  try {
+    const response = await Api.post(adminRoutes.addService, service);
+    return response;
+  } catch (error) {
+    const err: Error = error as Error;
+    return errorHandle(err);
+  }
+};
+export const getServices = async () => {
+  try {
+    const response = await Api.get(adminRoutes.getServices);
     return response;
   } catch (error) {
     const err: Error = error as Error;

@@ -5,6 +5,7 @@ import Users from "../Components/admin/Users";
 import FranchiseReq from "../Components/admin/FranchiseReq";
 import AdminProtected from "../protected/AdminProtected";
 import FranchiseList from "../Components/admin/FranchiseList";
+import Service from "../Components/admin/Service";
 
 function AdminRoutes() {
   return (
@@ -15,6 +16,7 @@ function AdminRoutes() {
           <Route path="/users" element={<Users />} />
           <Route path="/requests" element={<FranchiseReq/>} />
           <Route path="/franchises" element={<FranchiseList/>} />
+          <Route path="/services" element={<Service/>} />
         </Route>
       </Route>
     </Routes>

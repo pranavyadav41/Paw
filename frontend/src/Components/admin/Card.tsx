@@ -1,6 +1,7 @@
 import React from "react";
 import { blockUser } from "../../api/admin";
 import { unBlockUser } from "../../api/admin";
+import { toast } from "react-toastify";
 
 interface UserData {
   _id: string;
@@ -17,12 +18,18 @@ interface UserCardProps {
 
 const UserCard: React.FC<UserCardProps> = ({ user, state }) => {
   const handleBlockUser = async (userId: string) => {
-    const response = await blockUser({ userId });
+    const response= await blockUser({ userId });
+    toast.success(response?.data, {
+      position:"top-center",
+    });
     state(true);
   };
 
   const handleUnblockUser = async (userId: string) => {
-    const response = await unBlockUser({ userId });
+    const response= await unBlockUser({ userId });
+    toast.success(response?.data, {
+      position:"top-center",
+    });
     state(true);
   };
   return (

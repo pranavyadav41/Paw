@@ -9,7 +9,9 @@ const adminRoutes={
     rejectRequest:'/admin/rejectRequest',
     getFranchises:'/admin/getFranchises',
     blockFranchise:'/admin/blockFranchise',
-    unBlockFranchise:'/admin/unBlockFranchise'
+    unBlockFranchise:'/admin/unBlockFranchise',
+    addService:'/admin/addService',
+    getServices:'/admin/getServices',
 }
 
 export default adminRoutes

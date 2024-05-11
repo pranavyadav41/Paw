@@ -1,5 +1,6 @@
 import { approveRequest } from "../../api/admin"
 import { rejectRequest } from "../../api/admin"
+import { toast } from "react-toastify"
 
 interface Request{
   _id:string
@@ -26,19 +27,22 @@ const UserCard2: React.FC<UserCard2Props> = ({
     const response = await approveRequest({reqId})
 
     if(response){
-      console.log(response)
+      toast.success(response.data, {
+        position:"top-center",
+      });
       state(true)
     }
 
   }
 
   const handleReject = async(reqId:string)=>{
-    console.log("clicked")
 
     const response=await rejectRequest({reqId})
 
     if(response){
-      console.log(response)
+      toast.success(response.data, {
+        position:"top-center",
+      });
       state(true)
     }
 

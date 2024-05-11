@@ -1,9 +1,11 @@
+
+
 function Home() {
   return (
     <>
       <div className="h-80 bg-white flex justify-around">
         <div className="flex items-center ">
-          <img className="h-[250px]"  src="/public/logo/file.png" alt="" />
+          <img className="h-[250px]" src="/public/logo/file.png" alt="" />
         </div>
         <div className="flex items-center gap-3">
           <h1 className="text-2xl text-customColor1 font-bold">
@@ -14,7 +16,12 @@ function Home() {
           </button>
         </div>
       </div>
-     
+      <div className="flex items-center justify-center w-[100%]">
+        <div className="w-[80%] h-80 bg-[#bee4b1]  mb-20 rounded-xl flex">
+          
+    
+        </div>
+      </div>
     </>
   );
 }
