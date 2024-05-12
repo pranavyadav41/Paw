@@ -108,6 +108,18 @@ export const addServices = async (service: { service: Service }) => {
     return errorHandle(err);
   }
 };
+export const deleteService = async(serviceId:{serviceId:string})=>{
+  try {
+    const response = await Api.post(adminRoutes.deleteService,serviceId);
+    return response;
+    
+  } catch (error) {
+
+    const err:Error = error as Error;
+    return errorHandle(err)
+    
+  }
+}
 export const getServices = async () => {
   try {
     const response = await Api.get(adminRoutes.getServices);

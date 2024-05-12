@@ -50,8 +50,8 @@ function ResetPassword() {
   const submitPassword = async () => {
     const valid = validateForm();
     if (valid) {
-      const response: any = await resetPassword({ password }, { userId });
-      toast.success(response.data);
+      const response = await resetPassword({ password }, { userId });
+      toast.success(response?.data);
       navigate("/login");
     }
   };

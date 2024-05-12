@@ -10,10 +10,10 @@ const UserList: React.FC = () => {
   const handle = (data: boolean) => {
     setState(data);
   };
- 
+
   useEffect(() => {
-    getUsers().then((response: any) => {
-      setUsers(response.data.data);
+    getUsers().then((response) => {
+      setUsers(response?.data.data);
       setState(false);
     });
   }, [state]);

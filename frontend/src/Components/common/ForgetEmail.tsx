@@ -24,9 +24,9 @@ function ForgetEmail() {
   };
 
   const submitEmail = async () => {
-    const isValid: any = validateForm();
+    const isValid = validateForm();
     if (isValid) {
-      const response: any = await forgotPassword({ email });
+      const response= await forgotPassword({ email });
       if (response) {
         toast.success(response.data.message);
         navigate("/Otp", {

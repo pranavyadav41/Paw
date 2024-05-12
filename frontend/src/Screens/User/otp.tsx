@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 import { useLocation, useNavigate } from "react-router-dom";
-import { useSelector, useDispatch } from "react-redux";
+import {  useDispatch } from "react-redux";
 import { setCredentials } from "../../redux/slices/authSlice";
 import { otpVerify } from "../../api/user";
 import { resendOTP } from "../../api/user";
@@ -18,7 +18,7 @@ function otp() {
 
   const submitOtp = async () => {
     if (data !=='default value') {
-      const response: any = await otpVerify(
+      const response= await otpVerify(
         { otp: otp },
         { userId: data.userId }
       );
@@ -29,10 +29,10 @@ function otp() {
         });
       }
     } else {
-      const response: any = await otpVerify({ otp: otp }, { userId: "" });
+      const response = await otpVerify({ otp: otp }, { userId: "" });
 
-      localStorage.setItem("token", response.data.token);
-      dispatch(setCredentials(response.data.data));
+      localStorage.setItem("token", response?.data.token);
+      dispatch(setCredentials(response?.data.data));
       navigate("/home");
     }
   };
@@ -57,9 +57,8 @@ function otp() {
   const handleResendOtp = async () => {
     setShowResendButton(false);
     setTimerValue(60);
-    let response: any = await resendOTP();
+    let response:any= await resendOTP();
     if (response) {
-      console.log(response)
       toast.success(response.message);
     }
   };

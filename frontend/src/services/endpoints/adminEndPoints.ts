@@ -12,6 +12,7 @@ const adminRoutes={
     unBlockFranchise:'/admin/unBlockFranchise',
     addService:'/admin/addService',
     getServices:'/admin/getServices',
+    deleteService:'/admin/deleteService'
 }
 
 export default adminRoutes

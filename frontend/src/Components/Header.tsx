@@ -10,14 +10,20 @@ function Header() {
   let { userInfo } = useSelector((state: any) => state.auth);
   const [isDropdownOpen, setIsDropdownOpen] = useState(false);
   const [isHamburger, setIsHamburger] = useState(false);
-  const [userDropdown,setIsDropdown] = useState(false);
+  const [userDropdown, setIsDropdown] = useState(false);
   let navigate = useNavigate();
   let dispatch = useDispatch();
 
+  const activeStyle = {
+    color: "black",
+    fontWeight:600
+
+  };
+
   let handleLogout = () => {
     setIsDropdownOpen(false);
-    setIsDropdown(false)
-    setIsHamburger(false)
+    setIsDropdown(false);
+    setIsHamburger(false);
     localStorage.removeItem("token");
     dispatch(logout());
     toast.success("Logged out succesfully");
@@ -31,30 +37,31 @@ function Header() {
     setIsHamburger(!isHamburger);
   };
 
-  const dropDown=()=>{
-    setIsDropdown(!userDropdown)
-  }
+  const dropDown = () => {
+    setIsDropdown(!userDropdown);
+  };
 
   let redirect = () => {
     navigate("/login");
   };
 
   return (
-    <nav className="sticky top-0 z-10 block w-full max-w-full   px-4 py-2 text-white bg-customColor  rounded-none shadow-md h-max   backdrop-blur-2xl backdrop-saturate-200 lg:px-8 lg:py-4">
+    <nav className="sticky top-0 z-10 block w-full max-w-full   px-4 py-2 text-white bg-[#88e0d0]  rounded-none shadow-md h-max   backdrop-blur-2xl backdrop-saturate-200 lg:px-8 lg:py-4">
       <div className="flex items-center justify-between text-blue-gray-900">
-        <img className="h-[65px]" src="/public/logo/cut and PASTE.png" alt="" />
+        <img className="h-[70px]" src="/public/logo/newLogo.png" alt="" />
+
         <div className="flex items-center gap-4">
           <div className="hidden mr-4 lg:block">
             <ul className="flex flex-col gap-2 mt-2 mb-4 lg:mb-0 lg:mt-0 lg:flex-row lg:items-center lg:gap-6">
               <li className="block p-1 font-sans text-md antialiased font-normal leading-normal text-blue-gray-900">
-                <a href="#" className="flex items-center">
+                <NavLink to="/" className="flex items-center" style={({ isActive }) => (isActive ? activeStyle : undefined)}>
                   Home
-                </a>
+                </NavLink>
               </li>
               <li className="block p-1 font-sans text-md antialiased font-normal leading-normal text-blue-gray-900">
-                <a href="#" className="flex items-center">
+                <NavLink to="/services" className="flex items-center" style={({ isActive }) => (isActive ? activeStyle : undefined)}>
                   Services
-                </a>
+                </NavLink>
               </li>
               <li className="block p-1 font-sans text-md antialiased font-normal leading-normal text-blue-gray-900">
                 <a href="#" className="flex items-center">
@@ -62,7 +69,7 @@ function Header() {
                 </a>
               </li>
               <li className="block p-1 font-sans text-md antialiased font-normal leading-normal text-blue-gray-900">
-                <NavLink to="/franchise" className="flex items-center">
+                <NavLink to="/fran" className="flex items-center " style={({ isActive }) => (isActive ? activeStyle : undefined)}>
                   Franchise
                 </NavLink>
               </li>
@@ -81,7 +88,7 @@ function Header() {
                   <FaCaretDown />
                 </>
               ) : (
-                <span className="text-base">Login</span>
+                <span className="text-[14px] mt-1 text-gray-600">Login</span>
               )}
             </button>
             {isDropdownOpen && (
@@ -135,7 +142,9 @@ function Header() {
                   {userInfo ? (
                     <>
                       <FaUserAlt />
-                      <span className="text-white text-xs ">{userInfo.name}</span>
+                      <span className="text-white text-xs ">
+                        {userInfo.name}
+                      </span>
                       <FaCaretDown />
                     </>
                   ) : (
@@ -143,25 +152,24 @@ function Header() {
                   )}
                 </button>
               </div>
-             {userDropdown && (
-               <div className="absolute  right-0 mt-2 py-2 w-48 bg-gray-600 rounded-lg shadow-lg z-10">
-               <div>
-                 <a
-                   href="/profile"
-                   className="block px-4 py-2 text-white hover:bg-gray-800"
-                 >
-                   Profile
-                 </a>
-               </div>
-               <button
-                 className="block w-full px-4 py-2 text-left text-white hover:bg-gray-800"
-                 onClick={handleLogout}
-               >
-                 Logout
-               </button>
-             </div>
-             )}
-              
+              {userDropdown && (
+                <div className="absolute  right-0 mt-2 py-2 w-48 bg-gray-600 rounded-lg shadow-lg z-10">
+                  <div>
+                    <a
+                      href="/profile"
+                      className="block px-4 py-2 text-white hover:bg-gray-800"
+                    >
+                      Profile
+                    </a>
+                  </div>
+                  <button
+                    className="block w-full px-4 py-2 text-left text-white hover:bg-gray-800"
+                    onClick={handleLogout}
+                  >
+                    Logout
+                  </button>
+                </div>
+              )}
 
               <div>
                 <a

@@ -14,6 +14,19 @@ import {
   Button,
 } from "@chakra-ui/react";
 
+interface franchise {
+  _id:string
+  name: string;
+  email: string;
+  password: string;
+  phone: string;
+  district: string;
+  city: string;
+  pincode: string;
+  state: string;
+  isBlocked:boolean
+}
+
 const FranchiseList = () => {
   const [franchises, setFranchises] = useState([]);
   const [searchTerm, setSearchTerm] = useState("");
@@ -23,7 +36,7 @@ const FranchiseList = () => {
 
   const handle = (franchiseId: string) => {
     const data = franchises.find(
-      (franchise: any) => franchise._id == franchiseId
+      (franchise: franchise) => franchise._id == franchiseId
     );
     if (data) {
       openModal(data);
@@ -50,7 +63,7 @@ const FranchiseList = () => {
     }
   };
 
-  const openModal = (franchise: any) => {
+  const openModal = (franchise:franchise) => {
     setSelectedFranchise(franchise);
     setModalIsOpen(true);
   };
@@ -61,17 +74,17 @@ const FranchiseList = () => {
   };
 
   useEffect(() => {
-    getFranchises().then((response: any) => {
-      setFranchises(response.data);
+    getFranchises().then((response) => {
+      setFranchises(response?.data);
       setState(false);
-      const updatedFranchise = response.data.find(
-        (franchise: any) => franchise._id === selectedFranchise?._id
+      const updatedFranchise = response?.data.find(
+        (franchise:franchise) => franchise._id === selectedFranchise?._id
       );
       if (updatedFranchise) setSelectedFranchise(updatedFranchise);
     });
   }, [state]);
 
-  const filteredUsers = franchises.filter((franchise: any) =>
+  const filteredUsers = franchises.filter((franchise:franchise) =>
     `${franchise.name} ${franchise.city} ${franchise.district}`
       .toLowerCase()
       .includes(searchTerm.toLowerCase())

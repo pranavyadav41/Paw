@@ -11,8 +11,8 @@ const FranchiseReq = () => {
   };
 
   useEffect(() => {
-    getRequests().then((response: any) => {
-      setRequests(response.data);
+    getRequests().then((response) => {
+      setRequests(response?.data);
       setState(false);
     });
   }, [state]);
