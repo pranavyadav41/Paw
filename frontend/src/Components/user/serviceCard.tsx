@@ -21,7 +21,7 @@ interface ServiceCardProps {
 const ServiceCard: React.FC<ServiceCardProps> = ({ service}) => {
 
   return (
-    <div className="bg-[#bee4b1] rounded-lg shadow-md p-6 mb-2 mt-2 transition duration-300 flex flex-col">
+    <div className="bg-[#bee4b1] rounded-lg shadow-md p-6 mb-2 mt-2 transition duration-300 flex flex-col ">
       {/* Content */}
       <div className="flex-1 flex gap-1">
         <div className="mr-4 ">
@@ -47,7 +47,7 @@ const ServiceCard: React.FC<ServiceCardProps> = ({ service}) => {
       </div>
       <div className="flex flex-wrap gap-3 mt-3">
         {Object.entries(service.price).map(([size, price]) => (
-          <div key={size} className="w-28 h-10 bg-white flex justify-center items-center">
+          <div key={size} className="w-28 h-10 bg-white flex justify-center items-center rounded-[5px]">
             <p className="text-black text-sm">{size.charAt(0).toUpperCase() + size.slice(1)}-</p>
             <p className="text-black text-sm">&#8377;{price}</p>
           </div>

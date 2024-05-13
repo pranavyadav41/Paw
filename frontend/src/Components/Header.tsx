@@ -16,7 +16,7 @@ function Header() {
 
   const activeStyle = {
     color: "black",
-    fontWeight:600
+    fontWeight:500
 
   };
 
@@ -46,13 +46,13 @@ function Header() {
   };
 
   return (
-    <nav className="sticky top-0 z-10 block w-full max-w-full   px-4 py-2 text-white bg-[#88e0d0]  rounded-none shadow-md h-max   backdrop-blur-2xl backdrop-saturate-200 lg:px-8 lg:py-4">
+    <nav className="sticky top-0 z-10 block w-full max-w-full   px-4 py-2 text-white bg-[#86D2CD]  rounded-none shadow-md h-max   backdrop-blur-2xl backdrop-saturate-200 lg:px-8 lg:py-4">
       <div className="flex items-center justify-between text-blue-gray-900">
-        <img className="h-[70px]" src="/public/logo/newLogo.png" alt="" />
+        <img className="h-[40px]" src="/public/logo/logo-color.png" alt="" />
 
         <div className="flex items-center gap-4">
           <div className="hidden mr-4 lg:block">
-            <ul className="flex flex-col gap-2 mt-2 mb-4 lg:mb-0 lg:mt-0 lg:flex-row lg:items-center lg:gap-6">
+            <ul className="flex flex-col gap-2 mt-2 mb-4 lg:mb-0 lg:mt-0 lg:flex-row lg:items-center lg:gap-6 text-lg">
               <li className="block p-1 font-sans text-md antialiased font-normal leading-normal text-blue-gray-900">
                 <NavLink to="/" className="flex items-center" style={({ isActive }) => (isActive ? activeStyle : undefined)}>
                   Home
