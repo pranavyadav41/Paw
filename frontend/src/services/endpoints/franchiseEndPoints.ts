@@ -1,5 +1,6 @@
 const franchiseRoutes ={
 
-     franchiseRequest:'/franchise/register'
+     franchiseRequest:'/franchise/register',
+     franchiseLogin:'/franchise/login'
 }
 export default franchiseRoutes

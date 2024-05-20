@@ -8,7 +8,7 @@ const Header = () => {
   let dispatch = useDispatch();
 
   const logout = () => {
-    localStorage.removeItem("adminToken");
+    localStorage.removeItem("token");
     dispatch(adminLogout());
     toast.success("Logged out successfully");
   };

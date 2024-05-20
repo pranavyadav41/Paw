@@ -321,7 +321,7 @@ function RegisterPage() {
                     >
                       Already have an account?
                     </a>
-                    <Link className="ml-1 text-blue-700" to="/login">
+                    <Link className="ml-1 text-blue-700" to="/franchise/login">
                       Signin
                     </Link>
                   </div>

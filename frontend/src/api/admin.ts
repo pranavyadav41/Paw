@@ -13,6 +13,19 @@ interface Service {
   };
 }
 
+interface updateService {
+  _id:string,
+  category: string;
+  services: string[];
+  price: {
+    small: string;
+    medium: string;
+    large: string;
+    xLarge: string;
+  };
+
+}
+
 export const getUsers = async () => {
   try {
     const response = await Api.get(adminRoutes.getUserDetails);
@@ -61,9 +74,9 @@ export const approveRequest = async (reqId: { reqId: string }) => {
   }
 };
 
-export const rejectRequest = async (reqId: { reqId: string }) => {
+export const rejectRequest = async ({ reqId, reason }: { reqId: string, reason: string }) => {
   try {
-    const response = await Api.post(adminRoutes.rejectRequest, reqId);
+    const response = await Api.post(adminRoutes.rejectRequest,{ reqId, reason });
     return response;
   } catch (error) {
     const err: Error = error as Error;
@@ -120,6 +133,19 @@ export const deleteService = async(serviceId:{serviceId:string})=>{
     
   }
 }
+export const updateService = async(updatedService:{updatedService:updateService}) =>{
+  try {
+    const response = await Api.post(adminRoutes.editService,updatedService)
+    return response;
+    
+  } catch (error) {
+
+    const err:Error = error as Error;
+    return errorHandle(err)
+    
+  }
+
+};
 export const getServices = async () => {
   try {
     const response = await Api.get(adminRoutes.getServices);

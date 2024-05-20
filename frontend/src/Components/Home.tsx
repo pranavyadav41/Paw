@@ -3,7 +3,7 @@ import { NavLink } from "react-router-dom";
 function Home() {
   return (
     <>
-  <div className="bg-cover bg-center w-full h-[680px]" style={{ backgroundImage: "url('/public/logo/slide3-3.jpg')" }}>
+  <div className="bg-cover bg-center w-full h-[684px]" style={{ backgroundImage: "url('/public/logo/slide3-3.jpg')" }}>
     <div className="relative w-full h-full">
       <div className="absolute top-48 left-40 w-[600px]  flex flex-col  gap-3">
         <h1 className="text-white text-6xl">Every Pet Deserves</h1>

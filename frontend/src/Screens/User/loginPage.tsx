@@ -8,6 +8,7 @@ import { useSelector,useDispatch } from "react-redux"
 import {  useGoogleLogin } from '@react-oauth/google';
 import { setCredentials } from "../../redux/slices/authSlice";
 import { setAdminCredentials } from '../../redux/slices/adminSlice';
+import { RootState } from '../../redux/store';
 import axios from 'axios'
 import {login} from '../../api/user'
 
@@ -21,8 +22,8 @@ function loginPage() {
   const navigate=useNavigate()
   const dispatch = useDispatch()
 
-  let {userInfo} = useSelector((state:any)=>state.auth)
-  let {adminInfo} = useSelector((state:any)=>state.adminAuth)
+  let {userInfo} = useSelector((state:RootState)=>state.auth)
+  let {adminInfo} = useSelector((state:RootState)=>state.adminAuth)
 
 
   const [email,setEmail]=useState<string>('')
@@ -85,6 +86,7 @@ function loginPage() {
           dispatch(setAdminCredentials(response.data.message))
           navigate('/admin/dashboard')
         }else{
+          console.log(response)
           localStorage.setItem('token', response.data.token)
           dispatch(setCredentials(response.data.message))
           navigate('/home')
@@ -100,6 +102,8 @@ function loginPage() {
         const res = await axios.get(
           `https://www.googleapis.com/oauth2/v3/userinfo?access_token=${response.access_token}`
         );
+
+        console.log(res,"1")
   
         const data = {
           email: res.data.email,
@@ -107,14 +111,15 @@ function loginPage() {
         };
   
         const response2 = await login(data);
+        console.log(response2,"2")
         if (response2) {
           if(response2.data.isAdmin){
-            localStorage.setItem('adminToken',response2.data.token)
+            localStorage.setItem('token',response2.data.token)
             dispatch(setAdminCredentials(response2.data.message))
             navigate('/admin')
           }else{
-            localStorage.setItem('token', response2.data.data.token)
-            dispatch(setCredentials(response2.data.data.message))
+            localStorage.setItem('token', response2.data.token)
+            dispatch(setCredentials(response2.data.message))
             navigate("/home");
           }
           
@@ -226,7 +231,7 @@ function loginPage() {
                 <span className="px-2 bg-white text-gray-500">
                     Or
                   </span>
-                </div>
+                </div> 
               </div>
 
               <div className="mt-6 grid grid-cols-1 gap-3 ">
