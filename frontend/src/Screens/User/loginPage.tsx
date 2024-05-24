@@ -209,7 +209,7 @@ function loginPage() {
                   >
                     Forgot your password?
                   </Link>
-                </div>
+                </div> 
               </div>
 
               <div>

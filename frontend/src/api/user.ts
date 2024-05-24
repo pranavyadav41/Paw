@@ -13,6 +13,15 @@ interface loginData {
   password?: string;
 }
 
+interface address {
+  name: string;
+  houseName: string;
+  street: string;
+  city: string;
+  state: string;
+  pincode: string;
+}
+
 export const signup = async (userData: userFormData) => {
   try {
     const response = await Api.post(userRoutes.signup, userData);
@@ -58,23 +67,66 @@ export const forgotPassword = async (email: { email: string }) => {
     return errorHandle(err);
   }
 };
-export const resetPassword = async (password: { password: string },userId:{userId:string}) => {
+export const resetPassword = async (
+  password: { password: string },
+  userId: { userId: string }
+) => {
   try {
-    const response = await Api.post(userRoutes.userResetPassword,{...password,...userId});
+    const response = await Api.post(userRoutes.userResetPassword, {
+      ...password,
+      ...userId,
+    });
     return response;
   } catch (error) {
     const err: Error = error as Error;
     return errorHandle(err);
   }
 };
-export const resendOTP = async ()=>{
+export const resendOTP = async () => {
   try {
-    const response = await Api.post(userRoutes.resendOtp)
-    console.log(response)
-    
+    const response = await Api.post(userRoutes.resendOtp);
+    return response;
   } catch (error) {
     const err: Error = error as Error;
     return errorHandle(err);
-    
   }
-}
+};
+export const getService = async (id: string) => {
+  try {
+    const response = await Api.get(`${userRoutes.getService}/${id}`);
+    return response;
+  } catch (error) {
+    const err: Error = error as Error;
+    return errorHandle(err);
+  }
+};
+export const editProfile = async (
+  Id: string,
+  data: { name: string; email: string; phone: string }
+) => {
+  try {
+    const response = await Api.post(userRoutes.updateProfile, {
+      Id: Id,
+      data: data,
+    });
+    return response;
+  } catch (error) {
+    const err: Error = error as Error;
+    return errorHandle(err);
+  }
+};
+
+export const getProfile = async (Id: string) => {
+  try {
+    const response = await Api.post(userRoutes.getProfile, { Id: Id });
+    return response;
+  } catch (error) {
+    const err: Error = error as Error;
+    return errorHandle(err);
+  }
+};
+export const addAddress = async (Id:string,address:address) => {
+  
+};
+export const getAddressses = async () => {};
+export const deleteAddress = async () => {};

@@ -1,14 +1,14 @@
 import { useSelector, useDispatch } from "react-redux";
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
-import { logout } from "../redux/slices/authSlice";
+import { logout } from "../../redux/slices/franchiseSlice";
 import { FaUserAlt, FaCaretDown } from "react-icons/fa";
 import { NavLink } from "react-router-dom";
 import { toast } from "react-toastify";
-import { RootState } from "../redux/store";
+import { RootState } from "../../redux/store";
 
 function Header() {
-  let { userInfo } = useSelector((state: RootState) => state.auth);
+  let { franchiseInfo } = useSelector((state: RootState) => state.franchiseAuth);
   const [isDropdownOpen, setIsDropdownOpen] = useState(false);
   const [isHamburger, setIsHamburger] = useState(false);
   const [userDropdown, setIsDropdown] = useState(false);
@@ -41,12 +41,8 @@ function Header() {
     setIsDropdown(!userDropdown);
   };
 
-  let redirect = () => {
-    navigate("/login");
-  };
-
   return (
-    <nav className="sticky top-0 z-20 block w-full max-w-full   px-4 py-2 text-white bg-[#86D2CD]  rounded-none shadow-md h-max   backdrop-blur-2xl backdrop-saturate-200 lg:px-8 lg:py-4">
+    <nav className="sticky top-0 z-10 block w-full max-w-full   px-4 py-2 text-white bg-[#86D2CD]  rounded-none shadow-md h-max   backdrop-blur-2xl backdrop-saturate-200 lg:px-8 lg:py-4">
       <div className="flex items-center justify-between text-blue-gray-900">
         <img className="h-[40px]" src="/public/logo/logo-color.png" alt="" />
 
@@ -55,35 +51,30 @@ function Header() {
             <ul className="flex flex-col gap-2 mt-2 mb-4 lg:mb-0 lg:mt-0 lg:flex-row lg:items-center lg:gap-6 text-lg">
               <li className="block p-1 font-sans text-md antialiased font-normal leading-normal text-blue-gray-900">
                 <NavLink
-                  to="/"
+                  to="/franchise"
                   className="flex items-center"
                   style={({ isActive }) => (isActive ? activeStyle : undefined)}
                 >
-                  Home
+                  Dashboard
                 </NavLink>
               </li>
               <li className="block p-1 font-sans text-md antialiased font-normal leading-normal text-blue-gray-900">
                 <NavLink
-                  to="/services"
+                  to="#"
                   className="flex items-center"
                   style={({ isActive }) => (isActive ? activeStyle : undefined)}
                 >
-                  Services
+                  Bookings
                 </NavLink>
               </li>
               <li className="block p-1 font-sans text-md antialiased font-normal leading-normal text-blue-gray-900">
                 <NavLink
-                  to="/fran"
+                  to="#"
                   className="flex items-center "
                   style={({ isActive }) => (isActive ? activeStyle : undefined)}
                 >
-                  Franchise
+                  Chat
                 </NavLink>
-              </li>
-              <li className="block p-1 font-sans text-md antialiased font-normal leading-normal text-blue-gray-900">
-                <a href="#" className="flex items-center">
-                  Contact us
-                </a>
               </li>
             </ul>
           </div>
@@ -91,23 +82,19 @@ function Header() {
             <button
               className="flex items-center gap-2 px-4 py-2 font-sans lg:visible invisible text-xs font-bold text-gray-900 uppercase rounded-lg hover:bg-gray-900/10 active:bg-gray-900/20 disabled:pointer-events-none disabled:opacity-50 disabled:shadow-none"
               type="button"
-              onClick={userInfo ? toggleDropdown : redirect}
+              onClick={toggleDropdown}
             >
-              {userInfo ? (
-                <>
+             
                   <FaUserAlt />
-                  <span>{userInfo.name}</span>
+                  <span>{franchiseInfo.name}</span>
                   <FaCaretDown />
-                </>
-              ) : (
-                <span className="text-[14px] mt-1 text-gray-600">Login</span>
-              )}
+               
             </button>
             {isDropdownOpen && (
               <div className="absolute  right-0 mt-2 py-2 w-48 bg-gray-600 rounded-lg shadow-lg z-10">
                 <div>
                   <NavLink
-                    to="/profile"
+                    to="/franchise/profile"
                     className="block px-4 py-2 text-white hover:bg-gray-800"
                   >
                     Profile
@@ -149,26 +136,22 @@ function Header() {
                 <button
                   className="flex items-center gap-2 px-4 py-2 font-sans  text-xs font-bold text-gray-900 uppercase rounded-lg hover:bg-gray-900/10 active:bg-gray-900/20 disabled:pointer-events-none disabled:opacity-50 disabled:shadow-none"
                   type="button"
-                  onClick={userInfo ? dropDown : redirect}
+                  onClick={dropDown}
                 >
-                  {userInfo ? (
-                    <>
+                  
                       <FaUserAlt />
                       <span className="text-white text-xs ">
-                        {userInfo.name}
+                        {franchiseInfo.name}
                       </span>
                       <FaCaretDown />
-                    </>
-                  ) : (
-                    <span className="text-white text-xs">Login</span>
-                  )}
+                 
                 </button>
               </div>
               {userDropdown && (
                 <div className="absolute  right-0 mt-2 py-2 w-48 bg-gray-600 rounded-lg shadow-lg z-10">
                   <div>
                     <NavLink
-                      to="/profile"
+                      to="/franchise/profile"
                       className="block px-4 py-2 text-white hover:bg-gray-800"
                     >
                       Profile
@@ -188,15 +171,7 @@ function Header() {
                   href="/profile"
                   className="block px-4 py-2 text-white hover:bg-gray-800"
                 >
-                  Home
-                </a>
-              </div>
-              <div>
-                <a
-                  href="/profile"
-                  className="block px-4 py-2 text-white hover:bg-gray-800"
-                >
-                  Services
+                  Dashboard
                 </a>
               </div>
               <div>
@@ -212,7 +187,7 @@ function Header() {
                   href="/profile"
                   className="block px-4 py-2 text-white hover:bg-gray-800"
                 >
-                  Franchise
+                  Chat
                 </a>
               </div>
             </div>

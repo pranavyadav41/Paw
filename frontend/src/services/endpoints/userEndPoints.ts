@@ -7,7 +7,11 @@ const userRoutes={
     userLogin:'user/login',
     userForgotPass:'/user/verifyEmail',
     userResetPassword:'/user/resetPassword',
-    resendOtp:'/user/resendOtp'
+    resendOtp:'/user/resendOtp',
+    getService:'/user/service',
+    getProfile:'/user/getProfile',
+    updateProfile:'/user/editProfile',
+    addAddress:'/user/addAddress'
 }
 
-export default userRoutes
+export default userRoutes 

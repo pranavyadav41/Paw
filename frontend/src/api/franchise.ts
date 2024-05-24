@@ -39,6 +39,50 @@ export const franchiseLogin = async (franchiseData: loginData) => {
     return response;
   } catch (error) {
     const err: Error = error as Error;
+    return errorHandle(err); 
+  }
+};
+export const otpVerify = async (
+  otp: { otp: number },
+  userId: { userId: string }
+) => {
+  try {
+    const response = await Api.post(franchiseRoutes.franchiseOtpVerify, {
+      ...otp,
+      ...userId,
+    });
+    return response;
+  } catch (error) {
+    const err: Error = error as Error;
+    return errorHandle(err);
+  } 
+};
+export const forgotPassword = async (email: { email: string }) => {
+  try {
+    const response = await Api.post(franchiseRoutes.franchiseForgotPass, email);
+    return response;
+  } catch (error) {
+    const err: Error = error as Error;
     return errorHandle(err);
   }
 };
+export const resetPassword = async (password: { password: string },userId:{userId:string}) => {
+  try {
+    const response = await Api.post(franchiseRoutes.franchiseResetPassword,{...password,...userId});
+    return response;
+  } catch (error) {
+    const err: Error = error as Error;
+    return errorHandle(err);
+  }
+};
+export const resendOTP = async ()=>{
+  try {
+    const response = await Api.post(franchiseRoutes.resendOtp)
+    console.log(response)
+    
+  } catch (error) {
+    const err: Error = error as Error;
+    return errorHandle(err);
+    
+  }
+}

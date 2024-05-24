@@ -10,10 +10,10 @@ import { franchiseLogin } from "../../api/franchise";
 import { RootState } from "../../redux/store";
 
 interface Errors {
-  email?: string;
+  email?: string; 
   password?: string;
 }
-
+ 
 function loginPage() {
   const navigate = useNavigate();
   const dispatch = useDispatch();
@@ -160,7 +160,7 @@ function loginPage() {
               <div className="flex items-center justify-between">
                 <div className="text-sm">
                   <Link
-                    to="/verifyEmail"
+                    to="/franchise/verifyEmail"
                     className=" font-medium text-indigo-600 hover:text-indigo-500"
                   >
                     Forgot your password?

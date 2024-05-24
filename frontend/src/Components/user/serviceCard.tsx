@@ -1,8 +1,10 @@
 import React from 'react';
 import { CheckIcon } from '@chakra-ui/icons';
+import { Link } from 'react-router-dom';
 
 
 interface Service {
+  _id:string;
   category: string;
   services: string[];
   price: {
@@ -21,7 +23,7 @@ interface ServiceCardProps {
 const ServiceCard: React.FC<ServiceCardProps> = ({ service}) => {
 
   return (
-    <div className="bg-[#bee4b1] rounded-lg shadow-md p-6 mb-2 mt-2 transition duration-300 flex flex-col ">
+    <Link to={`/service/${service._id}`} className="bg-[#9ad1aa] rounded-lg shadow-md p-6 mb-2 mt-2 transition duration-300 flex flex-col ">
       {/* Content */}
       <div className="flex-1 flex gap-1">
         <div className="mr-4 ">
@@ -53,7 +55,7 @@ const ServiceCard: React.FC<ServiceCardProps> = ({ service}) => {
           </div>
         ))}
       </div>
-    </div>
+    </Link>
   );
 };
 

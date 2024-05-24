@@ -95,7 +95,6 @@ const Card4: React.FC<UserCardProps> = ({ service, state }) => {
     };
     const response = await updateService({updatedService});
     if (response) {
-      console.log(response)
       toast.success("Service updated successfully!", {
         position: "top-center",
       });

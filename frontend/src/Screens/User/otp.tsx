@@ -40,7 +40,7 @@ function otp() {
     let interval: NodeJS.Timeout | null = null;
 
     if (!resendButton && timerValue > 0) {
-      interval = setInterval(() => {
+      interval = setInterval(() => { 
         setTimerValue(timerValue - 1);
       }, 1000);
     } else if (timerValue === 0) {

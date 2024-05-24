@@ -43,7 +43,7 @@ function ResetPassword() {
       newErrors.confirmPassword = "Passwords do not match";
     }
 
-    setErrors(newErrors);
+    setErrors(newErrors); 
     return Object.keys(newErrors).length === 0;
   };
 
