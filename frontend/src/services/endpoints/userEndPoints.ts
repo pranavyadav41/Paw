@@ -1,3 +1,4 @@
+
 const userRoutes={
     
 
@@ -11,7 +12,9 @@ const userRoutes={
     getService:'/user/service',
     getProfile:'/user/getProfile',
     updateProfile:'/user/editProfile',
-    addAddress:'/user/addAddress'
+    addAddress:'/user/addAddress',
+    getAddress:'/user/getAddress',
+    changePassword:'/user/changePassword',
 }
 
 export default userRoutes 

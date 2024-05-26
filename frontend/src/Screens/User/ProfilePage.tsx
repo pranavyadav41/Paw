@@ -1,8 +1,9 @@
-import React, { useState, useEffect } from "react";
-import { FaUserCircle, FaMapMarkerAlt } from "react-icons/fa";
+import { useState, useEffect } from "react";
+import { FaUserCircle, FaMapMarkerAlt,FaLock} from "react-icons/fa";
 import Profile from "../../Components/user/Profile";
 import Addresses from "../../Components/user/Addresses";
-import { getProfile } from "../../api/user";
+import ChangePassword from "../../Components/user/ChangePassword";
+import { getProfile, getAddresses } from "../../api/user";
 import { RootState } from "../../redux/store";
 import { useSelector } from "react-redux";
 
@@ -11,94 +12,123 @@ interface ProfileState {
   name: string;
   email: string;
   phone: string;
-}
+} 
 
 const ProfilePage = () => {
   const [activeTab, setActiveTab] = useState("profile");
   const [addresses, setAddresses] = useState([]);
+  const [loadingProfile, setLoadingProfile] = useState(true);
+  const [loadingAddresses, setLoadingAddresses] = useState(true);
+  const [state, setState] = useState(false);
+  const [add, setAdd] = useState(false);
   const [profile, setProfile] = useState<ProfileState>({
     _id: "",
     name: "",
     email: "",
     phone: "",
   });
-  const [loading, setLoading] = useState(true);
-  const [state, setState] = useState(false);
 
-  const handleTabChange = (tab: any) => {
+  const handleTabChange = (tab: string) => {
     setActiveTab(tab);
   };
 
   const { userInfo } = useSelector((state: RootState) => state.auth);
 
   useEffect(() => {
-    setLoading(true);
+    setLoadingProfile(true);
     getProfile(userInfo._id)
       .then((response) => {
         setProfile(response?.data);
       })
       .finally(() => {
-        setLoading(false);
+        setLoadingProfile(false);
       });
-      setState(false)
+    setState(false);
   }, [state]);
+
+  useEffect(() => {
+    setLoadingAddresses(true);
+    getAddresses(userInfo._id)
+      .then((response) => {
+        setAddresses(response?.data);
+      })
+      .finally(() => {
+        setLoadingAddresses(false);
+      });
+    setAdd(false);
+  }, [add]);
 
   const handle = (data: boolean) => {
     setState(data);
   };
 
+  const handleAddAddress = (data: boolean) => {
+    setAdd(data);
+  };
+
   return (
-    <>
-      <div className="flex flex-col items-center justify-center min-h-screen w-full px-4 md:px-8">
+    <div className="flex flex-col md:flex-row justify-center items-start min-h-screen md:mt-16">
+      <div className="w-full max-w-screen-xl bg-[#9ad1aa] shadow-lg rounded-lg overflow-hidden md:grid md:grid-cols-4 min-h-[500px]">
         <div
-          className="absolute inset-0"
-          style={{
-            backgroundImage: "url('/public/logo/pawBackground.jpg')",
-            backgroundSize: "cover",
-            backgroundPosition: "center",
-            backgroundRepeat: "no-repeat",
-            opacity: 0.4,
-            zIndex: -1,
-          }}
+          className="absolute inset-0 bg-cover bg-center bg-no-repeat opacity-40 -z-10"
+          style={{ backgroundImage: "url('/public/logo/pawBackground.jpg')" }}
         ></div>
-        <div className="w-full md:w-[75%] bg-[#9ad1aa] max-w-screen-lg rounded-md h-auto shadow-xl p-4 md:p-8 md:mb-20">
-          <div className="flex mb-8 justify-center flex-wrap">
+        <div className="bg-[#60a0b0] text-white p-4 md:p-8 md:col-span-1">
+          <div className="flex flex-col gap-3">
             <button
-              className={`px-6 py-3 rounded-l-md w-full md:w-1/2 shadow-md ${
-                activeTab === "profile"
-                  ? "bg-[#60a0b0] text-white"
-                  : "bg-white text-green-900"
-              } flex items-center justify-center gap-2 transition-colors duration-300`}
+              className={`w-full flex items-center gap-3 p-4 rounded-md text-base transition-colors duration-300 ${
+                activeTab === "profile" ? "bg-[#48808b]" : ""
+              }`}
               onClick={() => handleTabChange("profile")}
             >
               <FaUserCircle className="text-lg" />
-              Profile
+              <span className="font-semibold text-sm md:text-base">Profile</span> 
             </button>
             <button
-              className={`px-6 py-3 rounded-r-md w-full md:w-1/2 shadow-md ${
-                activeTab === "manageAddress"
-                  ? "bg-[#60a0b0] text-white"
-                  : "bg-white text-green-900"
-              } flex items-center justify-center gap-2 transition-colors duration-300`}
+              className={`w-full flex items-center gap-3 p-4 rounded-md text-base transition-colors duration-300 ${
+                activeTab === "manageAddress" ? "bg-[#48808b]" : ""
+              }`}
               onClick={() => handleTabChange("manageAddress")}
             >
               <FaMapMarkerAlt className="text-lg" />
-              Manage Address
+              <span className="font-semibold text-sm md:text-base">Manage Address</span>
+            </button>
+            <button
+              className={`w-full flex items-center gap-3 p-4 rounded-md text-base transition-colors duration-300 ${
+                activeTab === "changePassword" ? "bg-[#48808b]" : ""
+              }`}
+              onClick={() => handleTabChange("changePassword")}
+            >
+              <FaLock className="text-md" />
+              <span className="font-semibold text-sm md:text-base">Change Password</span>
             </button>
           </div>
-          {loading ? ( 
-            <div>Loading...</div>
-          ) : (
-            <>
-              {activeTab === "profile" && (
-                <Profile profile={profile} state={handle} />
-              )}
-              {activeTab === "manageAddress" && <Addresses Id={profile._id} />}
-            </>
-          )}
+        </div>
+        <div className="p-4 md:p-8 md:col-span-3">
+          {loadingProfile ? (
+            <div className="text-center text-gray-500 text-sm md:text-lg">
+              Loading Profile...
+            </div>
+          ) : activeTab === "profile" ? (
+            <Profile profile={profile} state={handle} />
+          ) : null}
+          {loadingAddresses ? (
+            <div className="text-center text-gray-500 text-sm md:text-lg">
+              Loading Addresses...
+            </div>
+          ) : activeTab === "manageAddress" ? (
+            <Addresses
+              addresses={addresses}
+              Id={profile._id}
+              onAddAddress={handleAddAddress}
+            />
+          ) : null}
+          {activeTab === "changePassword" ? (
+            <ChangePassword Id={userInfo._i}  />
+          ) : null}
         </div>
       </div>
-    </>
+    </div>
   );
 };
 

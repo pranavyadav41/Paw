@@ -13,28 +13,19 @@ interface ProfileProps {
 }
 
 const Profile = ({ profile, state }: ProfileProps) => {
-
   const [name, setName] = useState(profile.name || "");
   const [email, setEmail] = useState(profile.email || "");
   const [phone, setPhone] = useState(profile.phone || "");
 
- 
-
-  const handleSubmit = async(e: React.FormEvent<HTMLFormElement>) => {
+  const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     const formData = { name, email, phone };
 
-    const response = await editProfile(profile._id,formData)
+    const response = await editProfile(profile._id, formData);
 
-    toast.success(response?.data.message,{position:"top-center"})
+    toast.success(response?.data.message, { position: "top-center" });
 
-    
-
-    state(true)
-
-
-    
-    
+    state(true);
   };
 
   return (
@@ -53,7 +44,7 @@ const Profile = ({ profile, state }: ProfileProps) => {
                 type="text"
                 id="name"
                 value={name}
-                onChange={(e)=>setName(e.target.value)}
+                onChange={(e) => setName(e.target.value)}
                 className="w-full px-3 py-2 rounded-md border border-gray-300 focus:outline-none focus:ring-2 focus:ring-green-500"
               />
             </div>
@@ -68,7 +59,7 @@ const Profile = ({ profile, state }: ProfileProps) => {
                 type="email"
                 id="email"
                 value={email}
-                onChange={(e)=>setEmail(e.target.value)}
+                onChange={(e) => setEmail(e.target.value)}
                 className="w-full px-3 py-2 rounded-md border border-gray-300 focus:outline-none focus:ring-2 focus:ring-green-500"
               />
             </div>
@@ -76,14 +67,14 @@ const Profile = ({ profile, state }: ProfileProps) => {
               <label
                 htmlFor="phone"
                 className="block font-medium mb-2 text-black text-sm md:text-base"
-              >
+              >  
                 Phone:
               </label>
               <input
                 type="tel"
                 id="phone"
                 value={phone}
-                onChange={(e)=>setPhone(e.target.value)}
+                onChange={(e) => setPhone(e.target.value)}
                 className="w-full px-3 py-2 rounded-md border border-gray-300 focus:outline-none focus:ring-2 focus:ring-green-500"
               />
             </div>

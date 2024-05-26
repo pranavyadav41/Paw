@@ -105,7 +105,7 @@ export const editProfile = async (
   data: { name: string; email: string; phone: string }
 ) => {
   try {
-    const response = await Api.post(userRoutes.updateProfile, {
+    const response = await Api.post(userRoutes.updateProfile, { 
       Id: Id,
       data: data,
     });
@@ -125,8 +125,39 @@ export const getProfile = async (Id: string) => {
     return errorHandle(err);
   }
 };
-export const addAddress = async (Id:string,address:address) => {
-  
+export const addAddress = async (Id: string, address: address) => {
+  try {
+    const response = await Api.post(userRoutes.addAddress, {
+      Id: Id,
+      address: address,
+    });
+    return response;
+  } catch (error) {
+    const err: Error = error as Error;
+    return errorHandle(err);
+  }
 };
-export const getAddressses = async () => {};
+export const getAddresses = async (Id: string) => {
+  try {
+    const response = await Api.post(userRoutes.getAddress, { Id: Id });
+
+    return response;
+  } catch (error) {
+    const err: Error = error as Error;
+    return errorHandle(err);
+  }
+};
 export const deleteAddress = async () => {};
+
+export const changePassword = async (Id: string, password: string) => {
+  try {
+    const response = await Api.post(userRoutes.changePassword, {
+      Id: Id,
+      password: password,
+    });
+    return response;
+  } catch (error) {
+    const err: Error = error as Error;
+    return errorHandle(err);
+  }
+};

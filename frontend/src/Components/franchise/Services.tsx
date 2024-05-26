@@ -36,7 +36,7 @@ const Services: React.FC<ServicesProps> = ({ services }) => {
 
   return (
     <div className="flex flex-col items-end">
-      <div className="bg-[#9ad1aa] w-full md:w-[800px] rounded-md relative p-4">
+      <div className="bg-[white] w-full md:w-[900px] rounded-md relative p-4 border-slate-400 h-[500px]">
         <button
           onClick={openModal}
           className="absolute top-4 right-4 bg-blue-400 hover:bg-blue-500 text-white px-5 py-1 rounded-md shadow-md flex items-center gap-2"
