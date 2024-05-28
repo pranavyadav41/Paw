@@ -7,10 +7,13 @@ interface franchiseFormData {
   email?: string;
   mobile?: string;
   password?: string;
+  area?: string;
   city?: string;
   district?: string;
   state?: string;
   pincode?: string;
+  longitude?: number;
+  latitude?: number;
 }
 
 interface loginData {
@@ -138,6 +141,71 @@ export const updatePassword = async (Id: string, password: string) => {
     const response = await Api.post(franchiseRoutes.updatePassword, {
       Id: Id,
       password: password,
+    });
+    return response;
+  } catch (error) {
+    const err: Error = error as Error;
+    return errorHandle(err);
+  }
+};
+export const addServices = async (
+  franchiseId: string,
+  service: { serviceId: string; serviceName: string },
+  time: { hours: number; minutes: number }
+) => {
+  try {
+    const response = await Api.post(franchiseRoutes.addService, {
+      franchiseId: franchiseId,
+      service: service,
+      time: time,
+    });
+    return response;
+  } catch (error) {
+    const err: Error = error as Error;
+    return errorHandle(err);
+  }
+};
+export const deleteService = async (franchiseId: string, serviceId: string) => {
+  try {
+    const response = await Api.post(franchiseRoutes.deleteService, {
+      franchiseId: franchiseId,
+      serviceId: serviceId,
+    });
+    return response;
+  } catch (error) {
+    const err: Error = error as Error;
+    return errorHandle(err);
+  }
+};
+export const setTime = async (
+  franchiseId: string,
+  openingTime: string,
+  closingTime: string
+) => {
+  try {
+    const response = await Api.post(franchiseRoutes.setTime, {
+      franchiseId: franchiseId,
+      openingTime: openingTime,
+      closingTime: closingTime,
+    });
+    return response;
+  } catch (error) {
+    const err: Error = error as Error;
+    return errorHandle(err);
+  }
+};
+export const editTime = async (
+  franchiseId: string,
+  serviceId: string,
+  hours: number,
+  minutes: number
+) => {
+  try {
+    const response = await Api.post(franchiseRoutes.editTime, {
+      franchiseId: franchiseId,
+      serviceId: serviceId,
+      hours: hours,
+      minutes: minutes,
     });
     return response;
   } catch (error) {

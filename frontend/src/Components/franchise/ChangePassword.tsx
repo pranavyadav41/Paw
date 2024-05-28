@@ -1,6 +1,7 @@
 import { useState } from "react";
 import { updatePassword } from "../../api/franchise";
 import { toast } from "react-toastify";
+import { FaEye, FaEyeSlash } from "react-icons/fa";
 
 interface ChangePassword {
   Id: string;
@@ -9,15 +10,50 @@ interface ChangePassword {
 const ChangePassword = ({ Id }: ChangePassword) => {
   const [password, setPassword] = useState("");
   const [confirmPassword, setConfirmPassword] = useState("");
+  const [showPassword, setShowPassword] = useState(false);
+  const [showConfirmPassword, setShowConfirmPassword] = useState(false);
+  const [errors, setErrors] = useState({
+    password: "",
+    confirmPassword: "",
+  });
+
+  const validate = () => {
+    let valid = true;
+    let errors = {
+      password: "",
+      confirmPassword: "",
+    };
+
+    if (password.length < 6) {
+      errors.password = "Password must be at least 6 characters";
+      valid = false;
+    }
+    if (password !== confirmPassword) {
+      errors.confirmPassword = "Passwords do not match";
+      valid = false;
+    }
+
+    setErrors(errors);
+    return valid;
+  };
 
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
 
-    updatePassword(Id, password).then((response) => {
+    if (!validate()) return;
+
+    try {
+      const response = await updatePassword(Id, password);
       toast.success(response?.data, { position: "top-center" });
-      setPassword("")
-      setConfirmPassword("")
-    });
+      setPassword("");
+      setConfirmPassword("");
+      setErrors({
+        password: "",
+        confirmPassword: "",
+      });
+    } catch (error) {
+      toast.error("Failed to update password", { position: "top-center" });
+    }
   };
 
   return (
@@ -27,18 +63,29 @@ const ChangePassword = ({ Id }: ChangePassword) => {
           <div className="grid grid-cols-1 gap-4">
             <div>
               <label
-                htmlFor="name"
+                htmlFor="password"
                 className="block mb-2 text-black text-sm md:text-base font-medium"
               >
                 New Password:
               </label>
-              <input
-                type="password"
-                id="password"
-                value={password}
-                onChange={(e) => setPassword(e.target.value)}
-                className="w-full px-3 py-2 rounded-md border border-gray-300 focus:outline-none focus:ring-2 focus:ring-green-500"
-              />
+              <div className="relative">
+                <input
+                  type={showPassword ? "text" : "password"}
+                  id="password"
+                  value={password}
+                  onChange={(e) => setPassword(e.target.value)}
+                  className="w-full px-3 py-2 rounded-md border border-gray-300 focus:outline-none focus:ring-2 focus:ring-green-500"
+                />
+                <span
+                  className="absolute right-3 top-3 cursor-pointer"
+                  onClick={() => setShowPassword(!showPassword)}
+                >
+                  {showPassword ? <FaEyeSlash /> : <FaEye />}
+                </span>
+              </div>
+              {errors.password && (
+                <p className="text-red-500 text-sm mt-1">{errors.password}</p>
+              )}
             </div>
             <div>
               <label
@@ -47,13 +94,26 @@ const ChangePassword = ({ Id }: ChangePassword) => {
               >
                 Confirm new Password:
               </label>
-              <input
-                type="password"
-                id="Confirm password"
-                value={confirmPassword}
-                onChange={(e) => setConfirmPassword(e.target.value)}
-                className="w-full px-3 py-2 rounded-md border border-gray-300 focus:outline-none focus:ring-2 focus:ring-green-500"
-              />
+              <div className="relative">
+                <input
+                  type={showConfirmPassword ? "text" : "password"}
+                  id="confirmPassword"
+                  value={confirmPassword}
+                  onChange={(e) => setConfirmPassword(e.target.value)}
+                  className="w-full px-3 py-2 rounded-md border border-gray-300 focus:outline-none focus:ring-2 focus:ring-green-500"
+                />
+                <span
+                  className="absolute right-3 top-3 cursor-pointer"
+                  onClick={() => setShowConfirmPassword(!showConfirmPassword)}
+                >
+                  {showConfirmPassword ? <FaEyeSlash /> : <FaEye />}
+                </span>
+              </div>
+              {errors.confirmPassword && (
+                <p className="text-red-500 text-sm mt-1">
+                  {errors.confirmPassword}
+                </p>
+              )}
             </div>
           </div>
           <button

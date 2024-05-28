@@ -9,7 +9,11 @@ const franchiseRoutes ={
      getProfile:'/franchise/getProfile',
      updateProfile:'/franchise/updateProfile',
      updateAddress:'/franchise/updateAddress',
-     updatePassword:'/franchise/updatePassword'
+     updatePassword:'/franchise/updatePassword',
+     addService:'/franchise/addService',
+     deleteService:'/franchise/deleteService',
+     setTime:'/franchise/setTime',
+     editTime:'franchise/editTime'
 
 }
 export default franchiseRoutes

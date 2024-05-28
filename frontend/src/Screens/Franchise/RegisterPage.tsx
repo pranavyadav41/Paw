@@ -1,11 +1,25 @@
-import React from "react";
-import { useState, FormEvent } from "react";
-import { IoEyeSharp } from "react-icons/io5";
-import { IoEyeOffSharp } from "react-icons/io5";
+import React, { useState, FormEvent } from "react";
+import { IoEyeSharp, IoEyeOffSharp } from "react-icons/io5";
 import { Link } from "react-router-dom";
 import { franchiseRegister } from "../../api/franchise";
 import { toast } from "react-toastify";
 import validator from "validator";
+import Modal from "react-modal";
+import { MdLocationOn } from "react-icons/md";
+import MyMap from "../../Components/common/mapBox"; // Adjust the import path as necessary
+
+Modal.setAppElement("#root"); // Ensure this is set for accessibility
+
+interface AddressData {
+  fullAddress: string;
+  area: string;
+  city: string;
+  state: string;
+  district: string;
+  postcode: string;
+  longitude: number;
+  latitude: number;
+}
 
 interface Errors {
   name?: string;
@@ -25,14 +39,18 @@ function RegisterPage() {
   const [phone, setPhone] = useState<string>("");
   const [password, setPassword] = useState<string>("");
   const [district, setDistrict] = useState<string>("");
+  const [area, setArea] = useState<string>("");
   const [city, setCity] = useState<string>("");
   const [state, setState] = useState<string>("");
   const [pincode, setPincode] = useState<string>("");
   const [confirmPassword, setConfirmPassword] = useState<string>("");
   const [showPassword, setShowPassword] = useState<boolean>(false);
-  const [showConfirmPassword, setShowConfirmPassword] =
-    useState<boolean>(false);
+  const [showConfirmPassword, setShowConfirmPassword] =useState<boolean>(false);
   const [errors, setErrors] = useState<Errors>({});
+  const [isModalOpen, setIsModalOpen] = useState<boolean>(false);
+  const [longitude,setLongitude] = useState(0)
+  const [latitude,setLatitude]=useState(0)
+  const [addressSelected, setAddressSelected] = useState<boolean>(false);
 
   const handlePasswordVisibility = () => {
     setShowPassword(!showPassword);
@@ -55,25 +73,28 @@ function RegisterPage() {
 
     if (!phone.trim()) {
       newErrors.phone = "Phone is required";
-    } else if (phone.length < 10 || phone.length > 10) {
-      newErrors.phone = "Phone number must contain 10 numbers";
+    } else if (phone.length !== 10) {
+      newErrors.phone = "Phone number must contain 10 digits";
     }
+
     if (!district.trim()) {
       newErrors.district = "District is required";
     }
+
     if (!city.trim()) {
-      newErrors.city = "City is requires";
+      newErrors.city = "City is required";
     }
+
     if (!state.trim()) {
       newErrors.state = "State is required";
     }
+
     if (!pincode.trim()) {
       newErrors.pincode = "Pincode is required";
-    } else if (pincode.length > 4) {
-      newErrors.state = "Pincode should only contain 4 digits";
-    } else if (pincode.length < 4) {
-      newErrors.pincode = "Pincode must contain 4 digits";
     }
+    // } else if (pincode.length !== 4) {
+    //   newErrors.pincode = "Pincode must contain 4 digits";
+    // }
 
     if (!password.trim()) {
       newErrors.password = "Password is required";
@@ -88,6 +109,7 @@ function RegisterPage() {
     setErrors(newErrors);
     return Object.keys(newErrors).length === 0;
   };
+
   const resetForm = () => {
     setName("");
     setEmail("");
@@ -114,26 +136,35 @@ function RegisterPage() {
           phone: phone,
           password: password,
           district: district,
+          area: area,
           city: city,
           state: state,
           pincode: pincode,
+          longitude: longitude,
+          latitude:latitude
         };
         resetForm();
+        setAddressSelected(false)
         const response = await franchiseRegister(userData);
-
-        if (response) {
-          toast.info(response.data.message, {
-            autoClose: 8000,
-            hideProgressBar: false,
-            closeOnClick: true,
-            pauseOnHover: true,
-            draggable: true,
-            progress: undefined,
-            theme: "colored",
-          });
+        if (response) { 
+          toast.success(response.data.message);
         }
       }
-    } catch (error) {}
+    } catch (error) {
+      toast.error("An error occurred. Please try again later.");
+    }
+  };
+
+  const handleAddressSelect = (address: AddressData) => {
+    setArea(address.area);
+    setCity(address.city);
+    setState(address.state);
+    setDistrict(address.district);
+    setPincode(address.postcode);
+    setLongitude(address.longitude);
+    setLatitude(address.latitude)
+    setIsModalOpen(false);
+    setAddressSelected(true);
   };
 
   return (
@@ -141,17 +172,17 @@ function RegisterPage() {
       <div className="flex flex-row w-full">
         <div className="hidden sm:block w-2/5 bg-white">
           <div
-            className=" h-full  bg-customColor "
+            className="h-full bg-customColor"
             style={{ clipPath: "polygon(0 0, 55% 0, 45% 100%, 0% 100%)" }}
           >
             <img
               className="h-48 ml-12"
               src="/public/logo/cut and PASTE.png"
-              alt=""
+              alt="Logo"
             />
           </div>
         </div>
-        <div className="min-h-screen  sm:bg-white bg-customColor flex flex-col justify-center items-center md:items-start py-12 sm:px-6 lg:px-8 w-full sm:w-3/5 font-sans">
+        <div className="min-h-screen sm:bg-white bg-customColor flex flex-col justify-center items-center md:items-start py-12 sm:px-6 lg:px-8 w-full sm:w-3/5">
           <h1
             className="hidden sm:block md:overflow-x-hidden ml-1"
             style={{ fontSize: "30px", fontWeight: "bold" }}
@@ -167,12 +198,12 @@ function RegisterPage() {
           >
             Create account
           </h1>
-          <div className="mt-8  sm:w-full sm:max-w-md">
+          <div className="mt-8 sm:w-full sm:max-w-md">
             <div
-              className="bg-white py-8  px-4  rounded-lg  sm:rounded-lg sm:px-10"
+              className="bg-white py-8 px-4 rounded-lg sm:rounded-lg sm:px-10"
               style={{ boxShadow: "rgba(0, 0, 0, 0.35) 0px 5px 15px" }}
             >
-              <form className="space-y-6 " onSubmit={submitHandler}>
+              <form className="space-y-6" onSubmit={submitHandler}>
                 <div className="mt-1">
                   <input
                     id="firstName"
@@ -203,69 +234,97 @@ function RegisterPage() {
                   <input
                     id="phone"
                     name="phone"
-                    type="mobile"
+                    type="tel"
                     value={phone}
                     onChange={(e) => setPhone(e.target.value)}
                     placeholder="Please enter your mobile"
-                    className=" bg-gray-100 appearance-none block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm placeholder-gray-400 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm"
+                    className="bg-gray-100 appearance-none block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm placeholder-gray-400 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm"
                   />
                   {errors && <p className="text-red-500">{errors.phone}</p>}
                 </div>
-                <div className="flex space-x-4 mt-1">
-                  <div className="w-1/2">
-                    <input
-                      id="area"
-                      name="area"
-                      type="text"
-                      value={city}
-                      onChange={(e) => setCity(e.target.value)}
-                      placeholder="City"
-                      className="bg-gray-100 appearance-none block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm placeholder-gray-400 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm"
-                    />
-                    {errors && <p className="text-red-500">{errors.city}</p>}
+
+                <div className="flex gap-12 ">
+                  <div
+                    className="flex  items-center text-blue-500 hover:cursor-pointer"
+                    onClick={() => setIsModalOpen(true)}
+                  >
+                    <MdLocationOn />
+                    <h1>Mark location</h1>
                   </div>
-                  <div className="w-1/2">
-                    <input
-                      id="city"
-                      name="city"
-                      type="text"
-                      value={district}
-                      onChange={(e) => setDistrict(e.target.value)}
-                      placeholder="District"
-                      className="bg-gray-100 appearance-none block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm placeholder-gray-400 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm"
-                    />
-                    {errors && (
-                      <p className="text-red-500">{errors.district}</p>
-                    )}
-                  </div>
+                  {addressSelected && (
+                    <div className="">
+                      <input
+                        id="Area"
+                        name="Area"
+                        type="text"
+                        value={`Area:${area}`}
+                        readOnly
+                        className="bg-gray-100 appearance-none block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm placeholder-gray-400 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm"
+                      />
+                    </div>
+                  )}
                 </div>
 
-                <div className="flex space-x-4 mt-1">
-                  <div className="w-1/2">
-                    <input
-                      id="state"
-                      name="state"
-                      type="text"
-                      value={state}
-                      onChange={(e) => setState(e.target.value)}
-                      placeholder="State"
-                      className="bg-gray-100 appearance-none block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm placeholder-gray-400 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm"
-                    />
-                    {errors && <p className="text-red-500">{errors.state}</p>}
-                  </div>
-                  <div className="w-1/2">
-                    <input
-                      id="pincode"
-                      name="pincode"
-                      type="text"
-                      value={pincode}
-                      onChange={(e) => setPincode(e.target.value)}
-                      placeholder="Pincode"
-                      className="bg-gray-100 appearance-none block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm placeholder-gray-400 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm"
-                    />
-                    {errors && <p className="text-red-500">{errors.pincode}</p>}
-                  </div>
-                </div>
+                {addressSelected && (
+                  <>
+                    <div className="flex space-x-4 mt-1">
+                      <div className="w-1/2">
+                        <input
+                          id="city"
+                          name="city"
+                          type="text"
+                          value={`City:${city}`}
+                          readOnly
+                          className="bg-gray-100 appearance-none block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm placeholder-gray-400 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm"
+                        />
+                        {errors && (
+                          <p className="text-red-500">{errors.city}</p>
+                        )}
+                      </div>
+                      <div className="w-1/2">
+                        <input
+                          id="district"
+                          name="district"
+                          type="text"
+                          value={`Dist:${district}`}
+                          readOnly
+                          className="bg-gray-100 appearance-none block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm placeholder-gray-400 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm"
+                        />
+                        {errors && (
+                          <p className="text-red-500">{errors.district}</p>
+                        )}
+                      </div>
+                    </div>
+                    <div className="flex space-x-4 mt-1">
+                      <div className="w-1/2">
+                        <input
+                          id="state"
+                          name="state"
+                          type="text"
+                          value={`State:${state}`}
+                          readOnly
+                          className="bg-gray-100 appearance-none block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm placeholder-gray-400 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm"
+                        />
+                        {errors && (
+                          <p className="text-red-500">{errors.state}</p>
+                        )}
+                      </div>
+                      <div className="w-1/2">
+                        <input
+                          id="pincode"
+                          name="pincode"
+                          type="text"
+                          value={`Pin:${pincode}`}
+                          readOnly
+                          className="bg-gray-100 appearance-none block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm placeholder-gray-400 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm"
+                        />
+                        {errors && (
+                          <p className="text-red-500">{errors.pincode}</p>
+                        )}
+                      </div>
+                    </div>
+                  </>
+                )}
 
                 <div className="mt-1 relative">
                   <input
@@ -274,72 +333,78 @@ function RegisterPage() {
                     type={showPassword ? "text" : "password"}
                     value={password}
                     onChange={(e) => setPassword(e.target.value)}
-                    placeholder="Please enter your Password"
+                    placeholder="Please enter your password"
                     className="bg-gray-100 appearance-none block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm placeholder-gray-400 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm"
                   />
-                  <div className="absolute inset-y-0 right-0 pr-3 flex items-center">
-                    <button
-                      type="button"
-                      onClick={handlePasswordVisibility}
-                      className="focus:outline-none"
-                    >
-                      {showPassword ? <IoEyeOffSharp /> : <IoEyeSharp />}
-                    </button>
+                  <div
+                    className="absolute inset-y-0 right-0 pr-3 flex items-center cursor-pointer"
+                    onClick={handlePasswordVisibility}
+                  >
+                    {showPassword ? <IoEyeOffSharp /> : <IoEyeSharp />}
                   </div>
                   {errors && <p className="text-red-500">{errors.password}</p>}
                 </div>
 
                 <div className="mt-1 relative">
                   <input
-                    id="cpassword"
-                    name="cpassword"
+                    id="confirmPassword"
+                    name="confirmPassword"
                     type={showConfirmPassword ? "text" : "password"}
                     value={confirmPassword}
                     onChange={(e) => setConfirmPassword(e.target.value)}
                     placeholder="Please confirm your password"
                     className="bg-gray-100 appearance-none block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm placeholder-gray-400 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm"
                   />
-                  <div className="absolute inset-y-0 right-0 pr-3 flex items-center">
-                    <button
-                      type="button"
-                      onClick={handleConfirmPasswordVisibility}
-                      className="focus:outline-none"
-                    >
-                      {showConfirmPassword ? <IoEyeOffSharp /> : <IoEyeSharp />}
-                    </button>
+                  <div
+                    className="absolute inset-y-0 right-0 pr-3 flex items-center cursor-pointer"
+                    onClick={handleConfirmPasswordVisibility}
+                  >
+                    {showConfirmPassword ? <IoEyeOffSharp /> : <IoEyeSharp />}
                   </div>
                   {errors && (
                     <p className="text-red-500">{errors.confirmPassword}</p>
                   )}
                 </div>
 
-                <div className="flex items-center justify-between">
-                  <div className="text-sm">
-                    <a
-                      href="#"
-                      className=" font-normal text-black hover:text-indigo-500"
-                    >
-                      Already have an account?
-                    </a>
-                    <Link className="ml-1 text-blue-700" to="/franchise/login">
-                      Signin
-                    </Link>
-                  </div>
-                </div>
-
                 <div>
                   <button
                     type="submit"
-                    className="w-full flex justify-center py-2 px-4 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-customColor hover:bg-teal-400"
+                    className="w-full flex justify-center py-2 px-4 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-black hover:bg-gray-800 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500"
                   >
-                    Sign up
+                    Apply
                   </button>
+                </div>
+
+                <div className="flex items-center justify-center">
+                  <div className="text-sm">
+                    Already have an account?
+                    <Link
+                      to="/login"
+                      className="ml-2 font-medium text-indigo-600 hover:text-indigo-500"
+                    >
+                      Sign in
+                    </Link>
+                  </div>
                 </div>
               </form>
             </div>
           </div>
         </div>
       </div>
+      <Modal
+        isOpen={isModalOpen}
+        onRequestClose={() => setIsModalOpen(false)}
+        contentLabel="Select Address"
+      >
+        <h2 className="mb-4 text-xl font-semibold">Select Address</h2>
+        <MyMap onAddressSelect={handleAddressSelect} />
+        <button
+          onClick={() => setIsModalOpen(false)}
+          className="px-4 py-2 mt-4 text-sm font-medium text-white bg-red-500 rounded-lg hover:bg-red-600"
+        >
+          Close
+        </button>
+      </Modal>
     </>
   );
 }

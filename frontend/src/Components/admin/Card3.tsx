@@ -20,8 +20,6 @@ interface UserCard3Props {
 const UserCard3:React.FC<UserCard3Props> = ({franchise,state}) => {
 
   const viewDetail =(franchiseId:string)=>{
-
-    console.log(franchiseId)
     state(franchiseId)
 
   } 

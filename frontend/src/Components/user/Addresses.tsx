@@ -1,8 +1,8 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { FaPlus } from "react-icons/fa";
 import Modal from "react-modal";
 import { toast } from "react-toastify";
-import { addAddress } from "../../api/user";
+import { addAddress, editAddress, deleteAddress } from "../../api/user";
 import { EditIcon, DeleteIcon } from "@chakra-ui/icons";
 
 interface AddressModalProps {
@@ -22,12 +22,23 @@ const AddressModal = ({
   address,
   isEdit = false,
 }: AddressModalProps) => {
-  const [name, setName] = useState(address?.name || "");
-  const [houseName, setHouseName] = useState(address?.houseName || "");
-  const [street, setStreet] = useState(address?.street || "");
-  const [city, setCity] = useState(address?.city || "");
-  const [state, setState] = useState(address?.state || "");
-  const [pincode, setPincode] = useState(address?.pincode || "");
+  const [name, setName] = useState("");
+  const [houseName, setHouseName] = useState("");
+  const [street, setStreet] = useState("");
+  const [city, setCity] = useState("");
+  const [state, setState] = useState("");
+  const [pincode, setPincode] = useState("");
+
+  useEffect(() => {
+    if (isOpen && address) {
+      setName(address?.name || "");
+      setHouseName(address?.houseName || "");
+      setStreet(address?.street || "");
+      setCity(address?.city || "");
+      setState(address?.state || "");
+      setPincode(address?.pincode || "");
+    }
+  }, [isOpen, address]);
 
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
@@ -41,8 +52,9 @@ const AddressModal = ({
     };
 
     if (isEdit && address) {
-      // const response = await updateAddress(Id, address._id, formData);
-      // toast.success(response?.data, { position: "top-center" });
+      const response = await editAddress(Id, address._id, formData);
+      toast.success(response?.data, { position: "top-center" });
+      onAddAddress(true);
     } else {
       const response = await addAddress(Id, formData);
       toast.success(response?.data, { position: "top-center" });
@@ -210,11 +222,32 @@ const Addresses = ({ addresses, Id, onAddAddress }: AddressesProps) => {
     setShowModal(true);
   };
 
+  const handleDeleteAddress = async (addressId: string) => {
+    const response = await deleteAddress(Id, addressId);
+
+    if (response) {
+      toast.success(response?.data, { position: "top-center" });
+    }
+    onAddAddress(true);
+  };
+
   return (
     <div className="bg-gray-100 rounded-lg p-6 relative h-[500px] overflow-y-auto">
-      <h2 className="mb-4 font-semibold text-xl text-gray-800 text-center">
-        Saved Addresses
-      </h2>
+      <div className="flex justify-between">
+        <h2 className="mb-4 font-normal md:font-semibold text-\ md:text-xl text-gray-800 text-center">
+          Saved Addresses
+        </h2>
+        <button
+          onClick={() => {
+            setEditAddress(null);
+            setShowModal(true);
+          }}
+          className="flex items-center md:p-1.5 justify-center  rounded-md bg-green-500 text-white hover:bg-green-600 focus:outline-none focus:ring-2 focus:ring-green-400 focus:ring-opacity-75 mb-3"
+        >
+          <FaPlus className="mr-1" />
+          Add Address
+        </button>
+      </div>
       {addresses.length === 0 ? (
         <div className="text-center text-gray-600">No addresses available.</div>
       ) : (
@@ -225,73 +258,40 @@ const Addresses = ({ addresses, Id, onAddAddress }: AddressesProps) => {
               className="bg-white p-6 rounded-lg shadow-md"
             >
               <div className="flex items-center mb-4">
-                <h3 className="font-semibold text-md text-gray-800 mr-2">
-                  Name:
+                <h3 className="font-semibold text-md text-gray-800 mr-4">
+                  {address.name}
                 </h3>
-                <p className="text-gray-600">{address.name}</p>
+                <button
+                  onClick={() => handleEditAddress(address)}
+                  className="text-gray-500 hover:text-gray-700 focus:outline-none"
+                >
+                  <EditIcon />
+                </button>
+                <button
+                  onClick={() => handleDeleteAddress(address._id)}
+                  className="text-red-500 hover:text-red-700 focus:outline-none ml-2"
+                >
+                  <DeleteIcon />
+                </button>
               </div>
-
-              <div className="flex items-center mb-4">
-                <h3 className="font-semibold text-md text-gray-800 mr-2">
-                  House Name:
-                </h3>
-                <p className="text-gray-600">{address.houseName}</p>
-              </div>
-
-              <div className="flex items-center mb-4">
-                <h3 className="font-semibold text-md text-gray-800 mr-2">
-                  Street:
-                </h3>
-                <p className="text-gray-600">{address.street}</p>
-              </div>
-
-              <div className="flex items-center mb-4">
-                <h3 className="font-semibold text-md text-gray-800 mr-2">
-                  City:
-                </h3>
-                <p className="text-gray-600">{address.city}</p>
-              </div>
-
-              <div className="flex items-center mb-4">
-                <h3 className="font-semibold text-md text-gray-800 mr-2">
-                  State:
-                </h3>
-                <p className="text-gray-600">{address.state}</p>
-              </div>
-
-              <div className="flex items-center mb-4">
-                <h3 className="font-semibold text-md text-gray-800 mr-2">
-                  Pincode:
-                </h3>
-                <p className="text-gray-600">{address.pincode}</p>
-              </div>
-
-              <div className="flex justify-end gap-2">
-                <EditIcon className="mr-1 "  />
-
-                <DeleteIcon className="mr-1" />
-              </div>
+              <p className="text-sm text-gray-600">
+                {address.houseName}, {address.street}
+              </p>
+              <p className="text-sm text-gray-600">
+                {address.city}, {address.state}
+              </p>
+              <p className="text-sm text-gray-600">{address.pincode}</p>
             </div>
           ))}
         </div>
       )}
-      <button
-        onClick={() => {
-          setEditAddress(null);
-          setShowModal(true);
-        }}
-        className="flex items-center justify-center p-2 rounded-md bg-green-500 text-white hover:bg-green-600 focus:outline-none focus:ring-2 focus:ring-green-400 focus:ring-opacity-75 absolute bottom-6 right-6"
-      >
-        <FaPlus className="mr-1" />
-        Add Address
-      </button>
       <AddressModal
         isOpen={showModal}
         onClose={() => setShowModal(false)}
         Id={Id}
         onAddAddress={onAddAddress}
         address={editAddress}
-        isEdit={!!editAddress}
+        isEdit={editAddress !== null}
       />
     </div>
   );

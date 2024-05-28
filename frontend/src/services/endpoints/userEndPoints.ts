@@ -14,6 +14,8 @@ const userRoutes={
     updateProfile:'/user/editProfile',
     addAddress:'/user/addAddress',
     getAddress:'/user/getAddress',
+    deleteAddress:'/user/deleteAddress',
+    editAddress:'/user/editAddress',
     changePassword:'/user/changePassword',
 }
 

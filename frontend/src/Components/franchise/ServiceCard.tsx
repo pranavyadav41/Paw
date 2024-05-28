@@ -15,13 +15,11 @@ interface Service {
 
 interface ServiceCardProps {
   service: Service;
-  imgIndex: number;
   onAddService: (service: Service, hours: number, minutes: number) => void;
 }
 
 const ServiceCard: React.FC<ServiceCardProps> = ({
   service,
-  imgIndex,
   onAddService,
 }) => {
   const [hours, setHours] = useState<number | ''>('');
@@ -34,6 +32,8 @@ const ServiceCard: React.FC<ServiceCardProps> = ({
     } else {
       setError('');
       onAddService(service, hours, minutes);
+      setHours("")
+      setMinutes("")
     }
   };
 

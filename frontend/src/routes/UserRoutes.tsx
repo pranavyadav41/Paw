@@ -11,6 +11,7 @@ import Services from "../Screens/User/Services";
 import ServiceDetail from "../Screens/User/ServiceDetail";
 import BookingService from "../Screens/User/BookingPage";
 import ProfilePage from "../Screens/User/ProfilePage";
+import MapBox from "../Components/common/mapBox"
 import Error404 from "../Screens/Error404";
 
 function UserRoutes() {
@@ -24,6 +25,7 @@ function UserRoutes() {
         <Route path="/service/:id" element={<ServiceDetail/>} />
         <Route path="/booking" element={<BookingService/>} />
         <Route path="/profile" element={<ProfilePage/>} />
+        <Route path="/map" element={<MapBox />}/>
       </Route>
 
       <Route path="login" element={<LoginPage />} />

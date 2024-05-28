@@ -8,14 +8,24 @@ import { getServices } from "../../api/admin";
 import { useSelector } from "react-redux";
 import { RootState } from "../../redux/store";
 
+interface Service {
+  serviceName: string;
+  serviceId: string;
+  timeToComplete: any;
+  _id: string;
+}
+
 const ProfilePage = () => {
-  const { franchiseInfo } = useSelector((state: RootState) => state.franchiseAuth);
+  const { franchiseInfo } = useSelector(
+    (state: RootState) => state.franchiseAuth
+  );
   const [services, setServices] = useState([]);
   const [profile, setProfile] = useState({
     _id: "",
     name: "",
     email: "",
     phone: "",
+    area: "",
     city: "",
     district: "",
     state: "",
@@ -25,13 +35,27 @@ const ProfilePage = () => {
   const [loadingServices, setLoadingServices] = useState(true);
   const [state, setState] = useState(false);
   const [activeTab, setActiveTab] = useState("profile");
+  const [openingTime, setOpeningTime] = useState("");
+  const [closingTime, setClosingTime] = useState("");
+  const [availableServices, setAvailableServices] = useState<Service[]>([]);
+
+  let available={
+    opening:openingTime,
+    closing:closingTime,
+    available:availableServices
+  }
 
   useEffect(() => {
     getProfile(franchiseInfo._id).then((response) => {
       setProfile(response?.data);
+      setOpeningTime(response?.data.openingTime);
+      setClosingTime(response?.data.closingTime);
+      setAvailableServices(response?.data.services);
+
       setLoadingProfile(false);
+      setState(false)
     });
-  }, [state, franchiseInfo._id]);
+  }, [state]);
 
   useEffect(() => {
     getServices().then((response) => {
@@ -50,7 +74,7 @@ const ProfilePage = () => {
 
   return (
     <div className="flex flex-col md:flex-row justify-center items-start min-h-screen md:mt-16 min-w-screen">
-      <div className="w-full max-w-screen-xl bg-[#9ad1aa] shadow-lg rounded-lg overflow-hidden md:grid md:grid-cols-4 min-h-[500px]">
+      <div className="w-full max-w-screen-xl bg-[#86D2CD] shadow-lg rounded-lg overflow-hidden md:grid md:grid-cols-4 min-h-[500px]">
         <div
           className="absolute inset-0 bg-cover bg-center bg-no-repeat opacity-40 -z-10"
           style={{ backgroundImage: "url('/public/logo/pawBackground.jpg')" }}
@@ -103,9 +127,13 @@ const ProfilePage = () => {
           {loadingServices ? (
             <div>Loading services...</div>
           ) : (
-            activeTab === "manageAddress" && <Services services={services} />
+            activeTab === "manageAddress" && (
+              <Services services={services} available={available} Id={profile._id} state={handleState}/>
+            )
           )}
-          {activeTab === "changePassword" && <ChangePassword Id={profile._id} />}
+          {activeTab === "changePassword" && (
+            <ChangePassword Id={profile._id} />
+          )}
         </div>
       </div>
     </div>

@@ -7,6 +7,7 @@ interface Franchise {
   name: string;
   phone: string;
   email: string;
+  area:string;
   district: string;
   city: string;
   state: string;
@@ -23,6 +24,7 @@ const Profile: React.FC<ProfileProps> = ({ profile, profileState }) => {
   const [name, setName] = useState(profile.name);
   const [email, setEmail] = useState(profile.email);
   const [phone, setPhone] = useState(profile.phone);
+  const [area,setArea] = useState(profile.area)
   const [city, setCity] = useState(profile.city);
   const [district, setDistrict] = useState(profile.district);
   const [state, setState] = useState(profile.state);
@@ -33,6 +35,7 @@ const Profile: React.FC<ProfileProps> = ({ profile, profileState }) => {
     setEmail(profile.email);
     setPhone(profile.phone);
     setCity(profile.city);
+    setArea(profile.area)
     setDistrict(profile.district);
     setState(profile.state);
     setPincode(profile.pincode);
@@ -117,7 +120,7 @@ const Profile: React.FC<ProfileProps> = ({ profile, profileState }) => {
                 <input
                   type="text"
                   id="address"
-                  value={`${city}, ${district}, ${state}, ${pincode}`}
+                  value={`${area},${city}, ${district}, ${state}, ${pincode}`}
                   className="w-full px-3 py-2 rounded-md border border-gray-300 focus:outline-none focus:ring-2 focus:ring-green-500"
                   readOnly
                 />

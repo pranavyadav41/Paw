@@ -8,6 +8,7 @@ interface Request {
   name: string;
   email: string;
   phone: string;
+  area:string;
   city: string;
   district: string;
   state: string;
@@ -38,7 +39,6 @@ const UserCard2: React.FC<UserCard2Props> = ({ state, request }) => {
     const response = await rejectRequest({ reqId,reason});
 
     if (response) {
-      console.log(response)
       toast.success(response.data.message, {
         position: "top-center",
       });
@@ -75,6 +75,10 @@ const UserCard2: React.FC<UserCard2Props> = ({ state, request }) => {
             <span className="text-gray-200">PHONE: </span>
             {request.phone}
           </p>
+          <h3 className="text-md font-medium text-white">
+            <span className="text-gray-200">AREA: </span>
+            {request.area}
+          </h3>
           <h3 className="text-md font-medium text-white">
             <span className="text-gray-200">CITY: </span>
             {request.city}
