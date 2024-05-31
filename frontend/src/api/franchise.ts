@@ -111,24 +111,14 @@ export const getProfile = async (Id: string) => {
 };
 export const updateProfile = async (
   Id: string,
-  data: { name: string; email: string; phone: string }
+  data: { name: string; email: string; phone: string },
+  address:{city:string,area:string,district:string,state:string,pincode:string,longitude:number,latitude:number}
 ) => {
   try {
     const response = await Api.post(franchiseRoutes.updateProfile, {
       Id: Id,
       data: data,
-    });
-    return response;
-  } catch (error) {
-    const err: Error = error as Error;
-    return errorHandle(err);
-  }
-};
-export const updateAddress = async (Id: string, address: address) => {
-  try {
-    const response = await Api.post(franchiseRoutes.updateAddress, {
-      Id: Id,
-      address: address,
+      address:address
     });
     return response;
   } catch (error) {

@@ -23,7 +23,7 @@ interface ServiceCardProps {
 const ServiceCard: React.FC<ServiceCardProps> = ({ service}) => {
 
   return (
-    <Link to={`/service/${service._id}`} className="bg-[#9ad1aa] rounded-lg shadow-md p-6 mb-2 mt-2 transition duration-300 flex flex-col ">
+    <Link to={`/service/${service._id}`} className="bg-[#9AD1AA] rounded-lg shadow-md p-6 mb-2 mt-2 transition duration-300 flex flex-col ">
       {/* Content */}
       <div className="flex-1 flex gap-1">
         <div className="mr-4 ">

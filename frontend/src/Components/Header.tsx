@@ -1,9 +1,8 @@
 import { useSelector, useDispatch } from "react-redux";
-import { useState } from "react";
-import { useNavigate } from "react-router-dom";
-import { logout } from "../redux/slices/authSlice";
+import { useState, useEffect } from "react";
+import { useNavigate, NavLink, useLocation } from "react-router-dom";
+import { userLogout } from "../redux/slices/authSlice";
 import { FaUserAlt, FaCaretDown } from "react-icons/fa";
-import { NavLink } from "react-router-dom";
 import { toast } from "react-toastify";
 import { RootState } from "../redux/store";
 
@@ -14,10 +13,20 @@ function Header() {
   const [userDropdown, setIsDropdown] = useState(false);
   let navigate = useNavigate();
   let dispatch = useDispatch();
+  const location = useLocation();
+
+  useEffect(() => {
+    setIsDropdownOpen(false);
+    setIsHamburger(false);
+    setIsDropdown(false);
+  }, [location]);
 
   const activeStyle = {
-    color: "black",
+    color: "#192955",
     fontWeight: 500,
+    borderBottom: "1px solid currentColor",
+    paddingBottom: "1px",
+    marginBottom: "0.625rem",
   };
 
   let handleLogout = () => {
@@ -25,8 +34,8 @@ function Header() {
     setIsDropdown(false);
     setIsHamburger(false);
     localStorage.removeItem("token");
-    dispatch(logout());
-    toast.success("Logged out succesfully");
+    dispatch(userLogout());
+    toast.success("Logged out successfully");
   };
 
   const toggleDropdown = () => {
@@ -46,7 +55,7 @@ function Header() {
   };
 
   return (
-    <nav className="sticky top-0 z-20 block w-full max-w-full   px-4 py-2 text-white bg-[#86D2CD]  rounded-none shadow-md h-max   backdrop-blur-2xl backdrop-saturate-200 lg:px-8 lg:py-4">
+    <nav className="sticky top-0 z-20 block w-full max-w-full px-4 py-2 text-white bg-[#86D2CD] rounded-none shadow-md h-max backdrop-blur-2xl backdrop-saturate-200 lg:px-8 lg:py-4">
       <div className="flex items-center justify-between text-blue-gray-900">
         <img className="h-[40px]" src="/public/logo/logo-color.png" alt="" />
 
@@ -104,15 +113,14 @@ function Header() {
               )}
             </button>
             {isDropdownOpen && (
-              <div className="absolute  right-0 mt-2 py-2 w-48 bg-gray-600 rounded-lg shadow-lg z-10">
-                <div>
-                  <NavLink
-                    to="/profile"
-                    className="block px-4 py-2 text-white hover:bg-gray-800"
-                  >
-                    Profile
-                  </NavLink>
-                </div>
+              <div className="absolute right-0 mt-2 py-2 w-48 bg-gray-600  shadow-lg z-10">
+                <NavLink
+                  to="/profile"
+                  className="block px-4 py-2 text-white hover:bg-gray-800"
+                  onClick={() => setIsDropdownOpen(false)}
+                >
+                  Profile
+                </NavLink>
                 <button
                   className="block w-full px-4 py-2 text-left text-white hover:bg-gray-800"
                   onClick={handleLogout}
@@ -144,10 +152,10 @@ function Header() {
             </span>
           </button>
           {isHamburger && (
-            <div className="absolute right-5 mt-60   py-2 w-48 bg-gray-600  shadow-lg z-10">
+            <div className="absolute right-5 mt-60 py-2 w-48 bg-gray-600 shadow-lg z-10">
               <div>
                 <button
-                  className="flex items-center gap-2 px-4 py-2 font-sans  text-xs font-bold text-gray-900 uppercase rounded-lg hover:bg-gray-900/10 active:bg-gray-900/20 disabled:pointer-events-none disabled:opacity-50 disabled:shadow-none"
+                  className="flex items-center gap-2 px-4 py-2 font-sans text-xs font-bold text-gray-900 uppercase rounded-lg hover:bg-gray-900/10 active:bg-gray-900/20 disabled:pointer-events-none disabled:opacity-50 disabled:shadow-none"
                   type="button"
                   onClick={userInfo ? dropDown : redirect}
                 >
@@ -165,15 +173,14 @@ function Header() {
                 </button>
               </div>
               {userDropdown && (
-                <div className="absolute  right-0 mt-2 py-2 w-48 bg-gray-600 rounded-lg shadow-lg z-10">
-                  <div>
-                    <NavLink
-                      to="/profile"
-                      className="block px-4 py-2 text-white hover:bg-gray-800"
-                    >
-                      Profile
-                    </NavLink>
-                  </div>
+                <div className="absolute right-0 mt-2 py-2 w-48 bg-gray-600 rounded-lg shadow-lg z-10">
+                  <NavLink
+                    to="/profile"
+                    className="block px-4 py-2 text-white hover:bg-gray-800"
+                    onClick={() => setIsDropdown(false)}
+                  >
+                    Profile
+                  </NavLink>
                   <button
                     className="block w-full px-4 py-2 text-left text-white hover:bg-gray-800"
                     onClick={handleLogout}
@@ -182,38 +189,41 @@ function Header() {
                   </button>
                 </div>
               )}
-
               <div>
-                <a
-                  href="/profile"
+                <NavLink
+                  to="/"
                   className="block px-4 py-2 text-white hover:bg-gray-800"
+                  onClick={() => setIsHamburger(false)}
                 >
                   Home
-                </a>
+                </NavLink>
               </div>
               <div>
-                <a
-                  href="/profile"
+                <NavLink
+                  to="/services"
                   className="block px-4 py-2 text-white hover:bg-gray-800"
+                  onClick={() => setIsHamburger(false)}
                 >
                   Services
-                </a>
+                </NavLink>
               </div>
               <div>
-                <a
-                  href="/profile"
+                <NavLink
+                  to="/bookings"
                   className="block px-4 py-2 text-white hover:bg-gray-800"
+                  onClick={() => setIsHamburger(false)}
                 >
                   Bookings
-                </a>
+                </NavLink>
               </div>
               <div>
-                <a
-                  href="/profile"
+                <NavLink
+                  to="/franchise"
                   className="block px-4 py-2 text-white hover:bg-gray-800"
+                  onClick={() => setIsHamburger(false)}
                 >
                   Franchise
-                </a>
+                </NavLink>
               </div>
             </div>
           )}

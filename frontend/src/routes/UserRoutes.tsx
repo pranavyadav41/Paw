@@ -1,40 +1,43 @@
+import { Suspense, lazy } from "react";
 import { Routes, Route } from "react-router-dom";
-import LoginPage from "../Screens/User/loginPage";
-import SignupPage from "../Screens/User/signupPage";
-import Otp from "../Screens/User/otp";
 import UserLayout from "../layout/userLayout/userLayout";
-import Home from "../Components/Home";
-import ForgetEmail from "../Components/common/ForgetEmail";
-import ResetPassword from "../Components/common/ResetPassword";
-import FranchisePage from "../Screens/User/FrachisePage";
-import Services from "../Screens/User/Services";
-import ServiceDetail from "../Screens/User/ServiceDetail";
-import BookingService from "../Screens/User/BookingPage";
-import ProfilePage from "../Screens/User/ProfilePage";
-import MapBox from "../Components/common/mapBox"
+import LoadingSpinner from "../Components/common/loadingSpinner";
 import Error404 from "../Screens/Error404";
+
+const LoginPage = lazy(() => import("../Screens/User/loginPage"));
+const SignupPage = lazy(() => import("../Screens/User/signupPage"));
+const Otp = lazy(() => import("../Screens/User/otp"));
+const Home = lazy(() => import("../Components/Home"));
+const ForgetEmail = lazy(() => import("../Components/common/ForgetEmail"));
+const ResetPassword = lazy(() => import("../Components/common/ResetPassword"));
+const FranchisePage = lazy(() => import("../Screens/User/FrachisePage"));
+const Services = lazy(() => import("../Screens/User/Services"));
+const ServiceDetail = lazy(() => import("../Screens/User/ServiceDetail"));
+const BookingService = lazy(() => import("../Screens/User/BookingPage"));
+const ProfilePage = lazy(() => import("../Screens/User/ProfilePage"));
 
 function UserRoutes() {
   return (
-    <Routes>
-      <Route element={<UserLayout />}>
-        <Route index element={<Home />} />
-        <Route path="/home" element={<Home />} /> 
-        <Route path="/fran" element={<FranchisePage />} />
-        <Route path="/services" element={<Services />} />
-        <Route path="/service/:id" element={<ServiceDetail/>} />
-        <Route path="/booking" element={<BookingService/>} />
-        <Route path="/profile" element={<ProfilePage/>} />
-        <Route path="/map" element={<MapBox />}/>
-      </Route>
+    <Suspense fallback={<LoadingSpinner/>}>
+      <Routes>
+        <Route element={<UserLayout />}>
+          <Route index element={<Home />} />
+          <Route path="/home" element={<Home />} /> 
+          <Route path="/fran" element={<FranchisePage />} />
+          <Route path="/services" element={<Services />} />
+          <Route path="/service/:id" element={<ServiceDetail/>} />
+          <Route path="/booking" element={<BookingService/>} />
+          <Route path="/profile" element={<ProfilePage/>} />
+        </Route>
 
-      <Route path="login" element={<LoginPage />} />
-      <Route path="register" element={<SignupPage />} />
-      <Route path="Otp" element={<Otp />} />
-      <Route path="verifyEmail" element={<ForgetEmail />} />
-      <Route path="resetPassword" element={<ResetPassword />} />
-      <Route path="*" element={<Error404 />} />
-    </Routes>
+        <Route path="login" element={<LoginPage />} />
+        <Route path="register" element={<SignupPage />} />
+        <Route path="Otp" element={<Otp />} />
+        <Route path="verifyEmail" element={<ForgetEmail />} />
+        <Route path="resetPassword" element={<ResetPassword />} />
+        <Route path="*" element={<Error404 />} />
+      </Routes>
+    </Suspense>
   );
 }
 

@@ -8,28 +8,24 @@ const Api = axios.create({
   withCredentials: true,
 });
 
-const token = localStorage.getItem("token");
-
 Api.interceptors.response.use(
   (response) => response,
-
   (error) => {
     if (error.response) {
-      const err: Error = error as Error;
-      return errorHandle(err);
+      return errorHandle(error);
     } else {
       console.log("axios error:", error);
     }
-
     return Promise.reject(error);
   }
 );
 
 Api.interceptors.request.use(
   (config) => {
-    config.withCredentials=true
-    config.headers.Authorization = `Bearer ${token}`;
-
+    const token = localStorage.getItem("token");
+    if (token) {
+      config.headers.Authorization = `Bearer ${token}`;
+    }
     return config;
   },
   (error) => {

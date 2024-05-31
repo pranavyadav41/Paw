@@ -1,5 +1,4 @@
 import { FaSignOutAlt } from "react-icons/fa";
-import { FaPaw } from "react-icons/fa";
 import { useDispatch } from "react-redux";
 import { toast } from "react-toastify";
 import { adminLogout } from "../../redux/slices/adminSlice";

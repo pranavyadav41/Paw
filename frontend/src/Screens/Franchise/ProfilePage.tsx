@@ -74,7 +74,7 @@ const ProfilePage = () => {
 
   return (
     <div className="flex flex-col md:flex-row justify-center items-start min-h-screen md:mt-16 min-w-screen">
-      <div className="w-full max-w-screen-xl bg-[#86D2CD] shadow-lg rounded-lg overflow-hidden md:grid md:grid-cols-4 min-h-[500px]">
+      <div className="w-full max-w-screen-xl bg-[#60A0B0] shadow-lg rounded-lg overflow-hidden md:grid md:grid-cols-4 min-h-[500px]">
         <div
           className="absolute inset-0 bg-cover bg-center bg-no-repeat opacity-40 -z-10"
           style={{ backgroundImage: "url('/public/logo/pawBackground.jpg')" }}

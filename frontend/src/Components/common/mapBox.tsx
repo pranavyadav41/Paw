@@ -1,11 +1,10 @@
 import { useState, useEffect } from "react";
-import Map, { Marker, ViewState } from "react-map-gl";
+import Map, { Marker, MapLayerMouseEvent } from "react-map-gl";
 import "mapbox-gl/dist/mapbox-gl.css";
-import { AnyIfEmpty } from "react-redux";
 
-interface AddressData {
+export interface AddressData {
   fullAddress: string;
-  area:string,
+  area: string;
   city: string;
   state: string;
   district: string;
@@ -18,17 +17,17 @@ interface MapProps {
   onAddressSelect: (address: AddressData) => void;
 }
 
-function MyMap({ onAddressSelect }: MapProps) {
-  const [viewport, setViewport] = useState<any>({
+const MyMap: React.FC<MapProps> = ({ onAddressSelect }) => {
+  const [viewport, setViewport] = useState({
     latitude: 0,
     longitude: 0,
     zoom: 3.5,
   });
   const [loading, setLoading] = useState(true);
-  const [userLocation, setUserLocation] = useState<any>(null);
+  const [userLocation, setUserLocation] = useState<{ longitude: number; latitude: number } | null>(null);
   const [userAddress, setUserAddress] = useState<AddressData>({
     fullAddress: "",
-    area:"",
+    area: "",
     city: "",
     state: "",
     district: "",
@@ -40,11 +39,14 @@ function MyMap({ onAddressSelect }: MapProps) {
   useEffect(() => {
     navigator.geolocation.getCurrentPosition(
       (pos) => {
-        setViewport((prevViewport: any) => ({
+        const { latitude, longitude } = pos.coords;
+        setViewport((prevViewport) => ({
           ...prevViewport,
-          latitude: pos.coords.latitude,
-          longitude: pos.coords.longitude,
+          latitude,
+          longitude,
+          zoom: 14,
         }));
+        setUserLocation({ latitude, longitude });
         setLoading(false);
       },
       (err) => {
@@ -54,51 +56,47 @@ function MyMap({ onAddressSelect }: MapProps) {
     );
   }, []);
 
-  const handleMapClick = (event: any) => {
+  const handleMapClick = (event: MapLayerMouseEvent) => {
     const { lngLat } = event;
+    const longitude = lngLat.lng;
+    const latitude = lngLat.lat;
+
     setUserLocation({
-      latitude: lngLat.lat,
-      longitude: lngLat.lng,
-      zoom: viewport.zoom,
+      latitude,
+      longitude,
     });
-    getAddress(lngLat.lng, lngLat.lat);
+
+    getAddress(longitude, latitude);
   };
 
   const getAddress = async (lng: number, lat: number) => {
-    const response = await fetch(
-      `https://api.mapbox.com/geocoding/v5/mapbox.places/${lng},${lat}.json?access_token=pk.eyJ1IjoiYWtwcmFuYXZ5YWRhdiIsImEiOiJjbHdvZ2l0bHMwbDZ4MnFsYmRpejd4ZHpjIn0.SKiqLTKi43cqyMe7j0Re6A`
-    );
-    const data = await response.json();
-    if (data.features.length > 0) {
-      const place = data.features[0];
-      console.log(place,"place")
-      const address = place.place_name;
-      const area=
-      place.context.find((context: any) => context.id.includes("locality"))
-          ?.text || "";
-      const city =
-        place.context.find((context: any) => context.id.includes("place"))
-          ?.text || "";
-      const state =
-        place.context.find((context: any) => context.id.includes("region"))
-          ?.text || "";
-      const district =
-        place.context.find((context: any) => context.id.includes("district"))
-          ?.text || "";
-      const postcode =
-        place.context.find((context: any) => context.id.includes("postcode"))
-          ?.text || "";
+    try {
+      const response = await fetch(
+        `https://api.mapbox.com/geocoding/v5/mapbox.places/${lng},${lat}.json?access_token=YOUR_MAPBOX_ACCESS_TOKEN`
+      );
+      const data = await response.json();
+      if (data.features.length > 0) {
+        const place = data.features[0];
+        const address = place.place_name;
+        const area = place.context?.find((context: any) => context.id.includes("locality"))?.text ?? "";
+        const city = place.context?.find((context: any) => context.id.includes("place"))?.text ?? "";
+        const state = place.context?.find((context: any) => context.id.includes("region"))?.text ?? "";
+        const district = place.context?.find((context: any) => context.id.includes("district"))?.text ?? "";
+        const postcode = place.context?.find((context: any) => context.id.includes("postcode"))?.text ?? "";
 
-          setUserAddress({ 
-            fullAddress: address,
-            area, 
-            city, 
-            state, 
-            district, 
-            postcode,
-            longitude: lng,
-            latitude: lat
-          });
+        setUserAddress({
+          fullAddress: address,
+          area,
+          city,
+          state,
+          district,
+          postcode,
+          longitude: lng,
+          latitude: lat,
+        });
+      }
+    } catch (error) {
+      console.error("Failed to fetch address data:", error);
     }
   };
 
@@ -112,39 +110,32 @@ function MyMap({ onAddressSelect }: MapProps) {
         <p>Loading...</p>
       ) : (
         <>
-        <div className="flex gap-3 items-center">
-        <h1>
-            <span className="font-semibold">Your Location:</span> {userAddress.fullAddress || "Current Location"}
-          </h1>
-           {userAddress.fullAddress && ( 
-          <button
-              onClick={handleDoneClick}
-              style={{
-                padding: "2px 16px",
-                backgroundColor: "black",
-                color: "white",
-                border: "none",
-                borderRadius: "4px",
-                cursor: "pointer",
-                marginBottom:"5px"
-              }}
-            >
-              Save
-            </button>
-           )}
+          <div className="flex flex-col items-start gap-2 p-4 bg-white shadow-md rounded-md">
+            <h2 className="text-lg font-semibold">Your Location:</h2>
+            {userAddress.fullAddress ? (
+              <>
+                <p>{userAddress.area}</p>
+                <p>{userAddress.city}, {userAddress.district}</p>
+                <p>{userAddress.state}, {userAddress.postcode}</p>
+                <button
+                  onClick={handleDoneClick}
+                  className="px-4 py-1 bg-black text-white rounded-md"
+                >
+                  Save
+                </button>
+              </>
+            ) : (
+              <p>Select a location on the map</p>
+            )}
+          </div>
 
-        </div>
-          
           <Map
             mapboxAccessToken="pk.eyJ1IjoiYWtwcmFuYXZ5YWRhdiIsImEiOiJjbHdvZ2l0bHMwbDZ4MnFsYmRpejd4ZHpjIn0.SKiqLTKi43cqyMe7j0Re6A"
             initialViewState={viewport}
             mapStyle="mapbox://styles/mapbox/streets-v11"
             onClick={handleMapClick}
+            onMove={(event) => setViewport(event.viewState)}
           >
-            <Marker
-              longitude={viewport.longitude}
-              latitude={viewport.latitude}
-            />
             {userLocation && (
               <Marker
                 longitude={userLocation.longitude}
@@ -152,7 +143,6 @@ function MyMap({ onAddressSelect }: MapProps) {
               />
             )}
           </Map>
-          
         </>
       )}
     </div>

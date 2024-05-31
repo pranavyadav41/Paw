@@ -24,12 +24,17 @@ const Services = () => {
           backgroundSize: 'cover',
           backgroundPosition: 'center',
           backgroundRepeat: 'no-repeat',
-          opacity: 0.4,
+          opacity: 0.5,
           zIndex: -1,
         }}
       ></div>
-      <div className="mt-5 z-10">
-        <h1 className="text-2xl font-semibold">Inclusions and Pricelist</h1>
+      <div className="mt-5 z-10 flex items-center">
+        <h1 className="text-3xl text-[#3968B6] font-semibold">Inclusions & Pricelist</h1>
+        <img
+                  className="opacity-50"
+                  src="/public/logo/Homepage/WFF.png"
+                  alt=""
+                />
       </div>
       <div className="w-[83%] h-full bg-transparent grid grid-cols-2 gap-3 p-5 z-10">
         {services.map((service, index) => (

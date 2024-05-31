@@ -1,4 +1,4 @@
-import { AxiosError } from "axios";
+import axios, { AxiosError } from "axios";
 import { toast } from 'react-toastify';
 
 interface iErrorResponse {
@@ -6,6 +6,7 @@ interface iErrorResponse {
 }
 const errorHandle = (error: Error | AxiosError) => {
   const axiosError = error as AxiosError;
+
 
   if (axiosError.response?.data) {
     const errorResponse = axiosError.response.data as iErrorResponse;

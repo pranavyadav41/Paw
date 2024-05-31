@@ -1,28 +1,34 @@
+import { Suspense, lazy } from "react";
 import { Routes, Route } from "react-router-dom";
-import RegisterPage from "../Screens/Franchise/RegisterPage";
-import FranchiseLayout from "../layout/franchiseLayout/franchiseLayout";
-import LoginPage from "../Screens/Franchise/LoginPage";
-import FranchiseProtected from "../protected/FranchiseProtected";
-import ForgetEmail from "../Screens/Franchise/ForgotEmail";
-import ResetPassword from "../Screens/Franchise/ResetPassword";
-import ProfilePage from "../Screens/Franchise/ProfilePage";
-import Otp from "../Screens/Franchise/OtpPage";
+import LoadingSpinner from "../Components/common/loadingSpinner";
 
-function franchiseRoutes() {
+// Lazy load components
+const RegisterPage = lazy(() => import("../Screens/Franchise/RegisterPage"));
+const FranchiseLayout = lazy(() => import("../layout/franchiseLayout/franchiseLayout"));
+const LoginPage = lazy(() => import("../Screens/Franchise/LoginPage"));
+const FranchiseProtected = lazy(() => import("../protected/FranchiseProtected"));
+const ForgetEmail = lazy(() => import("../Screens/Franchise/ForgotEmail"));
+const ResetPassword = lazy(() => import("../Screens/Franchise/ResetPassword"));
+const ProfilePage = lazy(() => import("../Screens/Franchise/ProfilePage"));
+const Otp = lazy(() => import("../Screens/Franchise/OtpPage"));
+
+function FranchiseRoutes() {
   return (
-    <Routes>
-      <Route path="/register" element={<RegisterPage />} />
-      <Route path="/login" element={<LoginPage />} />
-      <Route path="/otp" element={<Otp />} />
-      <Route path="/verifyEmail" element={<ForgetEmail/>} />
-      <Route path="/resetPassword" element={<ResetPassword/>} />
-      <Route element={<FranchiseProtected />}>
-        <Route path="/" element={<FranchiseLayout />}>
-          <Route path="/profile" element={<ProfilePage/>}/>
+    <Suspense fallback={<LoadingSpinner />}>
+      <Routes>
+        <Route path="/register" element={<RegisterPage />} />
+        <Route path="/login" element={<LoginPage />} />
+        <Route path="/otp" element={<Otp />} />
+        <Route path="/verifyEmail" element={<ForgetEmail />} />
+        <Route path="/resetPassword" element={<ResetPassword />} />
+        <Route element={<FranchiseProtected />}>
+          <Route path="/" element={<FranchiseLayout />}>
+            <Route path="/profile" element={<ProfilePage />} />
+          </Route>
         </Route>
-      </Route>
-    </Routes>
+      </Routes>
+    </Suspense>
   );
 }
 
-export default franchiseRoutes; 
+export default FranchiseRoutes;

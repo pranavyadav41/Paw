@@ -3,7 +3,12 @@ import { AddIcon, EditIcon, DeleteIcon } from "@chakra-ui/icons";
 import Modal from "react-modal";
 import { Button } from "@chakra-ui/react";
 import ServiceCard from "../franchise/ServiceCard";
-import { addServices, deleteService, setTime ,editTime} from "../../api/franchise";
+import {
+  addServices,
+  deleteService,
+  setTime,
+  editTime,
+} from "../../api/franchise";
 import { toast } from "react-toastify";
 
 interface TimeToComplete {
@@ -124,7 +129,7 @@ const Services: React.FC<ServicesProps> = ({
     state(true);
   };
 
-  const handleUpdateServiceTime = async (serviceId:string) => {
+  const handleUpdateServiceTime = async (serviceId: string) => {
     if (!currentService) return;
 
     const updatedService = {
@@ -132,7 +137,7 @@ const Services: React.FC<ServicesProps> = ({
       timeToComplete: { hours: editHours, minutes: editMinutes },
     };
 
-    const response = await editTime(Id,serviceId,editHours,editMinutes);
+    const response = await editTime(Id, serviceId, editHours, editMinutes);
 
     if (response) {
       toast.success(response.data, { position: "top-center" });
@@ -202,30 +207,39 @@ const Services: React.FC<ServicesProps> = ({
             {availableServices.map((service) => (
               <div
                 key={service._id}
-                className="bg-[#9AD1AA] shadow-md rounded-lg overflow-hidden"
+                className="bg-[#9AD1AA] shadow-md rounded-lg overflow-hidden flex"
               >
-                <div className="px-4 py-5 sm:p-6">
-                  <h3 className="text-lg font-semibold leading-6 text-gray-900">
+                <div className="flex items-center">
+                  <div className="relative mr-4">
+                    <img
+                      src="/public/logo/newOne.png"
+                      alt="Service Image"
+                      className="w-20 h-15 rounded-lg mb-10"
+                    />
+                  </div>
+                </div>
+                <div className="flex-1 p-4">
+                  <h3 className="text-base font-semibold leading-6 text-gray-900">
                     Service: {service.serviceName}
                   </h3>
-                  <p className="mt-1 max-w-2xl text-md text-gray-600">
+                  <p className="mt-1 text-md text-gray-600">
                     Time to Complete: {service.timeToComplete.hours}h{" "}
                     {service.timeToComplete.minutes}m
                   </p>
-                </div>
-                <div className="px-4 py-4 sm:px-6 flex justify-end gap-3">
-                  <button
-                    className="text-sm font-medium text-green-900 hover:text-green-900"
-                    onClick={() => openEditModal(service)}
-                  >
-                    <EditIcon />
-                  </button>
-                  <button
-                    className="text-sm font-medium text-black hover:text-red-900"
-                    onClick={() => handleDelete(service.serviceId)}
-                  >
-                    <DeleteIcon />
-                  </button>
+                  <div className="mt-4 flex justify-end gap-3">
+                    <button
+                      className="text-sm font-medium text-green-900 hover:text-green-900"
+                      onClick={() => openEditModal(service)}
+                    >
+                      <EditIcon />
+                    </button>
+                    <button
+                      className="text-sm font-medium text-black hover:text-red-900"
+                      onClick={() => handleDelete(service.serviceId)}
+                    >
+                      <DeleteIcon />
+                    </button>
+                  </div>
                 </div>
               </div>
             ))}
@@ -331,9 +345,15 @@ const Services: React.FC<ServicesProps> = ({
                   className="mt-1 p-2 border rounded-md shadow-sm text-slate-700 focus:outline-none focus:ring-2 focus:ring-blue-400"
                 />
               </div>
-              <Button colorScheme="teal" size="sm" onClick={()=>handleUpdateServiceTime(currentService.serviceId)}>
-              Save
-            </Button>
+              <Button
+                colorScheme="teal"
+                size="sm"
+                onClick={() =>
+                  handleUpdateServiceTime(currentService.serviceId)
+                }
+              >
+                Save
+              </Button>
             </div>
           )}
         </Modal>
