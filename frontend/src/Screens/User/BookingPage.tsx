@@ -1,9 +1,14 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import DatePicker from "react-datepicker";
 import "react-datepicker/dist/react-datepicker.css";
 import Modal from "react-modal";
 import MyMap from "../../Components/common/mapBox";
-
+import LocationSearch from "../../Components/common/geoCoder";
+import { TbCurrentLocation } from "react-icons/tb";
+import { getServices } from "../../api/admin";
+import { bookService,confirmBooking } from "../../api/user";
+import { useSelector } from "react-redux";
+import { RootState } from "../../redux/store";
 
 Modal.setAppElement("#root");
 
@@ -17,33 +22,136 @@ interface AddressData {
   longitude: number;
   latitude: number;
 }
+interface Suggestion {
+  place_name: string;
+  coordinates: [number, number];
+  area: string;
+  city: string;
+  state: string;
+  pincode: string;
+}
 
 const BookingService: React.FC = () => {
   const [name, setName] = useState<string>("");
   const [phone, setPhone] = useState<string>("");
-  const [address, setAddress] = useState<string>("");
+  const [houseName, setHouseName] = useState<string>("");
+  const [area, setArea] = useState<string>("");
+  const [city, setCity] = useState<string>("");
+  const [state, setState] = useState<string>("");
+  const [pincode, setPincode] = useState<string>("");
+  const [latitude, setLatitude] = useState<number>(0);
+  const [longitude, setLongitude] = useState<number>(0);
+  const [size, setSize] = useState<string>("");
   const [typeOfService, setTypeOfService] = useState<string>("");
+  const [services, setServices] = useState<any>([]);
   const [date, setDate] = useState<Date | null>(null);
+  const [availableSlots, setAvailableSlots] = useState<any>([]);
   const [timeSlot, setTimeSlot] = useState<string>("");
+  console.log(timeSlot)
   const [modalIsOpen, setModalIsOpen] = useState<boolean>(false);
   const [sizeChartModalIsOpen, setSizeChartModalIsOpen] =
     useState<boolean>(false);
+  const [franchise, setFranchise] = useState("");
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const {userInfo} = useSelector((state:RootState)=>state.auth)
+
+  const today = new Date();
+
+  const minDate = new Date(
+    today.getFullYear(),
+    today.getMonth(),
+    today.getDate() + 1
+  );
+
+  const maxDate = new Date(
+    today.getFullYear(),
+    today.getMonth(),
+    today.getDate() + 8
+  );
+
+  const convertTo12HourFormat = (time: string) => {
+    const [hours, minutes] = time.split(":").map(Number);
+    const period = hours >= 12 ? "PM" : "AM";
+    const adjustedHours = hours % 12 || 12;
+    return `${adjustedHours}:${minutes < 10 ? "0" : ""}${minutes} ${period}`;
+  };
+
+  const handleSubmit = async(e: React.FormEvent) => {
     e.preventDefault();
-    // Handle form submission
-    console.log({
-      name,
-      phone,
-      address,
-      typeOfService,
-      date,
-      timeSlot,
-    });
+    const [startTime, endTime] = timeSlot.split(' - ');
+    const address={
+      houseName:houseName,
+      area:area,
+      city:city,
+      state:state,
+      pincode:state,
+      location:[longitude,latitude]
+
+    }
+    const response = await confirmBooking(franchise,date,startTime.trim(),endTime.trim(),userInfo._id,address,typeOfService)
+
+
+
+  };
+
+  const handleSizeChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
+    setSize(e.target.value);
+  };
+
+  const handleServiceChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
+    setTypeOfService(e.target.value);
+  };
+
+  useEffect(() => {
+    if (
+      area.trim() !== "" &&
+      city.trim() !== "" &&
+      pincode.trim() !== "" &&
+      typeOfService.trim() !== "" &&
+      size.trim() !== "" &&
+      date !== null &&
+      latitude !== null &&
+      longitude !== null
+    ) {
+      bookService(latitude, longitude, typeOfService, date).then((response) => {
+        setAvailableSlots(response?.data.slots);
+        setFranchise(response?.data.franchise);
+      });
+    }
+  }, [
+    area,
+    city,
+    pincode,
+    state,
+    typeOfService,
+    size,
+    date,
+    longitude,
+    latitude,
+  ]);
+
+  useEffect(() => {
+    getServices().then((response) => setServices(response?.data));
+  }, []);
+
+  const handleSelectSuggestion = (suggestion: Suggestion) => {
+    setArea(suggestion.area);
+    setCity(suggestion.city);
+    setState(suggestion.state);
+    setPincode(suggestion.pincode);
+    setLatitude(suggestion.coordinates[1]);
+    setLongitude(suggestion.coordinates[0]);
   };
 
   const handleAddress = async (address: AddressData) => {
-    // Handle address selection
+    setModalIsOpen(false);
+
+    setArea(address.area);
+    setCity(address.city);
+    setState(address.state);
+    setPincode(address.postcode);
+    setLatitude(address.latitude);
+    setLongitude(address.longitude);
   };
 
   return (
@@ -55,135 +163,206 @@ const BookingService: React.FC = () => {
           opacity: "0.4",
         }}
       ></div>
-      <div className="relative flex flex-col md:flex-row  md:mb-14 container sm:mx-auto lg:px-32 px-4">
-        <div className=" bg-[#9AD1AA] rounded-md shadow-lg p-6 md:p-8 md:mr-8 md:w-1/2">
-          <h2 className="text-3xl font-bold mb-6 text-center text-[#3968B6]">
+      <div className="relative flex flex-col md:flex-row md:mb-14 container sm:mx-auto lg:px-32 px-4">
+        <div className="bg-[#9AD1AA] rounded-lg shadow-lg p-6 md:p-8 md:mr-8 md:w-1/2 md:mt-5">
+          <h2 className="text-3xl font-bold mb-4 text-center text-gray-800">
             Book a Service
           </h2>
-          <form onSubmit={handleSubmit} className="space-y-6">
-            <div className="space-y-6 ">
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                <div>
-                  <label className="block text-sm font-medium text-[#3968B6]">
-                    Name
-                  </label>
-                  <input
-                    type="text"
-                    value={name}
-                    onChange={(e) => setName(e.target.value)}
-                    className="mt-1 block w-full p-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-[#48808B]"
-                    required
-                  />
-                </div>
-                <div>
-                  <label className="block text-sm font-medium text-[#3968B6]">
-                    Phone
-                  </label>
-                  <input
-                    type="tel"
-                    value={phone}
-                    onChange={(e) => setPhone(e.target.value)}
-                    className="mt-1 block w-full p-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-[#48808B]"
-                    required
-                  />
-                </div>
+          <form onSubmit={handleSubmit} className="space-y-4">
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+              <div>
+                <label className="block text-sm font-medium text-gray-700">
+                  Name
+                </label>
+                <input
+                  type="text"
+                  value={name}
+                  onChange={(e) => setName(e.target.value)}
+                  className="block w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-indigo-400"
+                  
+                />
               </div>
-              <div className="flex space-x-4">
-                <div className="flex-grow">
-                  <label className="block text-sm font-medium text-[#3968B6]">
-                    Address
-                  </label>
-                  <input
-                    type="text"
-                    value={address}
-                    onChange={(e) => setAddress(e.target.value)}
-                    className="mt-1 block w-full p-2 h-24 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-[#48808B]"
-                    required
-                  />
-                </div>
-                <div
-        className="flex-shrink-0 w-28 h-24 bg-gray-200 border border-gray-300 rounded-lg shadow-md overflow-hidden cursor-pointer mt-6 flex justify-center items-center"
-        onClick={() => setModalIsOpen(true)}
-      >
-        <img src="public/logo/Booking page/digital-hand-set-location-map-with-two-pins-ai-technology-gps_773922-34180.jpg" alt="Map" style={{ width: '100%', height: '100%', objectFit: 'cover' }} />
-      </div>
+              <div>
+                <label className="block text-sm font-medium text-gray-700">
+                  Phone
+                </label>
+                <input
+                  type="tel"
+                  value={phone}
+                  onChange={(e) => setPhone(e.target.value)}
+                  className="block w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-indigo-400"
+                  
+                />
               </div>
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                <div>
-                  <label className="block text-sm font-medium text-[#3968B6]">
-                    Select Service
-                  </label>
-                  <input
-                    type="text"
-                    value={typeOfService}
-                    onChange={(e) => setTypeOfService(e.target.value)}
-                    className="mt-1 block w-full p-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-[#48808B]"
-                    required
-                  />
-                </div>
-                <div className="flex items-center">
-                  <div className="relative flex-grow mr-2">
-                    <label className="block text-sm font-medium text-[#3968B6]">
-                      Select Size of Pet
-                    </label>
-                    <input
-                      type="text"
-                      value={""}
-                      onChange={(e) => ""}
-                      className="mt-1 block w-full p-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-[#48808B] pr-10"
-                      required
-                    />
+            </div>
+            <div>
+              <label className="block text-sm font-medium text-gray-700">
+                Area/Colony
+              </label>
+              <LocationSearch
+                defaultArea={area}
+                onSelectSuggestion={handleSelectSuggestion}
+              />
+            </div>
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+              <div>
+                <label className="block text-sm font-medium text-gray-700">
+                  City
+                </label>
+                <input
+                  type="text"
+                  className="block w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-indigo-400"
+                  value={city}
+                  readOnly
+                />
+              </div>
+              <div>
+                <button
+                  type="button"
+                  onClick={() => setModalIsOpen(true)}
+                  className="md:mt-5 flex gap-2 justify-center items-center bg-indigo-600 hover:bg-indigo-700 text-white font-medium py-2 px-4 rounded-md shadow-md transition duration-200 ease-in-out transform hover:scale-105"
+                >
+                  <TbCurrentLocation />
+                  Use my location
+                </button>
+              </div>
+            </div>
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+              <div>
+                <label className="block text-sm font-medium text-gray-700">
+                  Pincode
+                </label>
+                <input
+                  type="text"
+                  className="block w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-indigo-400"
+                  value={pincode}
+                  readOnly
+                />
+              </div>
+              <div>
+                <label className="block text-sm font-medium text-gray-700">
+                  State
+                </label>
+                <input
+                  type="text"
+                  className="block w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-indigo-400"
+                  value={state}
+                  readOnly
+                />
+              </div>
+            </div>
+            <div>
+              <label className="block text-sm font-medium text-gray-700">
+                House No.
+              </label>
+              <input
+                type="text"
+                className="block w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-indigo-400"
+                required
+              />
+            </div>
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+              <div className="relative">
+                <label className="block text-sm font-medium text-gray-700">
+                  Select Service
+                </label>
+                <select
+                  value={typeOfService}
+                  onChange={handleServiceChange}
+                  className="block w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-indigo-400"
+                  required
+                >
+                  <option value="" disabled>
+                    Select a service
+                  </option>
+                  {services.map((service: any, index: number) => (
+                    <option key={index} value={service._id}>
+                      {service.category}
+                    </option>
+                  ))}
+                </select>
+              </div>
+              <div className="flex items-center">
+                <div className="relative flex-grow mr-2">
+                  <label className="block text-sm font-medium text-gray-700">
+                    Select Size of Pet
                     <button
                       type="button"
-                      className="absolute right-1 top-10 text-xs text-blue-400"
-                      onClick={() => {
-                        setSizeChartModalIsOpen(true)
-                       
-                      }}
+                      className="absolute right-0 top-2.5 transform -translate-y-1/2 text-xs text-indigo-600 hover:bg-gray-100"
+                      onClick={() => setSizeChartModalIsOpen(true)}
                     >
                       Size-Chart
                     </button>
-                  </div>
-                </div>
-              </div>
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                <div>
-                  <label className="block text-sm font-medium text-[#3968B6]">
-                    Pick Date
                   </label>
-                  <DatePicker
-                    selected={date}
-                    onChange={(date: Date | null) => setDate(date)}
-                    className="mt-1 block w-full p-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-[#48808B]"
+                  <select
+                    value={size}
+                    onChange={handleSizeChange}
+                    className="block w-full px-3 py-2 border  border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-indigo-400 pr-10"
                     required
-                  />
-                </div>
-                <div>
-                  <label className="block text-sm font-medium text-[#3968B6]">
-                    Available Time Slots
-                  </label>
-                  <input
-                    type="text"
-                    value={timeSlot}
-                    onChange={(e) => setTimeSlot(e.target.value)}
-                    className="mt-1 block w-full p-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-[#48808B]"
-                    required
-                  />
+                  >
+                    <option value="" disabled>
+                      Select a size
+                    </option>
+                    <option value="small">Small</option>
+                    <option value="medium">Medium</option>
+                    <option value="large">Large</option>
+                    <option value="extra-large">Extra Large</option>
+                  </select>
                 </div>
               </div>
             </div>
-            <div className="flex justify-center mt-6">
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+              <div>
+                <label className="block text-sm font-medium text-gray-700">
+                  Pick Date
+                </label>
+                <DatePicker
+                  selected={date}
+                  onChange={(date: Date | null) => setDate(date)}
+                  className="block w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-indigo-400"
+                  required
+                  minDate={minDate}
+                  maxDate={maxDate}
+                />
+              </div>
+              <div>
+                <label className="block text-sm font-medium text-gray-700">
+                  Available Time Slots
+                </label>
+                <select
+                  value={timeSlot}
+                  onChange={(e) => setTimeSlot(e.target.value)}
+                  className="block w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-indigo-400"
+                  required
+                >
+                  <option value="" disabled>
+                    Select a time slot
+                  </option>
+                  {availableSlots.map((slot: any, index: any) => (
+                    <option
+                      key={index}
+                      value={`${slot.startTime} - ${slot.endTime}`}
+                    >
+                      {`${convertTo12HourFormat(
+                        slot.startTime
+                      )} - ${convertTo12HourFormat(slot.endTime)}`}
+                    </option>
+                  ))}
+                </select>
+              </div>
+            </div>
+            <div className="text-center">
               <button
                 type="submit"
-                className="bg-[#48808B] hover:bg-blue-900 text-white font-medium py-3 px-20 rounded-md shadow-lg transition duration-200 ease-in-out transform hover:scale-105"
+                className="bg-indigo-900 hover:bg-indigo-800 text-white font-medium py-3 px-16 rounded-full  shadow-md transition duration-200 ease-in-out transform hover:scale-105"
               >
-                Book Now
+                Book now
               </button>
             </div>
           </form>
         </div>
 
-        <div className="md:w-1/2 md:ml-8 mt-8">
+        <div className="md:w-1/2 md:ml-8 mt-5 md:mt-10">
           <div className="w-[500px]">
             <h3 className="text-3xl md:text-4xl font-extrabold mb-4 text-[#3968B6]">
               Why Paw?
@@ -315,10 +494,10 @@ const BookingService: React.FC = () => {
         contentLabel="Mark Location"
         className="fixed inset-0 flex items-center justify-center p-4 bg-black bg-opacity-50"
       >
-        <div className="relative bg-white rounded-lg shadow-lg w-full max-w-3xl p-6">
+        <div className="relative bg-white rounded-lg shadow-lg w-full max-w-4xl p-4">
           <button
             onClick={() => setModalIsOpen(false)}
-            className="absolute top-2 right-2 bg-red-500 text-white rounded-md px-2 py-1 focus:outline-none hover:bg-red-600"
+            className="absolute top-2 right-2 bg-red-500 text-white rounded-md px-4 p-1 focus:outline-none hover:bg-red-600"
           >
             Close
           </button>

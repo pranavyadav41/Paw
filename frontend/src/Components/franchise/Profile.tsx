@@ -158,7 +158,7 @@ const Profile: React.FC<ProfileProps> = ({ profile, profileState }) => {
         </form>
       </div>
 
-      <Modal
+      <Modal 
         isOpen={modalIsOpen}
         onRequestClose={() => setModalIsOpen(false)}
         contentLabel="Mark Location"

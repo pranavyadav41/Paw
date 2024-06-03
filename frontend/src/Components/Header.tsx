@@ -26,7 +26,6 @@ function Header() {
     fontWeight: 500,
     borderBottom: "1px solid currentColor",
     paddingBottom: "1px",
-    marginBottom: "0.625rem",
   };
 
   let handleLogout = () => {

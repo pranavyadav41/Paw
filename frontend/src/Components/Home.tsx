@@ -1,9 +1,7 @@
-import { NavLink, useNavigate } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 import { useSelector } from "react-redux";
 import { RootState } from "../redux/store";
 import { toast } from "react-toastify";
-import { Button, ButtonGroup } from "@chakra-ui/react";
-
 function Home() {
   const navigate = useNavigate();
 
@@ -119,12 +117,16 @@ function Home() {
             </div>
           </div>
         </div>
-        <div className="h-screen w-full " style={{
-            backgroundImage: "url('/public/logo/Homepage/Untitled design (1).png')",
+        <div
+          className="h-screen w-full "
+          style={{
+            backgroundImage:
+              "url('/public/logo/Homepage/Untitled design (1).png')",
             backgroundSize: "cover",
             backgroundRepeat: "no-repeat",
             backgroundPosition: "center",
-          }}>
+          }}
+        >
           <div className="w-full flex h-[600px]">
             <div className="w-[50%] flex justify-center">
               <div className="mt-16  w-[500px] flex flex-col gap-3 text-[#344A5F]">
@@ -138,7 +140,7 @@ function Home() {
                     Services
                   </h1>
                 </div>
-                <p className="text-[black]" style={{lineHeight:'1.8'}}>
+                <p className="text-[black]" style={{ lineHeight: "1.8" }}>
                   Our Salon is equipped with hot & cold running water for a
                   comfortable bathing experience, it is also fully
                   air-conditioned keeping your pet’s comfort in mind, full sized
@@ -146,8 +148,10 @@ function Home() {
                   uninterrupted attention for you and your pet in a quite and
                   stress free environment.
                 </p>
-                
-                <button className="bg-[#192955] text-white w-32 h-10 rounded-full">Services</button>
+
+                <button className="bg-[#192955] text-white w-32 h-10 rounded-full">
+                  Services
+                </button>
               </div>
             </div>
 
@@ -160,7 +164,18 @@ function Home() {
             </div>
           </div>
         </div>
-      
+
+        <div className="flex justify-center md:mt-20">
+          <img
+            src="/public/logo/FranchisePage/footer-bottom-image-removebg.png"
+            alt="Footer Image"
+            style={{
+              width: "100%",
+              height: "auto",
+              backgroundColor: "transparent",
+            }}
+          />
+        </div>
       </div>
     </>
   );

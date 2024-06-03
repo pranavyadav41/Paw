@@ -2,6 +2,7 @@ import { NavLink } from "react-router-dom";
 import { FcAreaChart } from "react-icons/fc";
 import { FcTodoList } from "react-icons/fc";
 import { FcAbout } from "react-icons/fc";
+import { RiCoupon4Fill } from "react-icons/ri";
 
 function sideBar() {
   const activeStyle = {
@@ -59,7 +60,7 @@ function sideBar() {
                 className="flex items-center p-2 text-[#5F7093] rounded-lg dark:text-[#5F7093] hover:bg-gray-100 dark:hover:bg-gray-700 group"
                 style={({ isActive }) => (isActive ? activeStyle : undefined)}
               >
-                 <svg
+                <svg
                   className="flex-shrink-0 w-5 h-5 text-gray-500 transition duration-75 dark:text-gray-400 group-hover:text-gray-900 dark:group-hover:text-white"
                   aria-hidden="true"
                   xmlns="http://www.w3.org/2000/svg"
@@ -117,6 +118,17 @@ function sideBar() {
                 <FcTodoList />
 
                 <span className="flex-1 ms-3 whitespace-nowrap">Services</span>
+              </NavLink>
+            </li>
+            <li>
+              <NavLink
+                to="/admin/coupons"
+                className="flex items-center p-2 text-gray-900 rounded-lg dark:text-[#5F7093] hover:bg-gray-100 dark:hover:bg-gray-700 group"
+                style={({ isActive }) => (isActive ? activeStyle : undefined)}
+              >
+                <RiCoupon4Fill />
+
+                <span className="flex-1 ms-3 whitespace-nowrap">Coupons</span>
               </NavLink>
             </li>
           </ul>

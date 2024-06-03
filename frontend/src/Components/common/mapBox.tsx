@@ -72,7 +72,7 @@ const MyMap: React.FC<MapProps> = ({ onAddressSelect }) => {
   const getAddress = async (lng: number, lat: number) => {
     try {
       const response = await fetch(
-        `https://api.mapbox.com/geocoding/v5/mapbox.places/${lng},${lat}.json?access_token=YOUR_MAPBOX_ACCESS_TOKEN`
+        `https://api.mapbox.com/geocoding/v5/mapbox.places/${lng},${lat}.json?access_token=pk.eyJ1IjoiYWtwcmFuYXZ5YWRhdiIsImEiOiJjbHdvZ2l0bHMwbDZ4MnFsYmRpejd4ZHpjIn0.SKiqLTKi43cqyMe7j0Re6A`
       );
       const data = await response.json();
       if (data.features.length > 0) {

@@ -125,65 +125,6 @@ export const getProfile = async (Id: string) => {
     return errorHandle(err);
   }
 };
-export const addAddress = async (Id: string, address: address) => {
-  try {
-    const response = await Api.post(userRoutes.addAddress, {
-      Id: Id,
-      address: address,
-    });
-    return response;
-  } catch (error) {
-    const err: Error = error as Error;
-    return errorHandle(err);
-  }
-};
-export const getAddresses = async (Id: string) => {
-  try {
-    const response = await Api.post(userRoutes.getAddress, { Id: Id });
-
-    return response;
-  } catch (error) {
-    const err: Error = error as Error;
-    return errorHandle(err);
-  }
-};
-export const editAddress = async (
-  Id: string,
-  addressId: string,
-  address: {
-    name: string;
-    houseName: string;
-    street: string;
-    city: string;
-    state: string;
-    pincode: string;
-  }
-) => {
-  try {
-    const response = await Api.post(userRoutes.editAddress, {
-      Id: Id,
-      addressId: addressId,
-      address: address,
-    });
-    return response;
-  } catch (error) {
-    const err: Error = error as Error;
-    return errorHandle(err);
-  }
-};
-export const deleteAddress = async (Id: string, addressId: string) => {
-  try {
-    const response = await Api.post(userRoutes.deleteAddress, {
-      Id: Id,
-      addressId: addressId,
-    });
-    return response;
-  } catch (error) {
-    const err: Error = error as Error;
-    return errorHandle(err);
-  }
-};
-
 export const changePassword = async (Id: string, password: string) => {
   try {
     const response = await Api.post(userRoutes.changePassword, {
@@ -196,3 +137,34 @@ export const changePassword = async (Id: string, password: string) => {
     return errorHandle(err);
   }
 };
+export const bookService = async(latitude:number,longitude:number,serviceId:string,date:Date)=>{
+  try {
+    const response = await Api.post(userRoutes.bookService,{
+      latitude:latitude,
+      longitude:longitude,
+      serviceId:serviceId,
+      date:date
+    })
+    return response
+    
+  } catch (error) {
+    const err: Error = error as Error;
+    return errorHandle(err);
+    
+  }
+}
+export const confirmBooking = async (franchiseId: string, bookingDate: Date | null, startTime: string, endTime: string, userId: string, address: any, serviceId: string)=>{
+  try {
+
+    const response  = await  Api.post(userRoutes.confirmBooking,{
+      franchiseId,bookingDate,startTime,endTime,userId,address,serviceId
+    })
+    return response
+    
+  } catch (error) {
+    const err: Error = error as Error;
+    return errorHandle(err);
+    
+  }
+  
+}

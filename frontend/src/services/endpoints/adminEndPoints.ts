@@ -13,7 +13,11 @@ const adminRoutes={
     addService:'/admin/addService',
     getServices:'/admin/getServices',
     deleteService:'/admin/deleteService',
-    editService:'/admin/editService'
+    editService:'/admin/editService',
+    addCoupon:'/admin/addCoupon',
+    deleteCoupon:'/admin/deleteCoupon',
+    editCoupon:'/admin/editCoupon',
+    getCoupons:'/admin/getCoupons'
 }
 
 export default adminRoutes

@@ -17,6 +17,8 @@ const userRoutes={
     deleteAddress:'/user/deleteAddress',
     editAddress:'/user/editAddress',
     changePassword:'/user/changePassword',
+    bookService:'/user/bookingService',
+    confirmBooking:'/user/confirmBooking'
 }
 
 export default userRoutes 

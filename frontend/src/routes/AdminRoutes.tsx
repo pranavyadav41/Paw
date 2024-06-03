@@ -10,6 +10,7 @@ const FranchiseReq = lazy(() => import("../Components/admin/FranchiseReq"));
 const AdminProtected = lazy(() => import("../protected/AdminProtected"));
 const FranchiseList = lazy(() => import("../Components/admin/FranchiseList"));
 const Service = lazy(() => import("../Components/admin/Service"));
+const Coupon = lazy(()=>import("../Screens/Admin/Coupon"))
 
 function AdminRoutes() {
   return (
@@ -22,6 +23,7 @@ function AdminRoutes() {
             <Route path="/requests" element={<FranchiseReq />} />
             <Route path="/franchises" element={<FranchiseList />} />
             <Route path="/services" element={<Service />} />
+            <Route path="/coupons" element={<Coupon />} />
           </Route>
         </Route>
       </Routes>

@@ -14,7 +14,7 @@ interface Service {
 }
 
 interface updateService {
-  _id:string,
+  _id: string;
   category: string;
   services: string[];
   price: {
@@ -23,7 +23,6 @@ interface updateService {
     large: string;
     xLarge: string;
   };
-
 }
 
 export const getUsers = async () => {
@@ -74,9 +73,18 @@ export const approveRequest = async (reqId: { reqId: string }) => {
   }
 };
 
-export const rejectRequest = async ({ reqId, reason }: { reqId: string, reason: string }) => {
+export const rejectRequest = async ({
+  reqId,
+  reason,
+}: {
+  reqId: string;
+  reason: string;
+}) => {
   try {
-    const response = await Api.post(adminRoutes.rejectRequest,{ reqId, reason });
+    const response = await Api.post(adminRoutes.rejectRequest, {
+      reqId,
+      reason,
+    });
     return response;
   } catch (error) {
     const err: Error = error as Error;
@@ -121,34 +129,83 @@ export const addServices = async (service: { service: Service }) => {
     return errorHandle(err);
   }
 };
-export const deleteService = async(serviceId:{serviceId:string})=>{
+export const deleteService = async (serviceId: { serviceId: string }) => {
   try {
-    const response = await Api.post(adminRoutes.deleteService,serviceId);
+    const response = await Api.post(adminRoutes.deleteService, serviceId);
     return response;
-    
   } catch (error) {
-
-    const err:Error = error as Error;
-    return errorHandle(err)
-    
+    const err: Error = error as Error;
+    return errorHandle(err);
   }
-}
-export const updateService = async(updatedService:{updatedService:updateService}) =>{
+};
+export const updateService = async (updatedService: {
+  updatedService: updateService;
+}) => {
   try {
-    const response = await Api.post(adminRoutes.editService,updatedService)
+    const response = await Api.post(adminRoutes.editService, updatedService);
     return response;
-    
   } catch (error) {
-
-    const err:Error = error as Error;
-    return errorHandle(err)
-    
+    const err: Error = error as Error;
+    return errorHandle(err);
   }
-
 };
 export const getServices = async () => {
   try {
     const response = await Api.get(adminRoutes.getServices);
+    return response;
+  } catch (error) {
+    const err: Error = error as Error;
+    return errorHandle(err);
+  }
+};
+export const addCoupon = async (coupon: {
+  code: string;
+  discount: string;
+  validFrom: string;
+  validTo: string;
+  minCartValue: string;
+}) => {
+  try {
+    const response = await Api.post(adminRoutes.addCoupon, { coupon: coupon });
+    return response;
+  } catch (error) {
+    const err: Error = error as Error;
+    return errorHandle(err);
+  }
+};
+export const getCoupons = async () => {
+  try {
+    const response = await Api.get(adminRoutes.getCoupons);
+    return response;
+  } catch (error) {
+    const err: Error = error as Error;
+    return errorHandle(err);
+  }
+};
+export const editCoupon = async (
+  Id: string,
+  data: {
+    code: string;
+    discount: string;
+    validFrom: string;
+    validTo: string;
+    minCartValue: string;
+  }
+) => {
+  try {
+    const response = await Api.post(adminRoutes.editCoupon, {
+      Id: Id,
+      data: data,
+    });
+    return response;
+  } catch (error) {
+    const err: Error = error as Error;
+    return errorHandle(err);
+  }
+};
+export const removeCoupon = async (Id: string) => {
+  try {
+    const response = await Api.post(adminRoutes.deleteCoupon, { Id: Id });
     return response;
   } catch (error) {
     const err: Error = error as Error;

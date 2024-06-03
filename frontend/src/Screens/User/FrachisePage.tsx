@@ -1,43 +1,52 @@
-import React from "react";
 import { NavLink } from "react-router-dom";
 
 function FranchisePage() {
   return (
     <>
-<div className="relative flex justify-center min-h-screen bg-[#fffefe]">
-  <div className="absolute inset-0 bg-cover bg-center" style={{
-      backgroundImage: "url('/public/logo/pawBackground.jpg')",
-      opacity: 0.4,
-    }}></div>
-  <div className="w-[80%] h-[500px]  mt-20 rounded-xl flex relative z-10">
-    <div className="flex items-center w-[50%] justify-center">
-      <img
-        className="h-[450px] rounded-sm"
-        src="public/logo/FranchisePage/image-copyright-49.jpg"
-        alt="Cute Yorkshire Terrier Dog"
-      />
-    </div>
+      <div className="relative flex flex-col justify-center min-h-screen bg-[#fffefe]">
+        <div
+          className="absolute inset-0 bg-cover bg-center"
+          style={{
+            backgroundImage: "url('/public/logo/pawBackground.jpg')",
+            opacity: 0.3,
+          }}
+        ></div>
+        <div className="w-[80%] h-[500px] mt-20 rounded-xl flex relative z-10 self-center">
+          <div className="flex items-center w-[50%] justify-center">
+            <img
+              className="h-[550px] w-[640px] rounded-sm mr-16 mb-14"
+              src="public/logo/FranchisePage/home-1-shape-image-3.png"
+              alt="Cute Yorkshire Terrier Dog"
+            />
+          </div>
 
-    <div className="w-[50%]">
-      <div className="flex flex-col gap-4 mt-16">
-        <h1 className="mt-10 font-bold text-3xl text-[#3968B6]">
-          Take Your First Step Towards Success
-        </h1>
-        <p>
-          Start a Pet Spa in your city. For more details, please register
-          by providing your contact information, and we will reach out to
-          you via email.
-        </p>
+          <div className="w-[50%]">
+            <div className="flex flex-col gap-4 mt-20">
+              <h1 className="mt-10 font-bold text-3xl text-[#3968B6]">
+                Take Your First Step Towards Success
+              </h1>
+              <p>
+                Start a Pet Spa in your city. For more details, please register
+                by providing your contact information, and we will reach out to
+                you via email.
+              </p>
+            </div>
+            <button className="bg-[#192955] hover:bg-blue-800 text-black font-medium py-2 px-7 mt-3 rounded-3xl">
+              <NavLink to="/franchise/register" className="text-white">
+                Get started
+              </NavLink>
+            </button>
+          </div>
+        </div>
+
+        <div className="relative z-10 flex justify-center md:mt-20">
+          <img
+            src="/public/logo/FranchisePage/footer-bottom-image-removebg.png"
+            alt="Footer Image"
+            className="w-full h-auto"
+          />
+        </div>
       </div>
-      <button className="bg-[#192955] hover:bg-customColor3 text-black font-medium py-2 px-7 mt-3 rounded-3xl">
-        <NavLink to="/franchise/register" className="text-white">Get started</NavLink>
-      </button>
-    </div>
-  </div>
-</div>
-
-
-
     </>
   );
 }
