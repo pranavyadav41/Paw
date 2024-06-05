@@ -2,7 +2,9 @@ import { useSelector, useDispatch } from "react-redux";
 import { useState, useEffect } from "react";
 import { useNavigate, NavLink, useLocation } from "react-router-dom";
 import { userLogout } from "../redux/slices/authSlice";
-import { FaUserAlt, FaCaretDown } from "react-icons/fa";
+import { FaUserAlt, FaCaretDown, FaUserCircle } from "react-icons/fa";
+import { SlCalender } from "react-icons/sl";
+import { FaPowerOff } from "react-icons/fa6";
 import { toast } from "react-toastify";
 import { RootState } from "../redux/store";
 
@@ -34,6 +36,7 @@ function Header() {
     setIsHamburger(false);
     localStorage.removeItem("token");
     dispatch(userLogout());
+    navigate("/");
     toast.success("Logged out successfully");
   };
 
@@ -112,18 +115,28 @@ function Header() {
               )}
             </button>
             {isDropdownOpen && (
-              <div className="absolute right-0 mt-2 py-2 w-48 bg-gray-600  shadow-lg z-10">
+              <div className="absolute right-0 mt-2 py-2 w-48 bg-gray-600 rounded-md  shadow-lg z-10">
                 <NavLink
                   to="/profile"
-                  className="block px-4 py-2 text-white hover:bg-gray-800"
+                  className="px-4 py-2 text-white hover:bg-gray-800 flex gap-2 items-center"
                   onClick={() => setIsDropdownOpen(false)}
                 >
+                  <FaUserCircle />
                   Profile
                 </NavLink>
+                <NavLink
+                  to="/myBookings"
+                  className="flex items-center gap-2 px-4 py-2 text-white hover:bg-gray-800"
+                  onClick={() => setIsDropdownOpen(false)}
+                >
+                  <SlCalender />
+                  My bookings
+                </NavLink>
                 <button
-                  className="block w-full px-4 py-2 text-left text-white hover:bg-gray-800"
+                  className="flex gap-2 items-center w-full px-4 py-2 text-left text-white hover:bg-gray-800"
                   onClick={handleLogout}
                 >
+                  <FaPowerOff />
                   Logout
                 </button>
               </div>
@@ -175,15 +188,25 @@ function Header() {
                 <div className="absolute right-0 mt-2 py-2 w-48 bg-gray-600 rounded-lg shadow-lg z-10">
                   <NavLink
                     to="/profile"
-                    className="block px-4 py-2 text-white hover:bg-gray-800"
-                    onClick={() => setIsDropdown(false)}
+                    className="px-4 py-2 text-white hover:bg-gray-800 flex gap-2 items-center"
+                    onClick={() => setIsDropdownOpen(false)}
                   >
+                    <FaUserCircle />
                     Profile
                   </NavLink>
+                  <NavLink
+                    to="/myBookings"
+                    className="flex items-center gap-2 px-4 py-2 text-white hover:bg-gray-800"
+                    onClick={() => setIsDropdownOpen(false)}
+                  >
+                    <SlCalender />
+                    My bookings
+                  </NavLink>
                   <button
-                    className="block w-full px-4 py-2 text-left text-white hover:bg-gray-800"
+                    className="flex gap-2 items-center w-full px-4 py-2 text-left text-white hover:bg-gray-800"
                     onClick={handleLogout}
                   >
+                    <FaPowerOff />
                     Logout
                   </button>
                 </div>

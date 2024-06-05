@@ -137,34 +137,85 @@ export const changePassword = async (Id: string, password: string) => {
     return errorHandle(err);
   }
 };
-export const bookService = async(latitude:number,longitude:number,serviceId:string,date:Date)=>{
+export const bookService = async (
+  latitude: number,
+  longitude: number,
+  serviceId: string,
+  date: Date
+) => {
   try {
-    const response = await Api.post(userRoutes.bookService,{
-      latitude:latitude,
-      longitude:longitude,
-      serviceId:serviceId,
-      date:date
-    })
-    return response
-    
+    const response = await Api.post(userRoutes.bookService, {
+      latitude: latitude,
+      longitude: longitude,
+      serviceId: serviceId,
+      date: date,
+    });
+    return response;
   } catch (error) {
     const err: Error = error as Error;
     return errorHandle(err);
-    
   }
-}
-export const confirmBooking = async (franchiseId: string, bookingDate: Date | null, startTime: string, endTime: string, userId: string, address: any, serviceId: string)=>{
+};
+export const confirmBooking = async (
+  franchiseId: string,
+  bookingDate: Date | null,
+  startTime: string,
+  endTime: string,
+  userId: string,
+  address: any,
+  serviceId: string,
+  name: string,
+  phone: string,
+  size: string,
+  total: string
+) => {
   try {
-
-    const response  = await  Api.post(userRoutes.confirmBooking,{
-      franchiseId,bookingDate,startTime,endTime,userId,address,serviceId
-    })
-    return response
-    
+    const response = await Api.post(userRoutes.confirmBooking, {
+      franchiseId,
+      bookingDate,
+      startTime,
+      endTime,
+      userId,
+      address,
+      serviceId,
+      name,
+      phone,
+      size,
+      totalAmount: total,
+    });
+    return response;
   } catch (error) {
     const err: Error = error as Error;
     return errorHandle(err);
-    
   }
-  
-}
+};
+export const getCoupons = async () => {
+  try {
+    const response = await Api.get(userRoutes.getCoupons);
+    return response;
+  } catch (error) {
+    const err: Error = error as Error;
+    return errorHandle(err);
+  }
+};
+export const applyCoupon = async (total: string, couponCode: string) => {
+  try {
+    const response = await Api.post(userRoutes.applyCoupon, {
+      total: total,
+      couponCode: couponCode,
+    });
+    return response;
+  } catch (error) {
+    const err: Error = error as Error;
+    return errorHandle(err);
+  }
+};
+export const getBookings = async (userId: string) => {
+  try {
+    const response = await Api.post(userRoutes.getBookings, { userId: userId });
+    return response;
+  } catch (error) {
+    const err: Error = error as Error;
+    return errorHandle(err);
+  }
+};

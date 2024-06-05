@@ -17,8 +17,11 @@ const userRoutes={
     deleteAddress:'/user/deleteAddress',
     editAddress:'/user/editAddress',
     changePassword:'/user/changePassword',
-    bookService:'/user/bookingService',
-    confirmBooking:'/user/confirmBooking'
+    bookService:'/user/generateSlots',
+    confirmBooking:'/user/bookService',
+    getCoupons:'/user/getAllCoupons',
+    applyCoupon:'/user/applyCoupon',
+    getBookings:'/user/getBookings'
 }
 
 export default userRoutes 

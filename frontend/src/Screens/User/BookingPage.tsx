@@ -6,9 +6,11 @@ import MyMap from "../../Components/common/mapBox";
 import LocationSearch from "../../Components/common/geoCoder";
 import { TbCurrentLocation } from "react-icons/tb";
 import { getServices } from "../../api/admin";
-import { bookService,confirmBooking } from "../../api/user";
+import { bookService, confirmBooking } from "../../api/user";
 import { useSelector } from "react-redux";
 import { RootState } from "../../redux/store";
+import Checkout from "../../Components/common/payPal";
+import { useNavigate } from "react-router-dom";
 
 Modal.setAppElement("#root");
 
@@ -47,13 +49,17 @@ const BookingService: React.FC = () => {
   const [date, setDate] = useState<Date | null>(null);
   const [availableSlots, setAvailableSlots] = useState<any>([]);
   const [timeSlot, setTimeSlot] = useState<string>("");
-  console.log(timeSlot)
   const [modalIsOpen, setModalIsOpen] = useState<boolean>(false);
   const [sizeChartModalIsOpen, setSizeChartModalIsOpen] =
     useState<boolean>(false);
   const [franchise, setFranchise] = useState("");
+  const [showCheckout, setShowCheckout] = useState(false);
 
-  const {userInfo} = useSelector((state:RootState)=>state.auth)
+  const [errors, setErrors] = useState<any>({});
+
+  const { userInfo } = useSelector((state: RootState) => state.auth);
+
+  const navigate = useNavigate()
 
   const today = new Date();
 
@@ -76,22 +82,64 @@ const BookingService: React.FC = () => {
     return `${adjustedHours}:${minutes < 10 ? "0" : ""}${minutes} ${period}`;
   };
 
-  const handleSubmit = async(e: React.FormEvent) => {
+  const validateForm = () => {
+    const newErrors: any = {};
+    if (!name.trim()) newErrors.name = "Name is required";
+    if (!phone.trim()) newErrors.phone = "Phone is required";
+    else if (!/^\d{10}$/.test(phone))
+      newErrors.phone = "Phone must be 10 digits";
+    if (!houseName.trim()) newErrors.houseName = "House No. is required";
+    if (!area.trim()) newErrors.area = "Area/Colony is required";
+    if (!city.trim()) newErrors.city = "City is required";
+    if (!state.trim()) newErrors.state = "State is required";
+    if (!pincode.trim()) newErrors.pincode = "Pincode is required";
+    if (!size.trim()) newErrors.size = "Size is required";
+    if (!typeOfService.trim()) newErrors.typeOfService = "Service is required";
+    if (!date) newErrors.date = "Date is required";
+    if (!timeSlot.trim()) newErrors.timeSlot = "Time slot is required";
+
+    setErrors(newErrors);
+    return Object.keys(newErrors).length === 0;
+  };
+
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    const [startTime, endTime] = timeSlot.split(' - ');
-    const address={
-      houseName:houseName,
-      area:area,
-      city:city,
-      state:state,
-      pincode:state,
-      location:[longitude,latitude]
+    if (!validateForm()) return;
+    const [startTime, endTime] = timeSlot.split(" - ");
+    const address = {
+      houseName: houseName,
+      area: area,
+      city: city,
+      state: state,
+      pincode: pincode,
+      location: [longitude, latitude],
+    };
 
-    }
-    const response = await confirmBooking(franchise,date,startTime.trim(),endTime.trim(),userInfo._id,address,typeOfService)
-
-
-
+    const bookingData = {
+      franchise,
+      date,
+      startTime: startTime.trim(),
+      endTime: endTime.trim(),
+      userId: userInfo._id,
+      address,
+      typeOfService,
+      name,
+      phone,
+      size,
+    };
+    navigate('/checkout', { state: bookingData })
+    // setShowCheckout(true);
+    // const response = await confirmBooking(
+    //   franchise,
+    //   date,
+    //   startTime.trim(),
+    //   endTime.trim(),
+    //   userInfo._id,
+    //   address,
+    //   typeOfService,
+    //   name,
+    //   phone
+    // );
   };
 
   const handleSizeChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
@@ -179,8 +227,10 @@ const BookingService: React.FC = () => {
                   value={name}
                   onChange={(e) => setName(e.target.value)}
                   className="block w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-indigo-400"
-                  
                 />
+                {errors.name && (
+                  <span className="text-red-500 text-sm">{errors.name}</span>
+                )}
               </div>
               <div>
                 <label className="block text-sm font-medium text-gray-700">
@@ -191,8 +241,10 @@ const BookingService: React.FC = () => {
                   value={phone}
                   onChange={(e) => setPhone(e.target.value)}
                   className="block w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-indigo-400"
-                  
                 />
+                {errors.phone && (
+                  <span className="text-red-500 text-sm">{errors.phone}</span>
+                )}
               </div>
             </div>
             <div>
@@ -203,6 +255,9 @@ const BookingService: React.FC = () => {
                 defaultArea={area}
                 onSelectSuggestion={handleSelectSuggestion}
               />
+              {errors.area && (
+                <span className="text-red-500 text-sm">{errors.area}</span>
+              )}
             </div>
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
               <div>
@@ -215,6 +270,9 @@ const BookingService: React.FC = () => {
                   value={city}
                   readOnly
                 />
+                {errors.city && (
+                  <span className="text-red-500 text-sm">{errors.city}</span>
+                )}
               </div>
               <div>
                 <button
@@ -238,6 +296,9 @@ const BookingService: React.FC = () => {
                   value={pincode}
                   readOnly
                 />
+                {errors.pincode && (
+                  <span className="text-red-500 text-sm">{errors.pincode}</span>
+                )}
               </div>
               <div>
                 <label className="block text-sm font-medium text-gray-700">
@@ -249,6 +310,9 @@ const BookingService: React.FC = () => {
                   value={state}
                   readOnly
                 />
+                {errors.state && (
+                  <span className="text-red-500 text-sm">{errors.state}</span>
+                )}
               </div>
             </div>
             <div>
@@ -256,10 +320,14 @@ const BookingService: React.FC = () => {
                 House No.
               </label>
               <input
+                value={houseName}
+                onChange={(e) => setHouseName(e.target.value)}
                 type="text"
                 className="block w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-indigo-400"
-                required
               />
+              {errors.houseName && (
+                <span className="text-red-500 text-sm">{errors.houseName}</span>
+              )}
             </div>
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
               <div className="relative">
@@ -270,7 +338,6 @@ const BookingService: React.FC = () => {
                   value={typeOfService}
                   onChange={handleServiceChange}
                   className="block w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-indigo-400"
-                  required
                 >
                   <option value="" disabled>
                     Select a service
@@ -281,6 +348,11 @@ const BookingService: React.FC = () => {
                     </option>
                   ))}
                 </select>
+                {errors.typeOfService && (
+                  <span className="text-red-500 text-sm">
+                    {errors.typeOfService}
+                  </span>
+                )}
               </div>
               <div className="flex items-center">
                 <div className="relative flex-grow mr-2">
@@ -298,7 +370,6 @@ const BookingService: React.FC = () => {
                     value={size}
                     onChange={handleSizeChange}
                     className="block w-full px-3 py-2 border  border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-indigo-400 pr-10"
-                    required
                   >
                     <option value="" disabled>
                       Select a size
@@ -308,6 +379,9 @@ const BookingService: React.FC = () => {
                     <option value="large">Large</option>
                     <option value="extra-large">Extra Large</option>
                   </select>
+                  {errors.size && (
+                    <span className="text-red-500 text-sm">{errors.size}</span>
+                  )}
                 </div>
               </div>
             </div>
@@ -320,10 +394,12 @@ const BookingService: React.FC = () => {
                   selected={date}
                   onChange={(date: Date | null) => setDate(date)}
                   className="block w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-indigo-400"
-                  required
                   minDate={minDate}
                   maxDate={maxDate}
                 />
+                {errors.date && (
+                  <span className="text-red-500 text-sm">{errors.date}</span>
+                )}
               </div>
               <div>
                 <label className="block text-sm font-medium text-gray-700">
@@ -333,22 +409,29 @@ const BookingService: React.FC = () => {
                   value={timeSlot}
                   onChange={(e) => setTimeSlot(e.target.value)}
                   className="block w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-indigo-400"
-                  required
                 >
                   <option value="" disabled>
-                    Select a time slot
+                    {availableSlots
+                      ? "Select a time slot"
+                      : "No available slots"}
                   </option>
-                  {availableSlots.map((slot: any, index: any) => (
-                    <option
-                      key={index}
-                      value={`${slot.startTime} - ${slot.endTime}`}
-                    >
-                      {`${convertTo12HourFormat(
-                        slot.startTime
-                      )} - ${convertTo12HourFormat(slot.endTime)}`}
-                    </option>
-                  ))}
+                  {availableSlots &&
+                    availableSlots.map((slot: any, index: any) => (
+                      <option
+                        key={index}
+                        value={`${slot.startTime} - ${slot.endTime}`}
+                      >
+                        {`${convertTo12HourFormat(
+                          slot.startTime
+                        )} - ${convertTo12HourFormat(slot.endTime)}`}
+                      </option>
+                    ))}
                 </select>
+                {errors.timeSlot && (
+                  <span className="text-red-500 text-sm">
+                    {errors.timeSlot}
+                  </span>
+                )}
               </div>
             </div>
             <div className="text-center">
@@ -417,6 +500,7 @@ const BookingService: React.FC = () => {
           </div>
         </div>
       </div>
+
 
       <Modal
         isOpen={modalIsOpen}

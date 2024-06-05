@@ -15,6 +15,9 @@ const Services = lazy(() => import("../Screens/User/Services"));
 const ServiceDetail = lazy(() => import("../Screens/User/ServiceDetail"));
 const BookingService = lazy(() => import("../Screens/User/BookingPage"));
 const ProfilePage = lazy(() => import("../Screens/User/ProfilePage"));
+const Checkout = lazy(()=>import("../Screens/User/checkOut"))
+const Success = lazy(()=>import("../Screens/User/successBooking"))
+const MyBookings = lazy(()=>import("../Screens/User/MyBookings"))
 
 function UserRoutes() {
   return (
@@ -28,6 +31,9 @@ function UserRoutes() {
           <Route path="/service/:id" element={<ServiceDetail/>} />
           <Route path="/booking" element={<BookingService/>} />
           <Route path="/profile" element={<ProfilePage/>} />
+          <Route path="/checkout" element={<Checkout/>} />
+          <Route path="/success" element={<Success/>} />
+          <Route path="/myBookings" element={<MyBookings/>} />
         </Route>
 
         <Route path="login" element={<LoginPage />} />

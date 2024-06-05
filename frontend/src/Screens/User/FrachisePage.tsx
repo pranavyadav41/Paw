@@ -11,17 +11,17 @@ function FranchisePage() {
             opacity: 0.3,
           }}
         ></div>
-        <div className="w-[80%] h-[500px] mt-20 rounded-xl flex relative z-10 self-center">
+        <div className="w-[80%] h-[500px] rounded-xl flex relative z-10 self-center">
           <div className="flex items-center w-[50%] justify-center">
             <img
-              className="h-[550px] w-[640px] rounded-sm mr-16 mb-14"
+              className="h-[550px] w-[640px] rounded-sm mr-16 mb-28"
               src="public/logo/FranchisePage/home-1-shape-image-3.png"
               alt="Cute Yorkshire Terrier Dog"
             />
           </div>
 
           <div className="w-[50%]">
-            <div className="flex flex-col gap-4 mt-20">
+            <div className="flex flex-col gap-4">
               <h1 className="mt-10 font-bold text-3xl text-[#3968B6]">
                 Take Your First Step Towards Success
               </h1>
@@ -37,14 +37,6 @@ function FranchisePage() {
               </NavLink>
             </button>
           </div>
-        </div>
-
-        <div className="relative z-10 flex justify-center md:mt-20">
-          <img
-            src="/public/logo/FranchisePage/footer-bottom-image-removebg.png"
-            alt="Footer Image"
-            className="w-full h-auto"
-          />
         </div>
       </div>
     </>
