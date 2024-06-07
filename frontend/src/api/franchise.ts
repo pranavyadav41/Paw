@@ -21,13 +21,6 @@ interface loginData {
   password?: string;
 }
 
-interface address {
-  city: string;
-  district: string;
-  state: string;
-  pincode: string;
-}
-
 export const franchiseRegister = async (franchiseData: franchiseFormData) => {
   try {
     const response = await Api.post(
@@ -112,13 +105,21 @@ export const getProfile = async (Id: string) => {
 export const updateProfile = async (
   Id: string,
   data: { name: string; email: string; phone: string },
-  address:{city:string,area:string,district:string,state:string,pincode:string,longitude:number,latitude:number}
+  address: {
+    city: string;
+    area: string;
+    district: string;
+    state: string;
+    pincode: string;
+    longitude: number;
+    latitude: number;
+  }
 ) => {
   try {
     const response = await Api.post(franchiseRoutes.updateProfile, {
       Id: Id,
       data: data,
-      address:address
+      address: address,
     });
     return response;
   } catch (error) {
@@ -197,6 +198,56 @@ export const editTime = async (
       hours: hours,
       minutes: minutes,
     });
+    return response;
+  } catch (error) {
+    const err: Error = error as Error;
+    return errorHandle(err);
+  }
+};
+export const getBookings = async (franchiseId: string) => {
+  try {
+    const response = await Api.post(franchiseRoutes.getBookings, {
+      franchiseId: franchiseId,
+    });
+    return response;
+  } catch (error) {
+    const err: Error = error as Error;
+    return errorHandle(err);
+  }
+};
+export const fetchBooking = async (id: string) => {
+  try {
+    const response = await Api.get(`${franchiseRoutes.fetchBooking}/${id}`);
+    return response;
+  } catch (error) {
+    const err: Error = error as Error;
+    return errorHandle(err);
+  }
+};
+export const getUser = async (Id: string) => {
+  try {
+    const response = await Api.post(franchiseRoutes.getUser, { Id: Id });
+    return response;
+  } catch (error) {
+    const err: Error = error as Error;
+    return errorHandle(err);
+  }
+};
+export const changeStatus = async (bookingId: string, status: string) => {
+  try {
+    const response = await Api.post(franchiseRoutes.changeStatus, {
+      bookingId: bookingId,
+      status: status,
+    });
+    return response;
+  } catch (error) {
+    const err: Error = error as Error;
+    return errorHandle(err);
+  }
+};
+export const getService = async (id: string) => {
+  try {
+    const response = await Api.post(franchiseRoutes.getService,{Id:id});
     return response;
   } catch (error) {
     const err: Error = error as Error;

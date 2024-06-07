@@ -1,17 +1,21 @@
-import axios, { AxiosError } from "axios";
+import { AxiosError } from "axios";
 import { toast } from "react-toastify";
 
-interface iErrorResponse {
+interface IErrorResponse {
   message: string;
+  accountType: string;
 }
-const errorHandle = (error: Error | AxiosError) => {
+
+const errorHandle = (
+  error: Error | AxiosError
+) => {
   const axiosError = error as AxiosError;
-
   if (axiosError.response?.data) {
-    const errorResponse = axiosError.response.data as iErrorResponse;
-
+    const errorResponse = axiosError.response.data as IErrorResponse;
     if (errorResponse.message) {
-      toast.error(errorResponse.message);
+      {
+        toast.error(errorResponse.message);
+      }
     } else {
       console.log("Error response has no message");
     }

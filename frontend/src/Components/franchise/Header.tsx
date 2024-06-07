@@ -42,7 +42,7 @@ function Header() {
   };
 
   return (
-    <nav className="sticky top-0 z-10 block w-full max-w-full   px-4 py-2 text-white bg-[#86D2CD]  rounded-none shadow-md h-max   backdrop-blur-2xl backdrop-saturate-200 lg:px-8 lg:py-4">
+    <nav className="sticky top-0 z-50 block w-full max-w-full   px-4 py-2 text-white bg-[#86D2CD]  rounded-none shadow-md h-max   backdrop-blur-2xl backdrop-saturate-200 lg:px-8 lg:py-4">
       <div className="flex items-center justify-between text-blue-gray-900">
         <img className="h-[40px]" src="/public/logo/logo-color.png" alt="" />
 
@@ -60,7 +60,7 @@ function Header() {
               </li>
               <li className="block p-1 font-sans text-md antialiased font-normal leading-normal text-blue-gray-900">
                 <NavLink
-                  to="#"
+                  to="/franchise/myBookings"
                   className="flex items-center"
                   style={({ isActive }) => (isActive ? activeStyle : undefined)}
                 >

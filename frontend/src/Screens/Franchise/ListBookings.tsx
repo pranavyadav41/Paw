@@ -1,23 +1,25 @@
 import { useEffect, useState } from "react";
-import { getBookings, getService } from "../../api/user";
+import { getBookings,getService} from "../../api/franchise";
 import { useSelector } from "react-redux";
 import { Link } from "react-router-dom";
 import { RootState } from "../../redux/store";
 
 const MyBookings = () => {
-  const { userInfo } = useSelector((state: RootState) => state.auth);
+  const { franchiseInfo } = useSelector((state: RootState) => state.franchiseAuth);
   const [bookings, setBookings] = useState<any>([]);
   const [services, setServices] = useState<{ [key: string]: string }>({});
 
   useEffect(() => {
-    if (userInfo) {
-      getBookings(userInfo._id)
-        .then((response) => setBookings(response?.data))
+    if (franchiseInfo) {
+      getBookings(franchiseInfo._id)
+        .then((response) => {
+          console.log(response)
+          setBookings(response?.data)})
         .catch((error) => console.error("Error fetching bookings:", error));
     }
-  }, [userInfo]);
- 
-  useEffect(() => {
+  }, [franchiseInfo]);
+
+  useEffect(() => { 
     if (bookings.length > 0) {
       bookings.forEach((booking: any) => {
         getService(booking.serviceId)
@@ -25,7 +27,7 @@ const MyBookings = () => {
             setServices((prevServices) => ({
               ...prevServices,
               [booking.serviceId]: response?.data.category,
-            })); 
+            }));
           })
           .catch((error) =>
             console.error(`Error fetching service ${booking.serviceId}:`, error)
@@ -34,6 +36,10 @@ const MyBookings = () => {
     }
   }, [bookings]);
 
+  const handleViewDetails = (bookingId: string) => {
+    // Navigate to booking details page
+  };
+
   const convertTo12HourFormat = (time: string) => {
     const [hour, minute] = time.split(":").map(Number);
     const period = hour >= 12 ? "PM" : "AM";
@@ -41,7 +47,7 @@ const MyBookings = () => {
     return `${adjustedHour}:${minute < 10 ? "0" + minute : minute} ${period}`;
   };
 
-  return ( 
+  return (
     <div className="relative min-h-screen">
       <div
         className="absolute inset-0 bg-cover bg-center opacity-50"
@@ -49,7 +55,7 @@ const MyBookings = () => {
       ></div>
       <div className="relative container mx-auto p-6 max-w-6xl z-10">
         <h2 className="text-3xl font-bold mb-6 text-center text-[#3968B6]">
-          My Bookings
+          All Bookings
         </h2>
         <div className="grid gap-3 lg:grid-cols-1">
           {bookings.map((booking: any) => (
@@ -60,20 +66,20 @@ const MyBookings = () => {
               <div className="flex items-center justify-between mb-4">
                 <h3 className="text-xl font-semibold">
                   Status:
-                  {(booking.bookingStatus === "pending" || booking.bookingStatus === "Pending" ) && (
+                  {(booking.bookingStatus === "pending" || booking.bookingStatus === "Pending") && (
                     <span className="text-yellow-500"> {booking.bookingStatus}</span>
                   )}
                   {booking.bookingStatus === "Completed" && (
-                    <span className="text-green-600"> {booking.bookingStatus}</span>
+                    <span className="text-green-500"> {booking.bookingStatus}</span>
                   )}
                   {booking.bookingStatus === "Cancelled" && (
                     <span className="text-red-500"> {booking.bookingStatus}</span>
                   )}
                 </h3>
-               <button 
-                  className="bg-[#88c699] text-white lg:px-5 lg:py-2 px-3 py-1 rounded hover:bg-green-400  transition-colors"
+                <button 
+                  className="bg-[#88c699] text-white font-semibold px-4 py-1 rounded hover:bg-green-400 transition-colors"
                   // onClick={() => handleViewDetails(booking._id)}
-                ><Link to={`/bookingDetail/${booking._id}`}>View Details</Link>
+                ><Link to={`/franchise/bookingDetail/${booking._id}`}>View Details</Link>
                   
                 </button>
               </div>

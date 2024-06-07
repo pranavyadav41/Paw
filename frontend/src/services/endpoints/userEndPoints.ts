@@ -21,7 +21,11 @@ const userRoutes={
     confirmBooking:'/user/bookService',
     getCoupons:'/user/getAllCoupons',
     applyCoupon:'/user/applyCoupon',
-    getBookings:'/user/getBookings'
+    getBookings:'/user/getBookings',
+    fetchBooking:'/user/getBooking',
+    getFranchise:'/user/getFranchise',
+    checkDate:'/user/checkDate',
+    confirmCancel:'/user/confirmCancel',
 }
 
 export default userRoutes 

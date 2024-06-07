@@ -18,8 +18,6 @@ const ServiceDetail: React.FC = () => {
   const { id } = useParams<{ id: string }>();
   const [service, setService] = useState<Service | null>(null);
 
-  console.log(id);
-
   useEffect(() => {
     if (id) {
       getService(id).then((response) => setService(response?.data));

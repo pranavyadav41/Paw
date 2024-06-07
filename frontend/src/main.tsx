@@ -10,7 +10,7 @@ import "react-toastify/dist/ReactToastify.css";
 import "./index.css";
 
 const CLIENT_ID =
-  "Af7QRapmxxFahYN1msXn64YmqQzAv5ONt3qGnOCLqT9DGLL7U3b38yC2HqsjIxUpRbZEleL2I1D5sCeO";
+  "AQfGdzRqN2AI8KMjftw1H6GyxshTx0QxieZ3oELTUfN0qH-1F5zCofB6GHtu0G6rxhGT8Kgg6MYyF8IW";
 
 ReactDOM.createRoot(document.getElementById("root")!).render(
   <Provider store={store}>

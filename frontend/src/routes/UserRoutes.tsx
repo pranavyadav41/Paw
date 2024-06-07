@@ -3,6 +3,7 @@ import { Routes, Route } from "react-router-dom";
 import UserLayout from "../layout/userLayout/userLayout";
 import LoadingSpinner from "../Components/common/loadingSpinner";
 import Error404 from "../Screens/Error404";
+import UserProtect from "../protected/protectedRoute";
 
 const LoginPage = lazy(() => import("../Screens/User/loginPage"));
 const SignupPage = lazy(() => import("../Screens/User/signupPage"));
@@ -18,11 +19,14 @@ const ProfilePage = lazy(() => import("../Screens/User/ProfilePage"));
 const Checkout = lazy(()=>import("../Screens/User/checkOut"))
 const Success = lazy(()=>import("../Screens/User/successBooking"))
 const MyBookings = lazy(()=>import("../Screens/User/MyBookings"))
+const Booking = lazy(()=>import("../Screens/User/BookingDetail"))
+
 
 function UserRoutes() {
   return (
     <Suspense fallback={<LoadingSpinner/>}>
       <Routes>
+        {/* <Route element={<UserProtect/>}> */}
         <Route element={<UserLayout />}>
           <Route index element={<Home />} />
           <Route path="/home" element={<Home />} /> 
@@ -34,7 +38,9 @@ function UserRoutes() {
           <Route path="/checkout" element={<Checkout/>} />
           <Route path="/success" element={<Success/>} />
           <Route path="/myBookings" element={<MyBookings/>} />
+          <Route path = "/bookingDetail/:id" element={<Booking/>} />
         </Route>
+        {/* </Route> */}
 
         <Route path="login" element={<LoginPage />} />
         <Route path="register" element={<SignupPage />} />

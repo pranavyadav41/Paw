@@ -66,7 +66,7 @@ function Header() {
             <ul className="flex flex-col gap-2 mt-2 mb-4 lg:mb-0 lg:mt-0 lg:flex-row lg:items-center lg:gap-6 text-lg">
               <li className="block p-1 font-sans text-md antialiased font-normal leading-normal text-blue-gray-900">
                 <NavLink
-                  to="/"
+                  to="/home"
                   className="flex items-center"
                   style={({ isActive }) => (isActive ? activeStyle : undefined)}
                 >

@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, {  useEffect } from 'react';
 import { PayPalButtons, usePayPalScriptReducer, ReactPayPalScriptOptions } from "@paypal/react-paypal-js";
 
 interface Options extends ReactPayPalScriptOptions {
@@ -11,38 +11,33 @@ interface PaymentProps {
 }
 
 const Payment: React.FC<PaymentProps> = ({ total, handleBooking }) => {
-  
   const [{ options, isPending }, dispatch] = usePayPalScriptReducer();
-  const [currency, setCurrency] = useState<string>((options as Options).currency);
-
 
   useEffect(() => {
     dispatch({
       type: "resetOptions",
       value: {
         ...options,
-        currency: currency,
-        "client-id": "Af7QRapmxxFahYN1msXn64YmqQzAv5ONt3qGnOCLqT9DGLL7U3b38yC2HqsjIxUpRbZEleL2I1D5sCeO",
+        currency: (options as Options).currency,
+        "client-id": "AQfGdzRqN2AI8KMjftw1H6GyxshTx0QxieZ3oELTUfN0qH-1F5zCofB6GHtu0G6rxhGT8Kgg6MYyF8IW",
       } as Options,
     });
   }, [total]);
 
-  const onCreateOrder = (actions: any, value: any) => {
+  const onCreateOrder = (data: any, actions: any) => {
     return actions.order.create({
       purchase_units: [
         {
           amount: {
-            value: value,
+            value: total,
           },
         },
       ],
     });
   };
 
-  const onApproveOrder = (actions: any) => {
+  const onApproveOrder = (data: any, actions: any) => {
     return actions.order.capture().then((details: any) => {
-      const name = details.payer.name.given_name;
-      alert(`Transaction completed by ${name}`);
       handleBooking();
     });
   };
@@ -55,8 +50,8 @@ const Payment: React.FC<PaymentProps> = ({ total, handleBooking }) => {
         <>
           <PayPalButtons
             style={{ layout: "vertical" }}
-            createOrder={(data,actions) => onCreateOrder(actions, total)}
-            onApprove={(data,actions) => onApproveOrder(actions)}
+            createOrder={onCreateOrder}
+            onApprove={onApproveOrder}
           />
         </>
       )}

@@ -11,12 +11,14 @@ const ForgetEmail = lazy(() => import("../Screens/Franchise/ForgotEmail"));
 const ResetPassword = lazy(() => import("../Screens/Franchise/ResetPassword"));
 const ProfilePage = lazy(() => import("../Screens/Franchise/ProfilePage"));
 const Otp = lazy(() => import("../Screens/Franchise/OtpPage"));
+const MyBookings = lazy(()=>import("../Screens/Franchise/ListBookings"))
+const Booking = lazy(()=>import("../Screens/Franchise/BookingDetail"))
 
 function FranchiseRoutes() {
   return (
     <Suspense fallback={<LoadingSpinner />}>
       <Routes>
-        <Route path="/register" element={<RegisterPage />} />
+        <Route path="/register" element={<RegisterPage />} /> 
         <Route path="/login" element={<LoginPage />} />
         <Route path="/otp" element={<Otp />} />
         <Route path="/verifyEmail" element={<ForgetEmail />} />
@@ -24,6 +26,8 @@ function FranchiseRoutes() {
         <Route element={<FranchiseProtected />}>
           <Route path="/" element={<FranchiseLayout />}>
             <Route path="/profile" element={<ProfilePage />} />
+            <Route path="/myBookings" element={<MyBookings/>} />
+          <Route path = "/bookingDetail/:id" element={<Booking/>} />
           </Route>
         </Route>
       </Routes>

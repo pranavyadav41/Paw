@@ -13,15 +13,6 @@ interface loginData {
   password?: string;
 }
 
-interface address {
-  name: string;
-  houseName: string;
-  street: string;
-  city: string;
-  state: string;
-  pincode: string;
-}
-
 export const signup = async (userData: userFormData) => {
   try {
     const response = await Api.post(userRoutes.signup, userData);
@@ -213,6 +204,54 @@ export const applyCoupon = async (total: string, couponCode: string) => {
 export const getBookings = async (userId: string) => {
   try {
     const response = await Api.post(userRoutes.getBookings, { userId: userId });
+    return response;
+  } catch (error) {
+    const err: Error = error as Error;
+    return errorHandle(err);
+  }
+};
+export const fetchBooking = async (id: string) => {
+  try {
+    const response = await Api.get(`${userRoutes.fetchBooking}/${id}`);
+    return response;
+  } catch (error) {
+    const err: Error = error as Error;
+    return errorHandle(err);
+  }
+};
+export const getFranchise = async (Id: string) => {
+  try {
+    const response = await Api.post(userRoutes.getFranchise, { Id: Id });
+    return response;
+  } catch (error) {
+    const err: Error = error as Error;
+    return errorHandle(err);
+  }
+};
+export const checkDate = async (bookingId: string, date: Date) => {
+  try {
+    const response = await Api.post(userRoutes.checkDate, {
+      bookId: bookingId,
+      date: date,
+    });
+    return response;
+  } catch (error) {
+    const err: Error = error as Error;
+    return errorHandle(err);
+  }
+};
+export const confirmCancel = async (
+  bookingId: string,
+  userId: string,
+  amount: string
+) => {
+  try {
+    const response = await Api.post(userRoutes.confirmCancel, {
+      bookId: bookingId,
+      userId: userId,
+      amount: amount,
+    });
+
     return response;
   } catch (error) {
     const err: Error = error as Error;

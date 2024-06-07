@@ -32,7 +32,7 @@ const SuccessBooking: React.FC = () => {
               //   onClick={onGoToMyBookings}
               className="bg-[#0F689D] hover:bg-pink-500 text-white text-base font-semi-bold py-2 px-5 rounded-full"
             >
-              My Bookings
+              <Link to="/myBookings">My Bookings</Link>
             </button>
             <button
               //   onClick={onGoToHomepage}

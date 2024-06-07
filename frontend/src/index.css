@@ -1,6 +1,5 @@
-*{
-    font-family: "Outfit", sans-serif;
-    
+* {
+  font-family: "Poppins", sans-serif;
 }
 @tailwind base;
 @tailwind components;

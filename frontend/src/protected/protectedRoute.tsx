@@ -1,20 +1,15 @@
 import { useSelector } from "react-redux";
 import { Navigate,Outlet } from "react-router-dom";
-
-interface userAuth{
-    auth:{
-        userInfo:boolean
-    }
-}
+import { RootState } from "../redux/store";
 
 
 function userProtect(){
 
-    const userInfo = useSelector((state:userAuth)=>state.auth)
+    const {userInfo} = useSelector((state:RootState)=>state.auth)
 
     return (
         userInfo?<Outlet/> : <Navigate to='/' replace />
     )
 }
 
-export default userProtect;
+export default userProtect; 
