@@ -1,9 +1,9 @@
 import { useState, useEffect } from "react";
-import { FaUserCircle, FaMapMarkerAlt,FaLock} from "react-icons/fa";
+import { FaUserCircle, FaWallet, FaLock } from "react-icons/fa";
 import Profile from "../../Components/user/Profile";
-// import Addresses from "../../Components/user/Addresses";
 import ChangePassword from "../../Components/user/ChangePassword";
-import { getProfile, getAddresses } from "../../api/user";
+import Wallet from "../../Components/user/wallet";
+import { getProfile, getWallet } from "../../api/user"; // Assuming getWallet is a function to fetch wallet data
 import { RootState } from "../../redux/store";
 import { useSelector } from "react-redux";
 
@@ -12,20 +12,28 @@ interface ProfileState {
   name: string;
   email: string;
   phone: string;
-} 
+}
+
+interface WalletState {
+  balance: number;
+  history: { date: Date; amount: number }[];
+}
 
 const ProfilePage = () => {
   const [activeTab, setActiveTab] = useState("profile");
-  // const [addresses, setAddresses] = useState([]);
   const [loadingProfile, setLoadingProfile] = useState(true);
-  // const [loadingAddresses, setLoadingAddresses] = useState(true);
+  const [loadingWallet, setLoadingWallet] = useState(true);
   const [state, setState] = useState(false);
-  const [add, setAdd] = useState(false);
   const [profile, setProfile] = useState<ProfileState>({
     _id: "",
     name: "",
     email: "",
     phone: "",
+  });
+
+  const [wallet, setWallet] = useState<WalletState>({
+    balance: 0,
+    history: [],
   });
 
   const handleTabChange = (tab: string) => {
@@ -44,27 +52,25 @@ const ProfilePage = () => {
         setLoadingProfile(false);
       });
     setState(false);
-  }, [state]);
+  }, [state, userInfo._id]);
 
-  // useEffect(() => {
-  //   setLoadingAddresses(true);
-  //   getAddresses(userInfo._id)
-  //     .then((response) => {
-  //       setAddresses(response?.data);
-  //     })
-  //     .finally(() => {
-  //       setLoadingAddresses(false);
-  //     });
-  //   setAdd(false);
-  // }, [add]);
+  useEffect(() => {
+    if (activeTab === "wallet") {
+      setLoadingWallet(true);
+      getWallet(userInfo._id)
+        .then((response) => {
+          console.log(response)
+          setWallet(response?.data);
+        })
+        .finally(() => {
+          setLoadingWallet(false);
+        });
+    }
+  }, [activeTab, userInfo._id]);
 
   const handle = (data: boolean) => {
     setState(data);
   };
-
-  // const handleAddAddress = (data: boolean) => {
-  //   setAdd(data);
-  // };
 
   return (
     <div className="flex flex-col md:flex-row justify-center items-start min-h-screen md:mt-16">
@@ -82,17 +88,17 @@ const ProfilePage = () => {
               onClick={() => handleTabChange("profile")}
             >
               <FaUserCircle className="text-lg" />
-              <span className="font-semibold text-sm md:text-base">Profile</span> 
+              <span className="font-semibold text-sm md:text-base">Profile</span>
             </button>
-            {/* <button
+            <button
               className={`w-full flex items-center gap-3 p-4 rounded-md text-base transition-colors duration-300 ${
-                activeTab === "manageAddress" ? "bg-[#48808b]" : ""
+                activeTab === "wallet" ? "bg-[#48808b]" : ""
               }`}
-              onClick={() => handleTabChange("manageAddress")}
+              onClick={() => handleTabChange("wallet")}
             >
-              <FaMapMarkerAlt className="text-lg" />
-              <span className="font-semibold text-sm md:text-base">Manage Address</span>
-            </button> */}
+              <FaWallet className="text-lg" />
+              <span className="font-semibold text-sm md:text-base">My wallet</span>
+            </button>
             <button
               className={`w-full flex items-center gap-3 p-4 rounded-md text-base transition-colors duration-300 ${
                 activeTab === "changePassword" ? "bg-[#48808b]" : ""
@@ -112,19 +118,17 @@ const ProfilePage = () => {
           ) : activeTab === "profile" ? (
             <Profile profile={profile} state={handle} />
           ) : null}
-          {/* {loadingAddresses ? (
-            <div className="text-center text-gray-500 text-sm md:text-lg">
-              Loading Addresses...
-            </div>
-          ) : activeTab === "manageAddress" ? (
-            <Addresses
-              addresses={addresses}
-              Id={profile._id}
-              onAddAddress={handleAddAddress}
-            />
-          ) : null} */}
+          {activeTab === "wallet" ? (
+            loadingWallet ? (
+              <div className="text-center text-gray-500 text-sm md:text-lg">
+                Loading Wallet...
+              </div>
+            ) : (
+              <Wallet balance={wallet.balance} history={wallet.history}/>
+            )
+          ) : null}
           {activeTab === "changePassword" ? (
-            <ChangePassword Id={userInfo._i}  />
+            <ChangePassword Id={userInfo._id} />
           ) : null}
         </div>
       </div>

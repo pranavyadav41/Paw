@@ -3,7 +3,7 @@ import {
   FaMapMarkerAlt,
   FaTicketAlt,
   FaCalendarAlt,
-  FaDollarSign,
+  FaRupeeSign,
 } from "react-icons/fa";
 import { useLocation, useNavigate } from "react-router-dom";
 import Modal from "react-modal";
@@ -120,12 +120,12 @@ const Checkout = () => {
   return (
     <div className="min-h-screen flex justify-center items-center bg-gray-100">
       <div className="bg-white rounded-lg shadow-lg max-w-6xl w-full mx-4 md:mx-0 p-8 mb-20">
-        <h2 className="text-3xl font-bold mb-6 text-indigo-600">Checkout</h2>
+        <h2 className="text-3xl font-bold mb-6 text-[#3968B6]">Checkout</h2>
         <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
           <div>
             <div className="bg-gray-50 p-6 rounded-lg mb-4">
               <h3 className="text-xl font-semibold mb-2 flex items-center">
-                <FaTicketAlt className="mr-2 text-indigo-600" /> Service Details
+                <FaTicketAlt className="mr-2 text-[#9AD1AA]" /> Service Details
               </h3>
               <p className="text-gray-600">
                 <span className="text-black font-medium">Category: </span>
@@ -138,7 +138,7 @@ const Checkout = () => {
             </div>
             <div className="bg-gray-50 p-6 rounded-lg mb-4">
               <h3 className="text-lg font-bold mb-2 flex items-center">
-                <FaCalendarAlt className="mr-2 text-indigo-600" /> Booked Slot
+                <FaCalendarAlt className="mr-2 text-[#9AD1AA]" /> Booked Slot
               </h3>
               <p className="text-gray-700">
                 <span className="text-black font-medium">Date:</span>{" "}
@@ -152,7 +152,7 @@ const Checkout = () => {
             </div>
             <div className="bg-gray-50 p-6 rounded-lg mb-4">
               <h3 className="text-xl font-semibold mb-2 flex items-center">
-                <FaMapMarkerAlt className="mr-2 text-indigo-600" /> Address
+                <FaMapMarkerAlt className="mr-2 text-[#9AD1AA]" /> Address
               </h3>
               <p className="text-gray-600">
                 {bookingData.name}, {bookingData.phone}
@@ -175,7 +175,7 @@ const Checkout = () => {
             </div>
             <div className="bg-gray-50 p-6 rounded-lg mb-4 relative">
               <h3 className="text-xl font-semibold mb-4 flex items-center">
-                <FaDollarSign className="mr-2 text-indigo-600" /> Billing
+                <FaRupeeSign className="mr-2 text-[#9AD1AA]" /> Billing
               </h3>
 
               <div className="mb-4">
@@ -196,7 +196,7 @@ const Checkout = () => {
                   />
                   <button
                     onClick={handleApplyCoupon}
-                    className="bg-indigo-600 text-white px-4 py-2 rounded-r hover:bg-indigo-700 focus:outline-none focus:ring focus:ring-indigo-300 transition duration-200"
+                    className="bg-[#9AD1AA] text-white px-4 py-2 rounded-r hover:bg-green-500 focus:outline-none focus:ring focus:ring-indigo-300 transition duration-200"
                   >
                     Apply
                   </button>
@@ -218,7 +218,7 @@ const Checkout = () => {
               </div>
               <div className="flex justify-between font-semibold mb-4">
                 <span>Total Amount</span>
-                <span className="text-xl text-indigo-600">
+                <span className="text-xl text-[#3968B6]">
                   ₹{total || 29.99}
                 </span>
               </div>

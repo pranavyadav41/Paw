@@ -57,9 +57,9 @@ function Header() {
   };
 
   return (
-    <nav className="sticky top-0 z-20 block w-full max-w-full px-4 py-2 text-white bg-[#86D2CD] rounded-none shadow-md h-max backdrop-blur-2xl backdrop-saturate-200 lg:px-8 lg:py-4">
+    <nav className="sticky top-0 z-50 block w-full max-w-full px-4 py-2 text-white bg-[#3968B6] rounded-none shadow-md h-max backdrop-blur-2xl backdrop-saturate-200 lg:px-8 lg:py-4">
       <div className="flex items-center justify-between text-blue-gray-900">
-        <img className="h-[40px]" src="/public/logo/logo-color.png" alt="" />
+        <img className="h-[40px]" src="/public/logo/logo-white-removebg-preview.png" alt="" />
 
         <div className="flex items-center gap-4">
           <div className="hidden mr-4 lg:block">
@@ -106,9 +106,9 @@ function Header() {
             >
               {userInfo ? (
                 <>
-                  <FaUserAlt />
-                  <span>{userInfo.name}</span>
-                  <FaCaretDown />
+                  <FaUserAlt className="text-gray-200" />
+                  <span className="text-gray-200">{userInfo.name}</span>
+                  <FaCaretDown className="text-gray-200" />
                 </>
               ) : (
                 <span className="text-[14px] mt-1 text-gray-600">Login</span>

@@ -243,13 +243,52 @@ export const checkDate = async (bookingId: string, date: Date) => {
 export const confirmCancel = async (
   bookingId: string,
   userId: string,
-  amount: string
+  amount: string,
+  isDate: boolean
 ) => {
   try {
     const response = await Api.post(userRoutes.confirmCancel, {
       bookId: bookingId,
       userId: userId,
       amount: amount,
+      isDate: isDate,
+    });
+
+    return response;
+  } catch (error) {
+    const err: Error = error as Error;
+    return errorHandle(err);
+  }
+};
+export const getWallet = async (userId: string) => {
+  try {
+    const response = await Api.post(userRoutes.getWallet, {
+      userId: userId,
+    });
+    return response;
+  } catch (error) {
+    const err: Error = error as Error;
+    return errorHandle(err);
+  }
+};
+export const submitFeedback = async (formData: FormData) => {
+  try {
+    const response = await Api.post(userRoutes.submitFeedback, formData, {
+      headers: {
+        "Content-Type": "multipart/form-data",
+      },
+    });
+
+    return response;
+  } catch (error) {
+    const err: Error = error as Error;
+    return errorHandle(err);
+  }
+};
+export const getFeedbacks = async (serviceId: string) => {
+  try {
+    const response = await Api.post(userRoutes.getFeedbacks, {
+      serviceId: serviceId,
     });
 
     return response;

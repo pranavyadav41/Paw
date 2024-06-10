@@ -6,10 +6,15 @@ import {
   getService,
   getFranchise,
   checkDate,
+  confirmCancel,
+  submitFeedback,
 } from "../../api/user";
 import { FaCheckCircle, FaTimesCircle, FaCommentAlt } from "react-icons/fa";
+import { FcClock } from "react-icons/fc";
+import { toast } from "react-toastify";
+import ReviewComponent from "../../Components/user/feedback";
 
-Modal.setAppElement("#root"); // Ensure to set the app element for accessibility
+Modal.setAppElement("#root");
 
 interface Address {
   houseName: string;
@@ -24,6 +29,7 @@ interface Booking {
   name: string;
   phone: string;
   franchiseId: string;
+  scheduledDate: string;
   bookingDate: Date;
   startTime: string;
   endTime: string;
@@ -66,6 +72,7 @@ const BookingDetails = () => {
   const [franchise, setFranchise] = useState<Franchise>();
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [sameDate, setSameDate] = useState(false);
+  const [shouldFetch, setShouldFetch] = useState(false);
 
   useEffect(() => {
     if (id) {
@@ -73,7 +80,7 @@ const BookingDetails = () => {
         setBooking(response?.data);
       });
     }
-  }, [id]);
+  }, [id, shouldFetch]);
 
   useEffect(() => {
     if (booking?.serviceId) {
@@ -114,12 +121,43 @@ const BookingDetails = () => {
     });
   };
 
-  const confirmCancel = ()=>{
+  const ConfirmCancel = () => {
+    confirmCancel(
+      booking._id,
+      booking.userId,
+      booking.totalAmount,
+      sameDate
+    ).then((response) => {
+      toast.success(response?.data.message, {
+        position: "top-center",
+      });
+      setIsModalOpen(false);
+    });
+    setShouldFetch((prev) => !prev);
+  };
 
-    
+  const handleFeedback = async (data: {
+    serviceRating: number;
+    review: string;
+    images: File[];
+  }) => {
+    const formData = new FormData();
+    formData.append("serviceRating", data.serviceRating.toString());
+    formData.append("review", data.review);
+    data.images.forEach((image) => {
+      formData.append("images", image, image.name);
+    });
+    formData.append("name",booking.name)
+    formData.append("serviceId", booking.serviceId);
+    formData.append("userId", booking.userId);
 
-  }
-
+    const response = await submitFeedback(formData);
+    if (response) {
+      toast.success(response?.data.message, {
+        position: "top-center",
+      });
+    }
+  };
   return (
     <div className="relative container mx-auto py-8 min-h-screen w-full  flex flex-col items-center">
       <div
@@ -141,8 +179,12 @@ const BookingDetails = () => {
               <strong className="text-gray-800">Phone:</strong> {booking.phone}
             </p>
             <p className="text-gray-600">
-              <strong className="text-gray-800">Booking Date:</strong>{" "}
+              <strong className="text-gray-800">Booked On:</strong>{" "}
               {new Date(booking.bookingDate).toLocaleDateString()}
+            </p>
+            <p className="text-gray-600">
+              <strong className="text-gray-800">Scheduled On:</strong>{" "}
+              {new Date(booking.scheduledDate).toLocaleDateString()}
             </p>
             <p className="text-gray-600">
               <strong className="text-gray-800">Slot:</strong>{" "}
@@ -150,9 +192,9 @@ const BookingDetails = () => {
               {convertTo12HourFormat(booking.endTime)}
             </p>
             <p className="text-gray-800">
-                <strong className="text-gray-800">Total: </strong>
-                ₹{booking.totalAmount}
-              </p>
+              <strong className="text-gray-800">Total: </strong>₹
+              {booking.totalAmount}
+            </p>
             <div className="flex items-center space-x-1">
               <p className="text-gray-800">
                 <strong className="text-gray-800">Status: </strong>
@@ -160,6 +202,8 @@ const BookingDetails = () => {
               </p>
               {booking.bookingStatus === "Completed" ? (
                 <FaCheckCircle className="text-green-500" />
+              ) : booking.bookingStatus === "Pending" ? (
+                <FcClock className="text-black" />
               ) : (
                 <FaTimesCircle className="text-red-500" />
               )}
@@ -220,7 +264,7 @@ const BookingDetails = () => {
               </div>
             </div>
             <div className="md:mr-36 md:mt-28">
-              {booking.bookingStatus !== "Completed" && (
+              {booking.bookingStatus == "Pending" && (
                 <button
                   className="bg-red-500 text-white px-6 py-1  md:py-2 rounded-md hover:bg-red-600 transition-colors duration-300"
                   onClick={handleCancel}
@@ -229,6 +273,9 @@ const BookingDetails = () => {
                 </button>
               )}
             </div>
+            {booking.bookingStatus == "Completed" && (
+              <ReviewComponent onSubmit={handleFeedback} />
+            )}
           </div>
         )}
       </div>
@@ -261,7 +308,7 @@ const BookingDetails = () => {
           </button>
           <button
             className="bg-red-400 text-white px-4 py-2 rounded-md hover:bg-red-500"
-            onClick={() => ""}
+            onClick={ConfirmCancel}
           >
             Confirm Cancel
           </button>

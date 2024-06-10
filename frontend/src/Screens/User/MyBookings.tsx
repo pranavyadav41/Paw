@@ -79,8 +79,8 @@ const MyBookings = () => {
               </div>
               <div className="text-gray-600 flex flex-col gap-1">
                 <p>
-                  <strong>Booking Date:</strong>{" "}
-                  {new Date(booking.bookingDate).toLocaleDateString()}
+                  <strong>Scheduled on:</strong>{" "}
+                  {new Date(booking.scheduledDate).toLocaleDateString()}
                 </p>
                 <p>
                   <strong>Slot:</strong>{" "}

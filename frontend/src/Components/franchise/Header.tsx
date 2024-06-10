@@ -1,6 +1,6 @@
 import { useSelector, useDispatch } from "react-redux";
 import { useState } from "react";
-import { useNavigate } from "react-router-dom";
+// import { useNavigate } from "react-router-dom";
 import { logout } from "../../redux/slices/franchiseSlice";
 import { FaUserAlt, FaCaretDown } from "react-icons/fa";
 import { NavLink } from "react-router-dom";
@@ -12,11 +12,11 @@ function Header() {
   const [isDropdownOpen, setIsDropdownOpen] = useState(false);
   const [isHamburger, setIsHamburger] = useState(false);
   const [userDropdown, setIsDropdown] = useState(false);
-  let navigate = useNavigate();
+  // let navigate = useNavigate();
   let dispatch = useDispatch();
 
   const activeStyle = {
-    color: "black",
+    color: "yellow",
     fontWeight: 500,
   };
 
@@ -51,7 +51,7 @@ function Header() {
             <ul className="flex flex-col gap-2 mt-2 mb-4 lg:mb-0 lg:mt-0 lg:flex-row lg:items-center lg:gap-6 text-lg">
               <li className="block p-1 font-sans text-md antialiased font-normal leading-normal text-blue-gray-900">
                 <NavLink
-                  to="/franchise"
+                  to="/franchise/dashboard"
                   className="flex items-center"
                   style={({ isActive }) => (isActive ? activeStyle : undefined)}
                 >
@@ -69,7 +69,7 @@ function Header() {
               </li>
               <li className="block p-1 font-sans text-md antialiased font-normal leading-normal text-blue-gray-900">
                 <NavLink
-                  to="#"
+                  to="/franchise/chat"
                   className="flex items-center "
                   style={({ isActive }) => (isActive ? activeStyle : undefined)}
                 >

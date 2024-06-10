@@ -152,7 +152,7 @@ const BookingDetails = () => {
               )}
             </select>
             <button
-              className="bg-blue-800 text-white text-sm md:text-base px-3 py-1 rounded-md hover:bg-blue-600"
+              className="bg-[#9AD1AA] text-white text-sm md:text-base px-3 py-1 rounded-md hover:bg-green-300"
               onClick={handleStatusChange}
             >
               Update Status

@@ -26,6 +26,9 @@ const userRoutes={
     getFranchise:'/user/getFranchise',
     checkDate:'/user/checkDate',
     confirmCancel:'/user/confirmCancel',
+    getWallet:'/user/getWallet',
+    submitFeedback:'/user/submitFeedback',
+    getFeedbacks:'/user/getFeedbacks'
 }
 
 export default userRoutes 
