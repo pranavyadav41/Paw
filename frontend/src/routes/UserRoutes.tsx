@@ -20,6 +20,7 @@ const Checkout = lazy(()=>import("../Screens/User/checkOut"))
 const Success = lazy(()=>import("../Screens/User/successBooking"))
 const MyBookings = lazy(()=>import("../Screens/User/MyBookings"))
 const Booking = lazy(()=>import("../Screens/User/BookingDetail"))
+const Chat = lazy(()=>import("../Components/user/Chat"))
 
 
 function UserRoutes() {
@@ -39,6 +40,7 @@ function UserRoutes() {
           <Route path="/success" element={<Success/>} />
           <Route path="/myBookings" element={<MyBookings/>} />
           <Route path = "/bookingDetail/:id" element={<Booking/>} />
+          <Route path="/chat" element={<Chat/>} />
         </Route>
         {/* </Route> */}
 

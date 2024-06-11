@@ -270,7 +270,7 @@ export const getWallet = async (userId: string) => {
     const err: Error = error as Error;
     return errorHandle(err);
   }
-};
+}; 
 export const submitFeedback = async (formData: FormData) => {
   try {
     const response = await Api.post(userRoutes.submitFeedback, formData, {

@@ -13,6 +13,7 @@ import { FaCheckCircle, FaTimesCircle, FaCommentAlt } from "react-icons/fa";
 import { FcClock } from "react-icons/fc";
 import { toast } from "react-toastify";
 import ReviewComponent from "../../Components/user/feedback";
+import Chat from "../../Components/user/Chat";
 
 Modal.setAppElement("#root");
 
@@ -73,6 +74,7 @@ const BookingDetails = () => {
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [sameDate, setSameDate] = useState(false);
   const [shouldFetch, setShouldFetch] = useState(false);
+  const [showChat, setShowChat] = useState(false);
 
   useEffect(() => {
     if (id) {
@@ -257,7 +259,8 @@ const BookingDetails = () => {
                 {franchise.phone}
               </p>
               <div className="flex justify-start mt-4">
-                <button className="bg-blue-800 text-white px-6 py-1 md:py-2 rounded-md hover:bg-blue-600 flex items-center space-x-2">
+                <button className="bg-blue-800 text-white px-6 py-1 md:py-2 rounded-md hover:bg-blue-600 flex items-center space-x-2"
+                 onClick={() => setShowChat(!showChat)}>
                   <FaCommentAlt />
                   <span>Chat with Us</span>
                 </button>
@@ -279,6 +282,8 @@ const BookingDetails = () => {
           </div>
         )}
       </div>
+
+      {showChat && <Chat userId={booking.userId}  franchiseId={booking.franchiseId} />}
 
       <Modal
         isOpen={isModalOpen}
