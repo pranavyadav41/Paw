@@ -3,8 +3,9 @@ import io, { Socket } from "socket.io-client";
 import { getMessages, sendMessage } from "../../api/chat";
 import { FaTimes, FaPaperclip, FaUserCircle } from "react-icons/fa";
 import { IoMdChatbubbles } from "react-icons/io";
-import { ImExit } from "react-icons/im";
+import { ImExit, ImAttachment } from "react-icons/im";
 import { format } from "date-fns";
+import socket from "../socket";
 
 interface Message {
   sender: string;
@@ -13,22 +14,25 @@ interface Message {
   timestamp: Date;
 }
 
-interface ChatRoomProps {
+interface ChatRoomProps { 
   userId: string;
   franchiseId: string;
+  name:string;
 }
 
-const socket: Socket = io("http://localhost:7000");
-
-const ChatRoom: React.FC<ChatRoomProps> = ({userId,franchiseId}) => {
+const ChatRoom: React.FC<ChatRoomProps> = ({ userId, franchiseId,name}) => {
   const [messages, setMessages] = useState<Message[]>([]);
   const [messageInput, setMessageInput] = useState<string>("");
-  const [sender, setSender] = useState<string>(franchiseId); 
-  const [receiver, setReceiver] = useState<string>(userId); 
+  const [sender, setSender] = useState<string>(franchiseId);
+  const [receiver, setReceiver] = useState<string>(userId);
   const [showChat, setShowChat] = useState<boolean>(true);
-  const messagesEndRef = useRef<HTMLDivElement>(null);
+  const [roomId, setRoomId] = useState<string>(`${userId}-${franchiseId}`);
+  const messagesEndRef = useRef<HTMLDivElement>(null); 
 
   useEffect(() => {
+    // Join the room
+    socket.emit("join", { room: roomId });
+
     // Fetch existing messages from the server
     const fetchMessages = async () => {
       try {
@@ -41,17 +45,17 @@ const ChatRoom: React.FC<ChatRoomProps> = ({userId,franchiseId}) => {
     fetchMessages();
 
     // Listen for new messages from the server
-    const handleNewMessage = (message: Message) => {
+    const handleMessage = (message: Message) => {
       setMessages((prevMessages) => [...prevMessages, message]);
     };
 
-    socket.on("newMessage", handleNewMessage);
+    socket.on("newMessage", handleMessage);
 
-    
     return () => {
-      socket.off("newMessage", handleNewMessage);
+      socket.off("newMessage", handleMessage);
+      socket.emit("leave", { room: roomId });
     };
-  }, [sender, receiver]);
+  }, [sender, receiver, roomId]);
 
   useEffect(() => {
     messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
@@ -68,7 +72,7 @@ const ChatRoom: React.FC<ChatRoomProps> = ({userId,franchiseId}) => {
       try {
         // Send the message to the server
         await sendMessage(sender, receiver, messageInput);
-        socket.emit("sendMessage", newMessage);
+        socket.emit("sendMessage", { room: roomId, message: newMessage });
         setMessageInput("");
       } catch (error) {
         console.error("Error sending message:", error);
@@ -77,9 +81,11 @@ const ChatRoom: React.FC<ChatRoomProps> = ({userId,franchiseId}) => {
   };
 
   const handleEndChat = () => {
+    // Add your logic for ending the chat here
   };
 
   const handleAttachFile = () => {
+    // Add your logic for attaching files here
   };
 
   const handleKeyPress = (e: React.KeyboardEvent<HTMLInputElement>) => {
@@ -90,19 +96,13 @@ const ChatRoom: React.FC<ChatRoomProps> = ({userId,franchiseId}) => {
 
   return (
     <div
-      className={`fixed bottom-4 md:right-5 m-4 bg-[#F5F5F5] rounded-lg shadow-lg w-[374px] h-[572px] z-30 ${
+      className={` bottom-4 md:right-5 m-4 bg-[#F5F5F5]  shadow-lg w-full h-full z-30 ${
         showChat ? "block" : "hidden"
       }`}
     >
-      <div className="flex justify-between items-center bg-[#9ad1aa] text-gray-600 px-4 py-2 rounded-t-lg">
-        <div className="flex items-center">
-          <IoMdChatbubbles className="mr-2" />
-          <h3 className="text-md font-medium">Live Support</h3>
-        </div>
-        <FaTimes
-          className="cursor-pointer"
-          onClick={() => setShowChat(!showChat)}
-        />
+      <div className="flex items-center px-4 py-2 bg-[#3968B6] text-white rounded-t-lg">
+        <FaUserCircle className="mr-2" size={20} />
+        <span className="font-semibold">{name}</span>
       </div>
       <div className="p-4 h-[calc(100%-144px)] max-h-[calc(100%-144px)] overflow-y-auto">
         {messages.map((message, index) => (
@@ -123,8 +123,8 @@ const ChatRoom: React.FC<ChatRoomProps> = ({userId,franchiseId}) => {
               <div
                 className={`inline-block px-3 py-2 rounded-md ${
                   message.sender === sender
-                    ? "bg-gray-800 text-white text-sm font-normal"
-                    : "bg-[#D1D5DB] text-gray-500 text-sm font-normal"
+                    ? "inline-block px-4 py-2 bg-gray-800 text-white text-sm font-normal rounded-xl rounded-tr-none "
+                    : "bg-gray-300 text-gray-600 text-sm font-normal rounded-xl rounded-tl-none"
                 }`}
               >
                 <p>{message.message}</p>
@@ -137,29 +137,23 @@ const ChatRoom: React.FC<ChatRoomProps> = ({userId,franchiseId}) => {
         ))}
         <div ref={messagesEndRef} />
       </div>
-      <div className="px-4 py-2">
-        <input
-          type="text"
-          value={messageInput}
-          onChange={(e) => setMessageInput(e.target.value)}
-          onKeyPress={handleKeyPress}
-          placeholder="Type your message..."
-          className="w-full mb-2 px-4 py-3 rounded-md border text-sm font-light border-gray-300 focus:outline-none focus:ring-2 focus:ring-gray-400"
-        />
-        <div className="flex justify-end">
-          <button
-            onClick={handleAttachFile}
-            className="text-gray-500 p-2 rounded-md hover:bg-gray-200"
-          >
-            <FaPaperclip size={15} />
-          </button>
-          <button
-            onClick={handleEndChat}
-            className="text-gray-500 p-2 rounded-md hover:bg-gray-200"
-          >
-            <ImExit size={15} />
-          </button>
+      <div className="flex px-4 py-2 bg-white mt-12">
+        <div className="flex-grow">
+          <input
+            type="text"
+            value={messageInput}
+            onChange={(e) => setMessageInput(e.target.value)}
+            onKeyPress={handleKeyPress}
+            placeholder="Type your message..."
+            className="w-full px-4 py-2 rounded-md border text-sm font-light border-gray-300 focus:outline-none focus:ring-2 focus:ring-gray-400"
+          />
         </div>
+        <button
+          onClick={handleAttachFile}
+          className="ml-2 text-gray-500 p-2 rounded-md hover:bg-gray-200"
+        >
+          <ImAttachment size={15} />
+        </button>
       </div>
     </div>
   );

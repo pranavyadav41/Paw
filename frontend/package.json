@@ -30,6 +30,7 @@
     "cloudinary-react": "^1.8.1",
     "date-fns": "^3.6.0",
     "deck.gl": "^9.0.17",
+    "emoji-picker-react": "^4.9.4",
     "framer-motion": "^11.1.9",
     "heroicons-react": "^1.4.1",
     "mapbox-gl": "^3.4.0",

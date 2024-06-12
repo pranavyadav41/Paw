@@ -13,7 +13,7 @@ const ProfilePage = lazy(() => import("../Screens/Franchise/ProfilePage"));
 const Otp = lazy(() => import("../Screens/Franchise/OtpPage"));
 const MyBookings = lazy(()=>import("../Screens/Franchise/ListBookings"))
 const Booking = lazy(()=>import("../Screens/Franchise/BookingDetail"))
-const Chat = lazy(()=>import("../Components/franchise/Chat"))
+const AllChat = lazy(()=>import("../Screens/Franchise/AllChats"))
 
 function FranchiseRoutes() {
   return (
@@ -29,7 +29,7 @@ function FranchiseRoutes() {
             <Route path="/profile" element={<ProfilePage />} />
             <Route path="/myBookings" element={<MyBookings/>} />
           <Route path = "/bookingDetail/:id" element={<Booking/>} />
-          <Route path="/chat" element={<Chat/>} />
+          <Route path="/chat" element={<AllChat/>} />
           </Route>
         </Route>
       </Routes>

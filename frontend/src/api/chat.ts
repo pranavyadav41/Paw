@@ -3,11 +3,11 @@ import chatRoutes from "../routes/ChatRoutes";
 import errorHandle from "./error";
 
 interface Message {
-    sender: string;
-    receiver: string;
-    message: string;
-    timestamp: Date;
-  }
+  sender: string;
+  receiver: string;
+  message: string;
+  timestamp: Date;
+}
 
 export const sendMessage = async (
   sender: string,
@@ -32,6 +32,17 @@ export const getMessages = async (sender: string, receiver: string) => {
     const response = await Api.get(
       `${chatRoutes.getMessages}/${sender}/${receiver}`
     );
+    return response;
+  } catch (error) {
+    const err: Error = error as Error;
+    return errorHandle(err);
+  }
+};
+export const getAllUsers = async (franchiseId: string) => {
+  try {
+    const response = await Api.post(chatRoutes.getUsers, {
+      franchiseId: franchiseId,
+    });
     return response;
   } catch (error) {
     const err: Error = error as Error;

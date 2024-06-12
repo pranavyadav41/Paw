@@ -1,10 +1,11 @@
 import React, { useState, useEffect, useRef } from "react";
-import io, { Socket } from "socket.io-client";
 import { getMessages, sendMessage } from "../../api/chat";
 import { FaTimes, FaPaperclip, FaUserCircle } from "react-icons/fa";
+import { MdOutlineEmojiEmotions } from "react-icons/md";
 import { IoMdChatbubbles } from "react-icons/io";
-import { ImExit } from "react-icons/im";
-import { format } from "date-fns";  // Import the date-fns library
+import { format } from "date-fns";
+import Picker from 'emoji-picker-react';
+import socket from "../socket";
 
 interface Message {
   sender: string;
@@ -18,28 +19,30 @@ interface ChatRoomProps {
   franchiseId: string;
 }
 
-const socket: Socket = io("http://localhost:7000");
-
-const ChatRoom: React.FC<ChatRoomProps> = ({userId,franchiseId}) => {
+const ChatRoom: React.FC<ChatRoomProps> = ({ userId, franchiseId }) => {
   const [messages, setMessages] = useState<Message[]>([]);
   const [messageInput, setMessageInput] = useState<string>("");
   const [sender, setSender] = useState<string>(userId);
-  const [receiver, setReceiver] = useState<string>(franchiseId); 
+  const [receiver, setReceiver] = useState<string>(franchiseId);
   const [showChat, setShowChat] = useState<boolean>(true);
+  const [roomId, setRoomId] = useState<string>(`${userId}-${franchiseId}`);
+  const [showPicker, setShowPicker] = useState(false);
   const messagesEndRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
+    // Join the room
+    socket.emit("join", { room: roomId });
+
     // Fetch existing messages from the server
     const fetchMessages = async () => {
       try {
         const response = await getMessages(sender, receiver);
-        console.log(response)
         setMessages(response?.data);
       } catch (error) {
         console.error("Error fetching messages:", error);
       }
     };
-    fetchMessages();
+    fetchMessages(); 
 
     // Listen for new messages from the server
     const handleMessage = (message: Message) => {
@@ -50,8 +53,9 @@ const ChatRoom: React.FC<ChatRoomProps> = ({userId,franchiseId}) => {
 
     return () => {
       socket.off("newMessage", handleMessage);
+      socket.emit("leave", { room: roomId });
     };
-  }, [sender, receiver]);
+  }, [sender, receiver, roomId]);
 
   useEffect(() => {
     messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
@@ -68,7 +72,7 @@ const ChatRoom: React.FC<ChatRoomProps> = ({userId,franchiseId}) => {
       try {
         // Send the message to the server
         await sendMessage(sender, receiver, messageInput);
-        socket.emit("sendMessage", newMessage);
+        socket.emit("sendMessage", { room: roomId, message: newMessage });
         setMessageInput("");
       } catch (error) {
         console.error("Error sending message:", error);
@@ -76,12 +80,14 @@ const ChatRoom: React.FC<ChatRoomProps> = ({userId,franchiseId}) => {
     }
   };
 
-  const handleEndChat = () => {
-   
+  const onEmojiClick = (event: any, emojiObject: any) => {
+    console.log(emojiObject.emoji)
+    setMessageInput((prevInput) => prevInput + emojiObject.emoji);
+    setShowPicker(false);
   };
 
   const handleAttachFile = () => {
-   
+    // Add your logic for attaching files here
   };
 
   const handleKeyPress = (e: React.KeyboardEvent<HTMLInputElement>) => {
@@ -125,8 +131,8 @@ const ChatRoom: React.FC<ChatRoomProps> = ({userId,franchiseId}) => {
               <div
                 className={`inline-block px-4 py-2 rounded-md ${
                   message.sender === sender
-                    ? "bg-gray-800 text-white text-sm font-normal"
-                    : "bg-gray-300 text-gray-600 text-sm font-normal"
+                    ? "bg-gray-800 text-white text-sm font-normal rounded-xl rounded-tr-none"
+                    : "bg-gray-300 text-gray-600 text-sm font-normal rounded-xl rounded-tl-none"
                 }`}
               >
                 <p>{message.message}</p>
@@ -148,18 +154,24 @@ const ChatRoom: React.FC<ChatRoomProps> = ({userId,franchiseId}) => {
           placeholder="Type your message..."
           className="w-full mb-2 px-4 py-3 rounded-md border text-sm font-light border-gray-300 focus:outline-none focus:ring-2 focus:ring-gray-400"
         />
-        <div className="flex justify-end">
+        <div className="flex justify-between">
+          <div>
+            <MdOutlineEmojiEmotions
+              size={32}
+              className="cursor-pointer text-gray-500 p-2 rounded-md hover:bg-gray-200"
+              onClick={() => setShowPicker((val) => !val)}
+            />
+            {showPicker && (
+              <div className="absolute bottom-20">
+                <Picker onEmojiClick={onEmojiClick} />
+              </div>
+            )}
+          </div>
           <button
             onClick={handleAttachFile}
             className="text-gray-500 p-2 rounded-md hover:bg-gray-200"
           >
             <FaPaperclip size={15} />
-          </button>
-          <button
-            onClick={handleEndChat}
-            className="text-gray-500 p-2 rounded-md hover:bg-gray-200"
-          >
-            <ImExit size={15} />
           </button>
         </div>
       </div>
