@@ -1,6 +1,7 @@
 import { useEffect, useState } from "react";
 import Profile from "../../Components/franchise/Profile";
 import { FaUserCircle, FaMapMarkerAlt, FaLock } from "react-icons/fa";
+import { MdMiscellaneousServices } from "react-icons/md";
 import Services from "../../Components/franchise/Services";
 import ChangePassword from "../../Components/franchise/ChangePassword";
 import { getProfile } from "../../api/franchise";
@@ -98,7 +99,7 @@ const ProfilePage = () => {
               }`}
               onClick={() => handleTabChange("manageAddress")}
             >
-              <FaMapMarkerAlt className="text-lg" />
+              <MdMiscellaneousServices className="text-xl" />
               <span className="font-semibold text-sm md:text-base">
                 Manage Services
               </span>
@@ -116,7 +117,7 @@ const ProfilePage = () => {
             </button>
           </div>
         </div>
-        <div className="p-4 md:p-8 md:col-span-3">
+        <div className=" md:col-span-3">
           {loadingProfile ? (
             <div>Loading profile...</div>
           ) : (

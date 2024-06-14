@@ -47,7 +47,7 @@ const ChangePassword = ({ Id }: ChangePasswordProps) => {
   };
 
   return (
-    <div className="bg-slate-100 h-[500px] w-full rounded-lg p-6">
+    <div className="bg-slate-100 h-[500px] w-full p-6">
       <div className="flex flex-col items-center">
         <form className="w-full max-w-md mt-10" onSubmit={handleSubmit}>
           <div className="grid grid-cols-1 gap-4">
@@ -106,7 +106,7 @@ const ChangePassword = ({ Id }: ChangePasswordProps) => {
           </div>
           <button
             type="submit"
-            className="mt-6 w-full bg-green-700 text-white py-2 rounded-md hover:bg-green-600 transition-colors duration-300 flex items-center justify-center gap-2 text-sm md:text-base"
+            className="mt-6 w-full bg-[#48808b] text-white py-2 rounded-md hover:bg-blue-900 transition-colors duration-300 flex items-center justify-center gap-2 text-sm md:text-base"
           >
             Change Password
           </button>

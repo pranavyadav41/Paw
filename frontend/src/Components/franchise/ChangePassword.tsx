@@ -57,7 +57,7 @@ const ChangePassword = ({ Id }: ChangePassword) => {
   };
 
   return (
-    <div className="bg-slate-100 h-[500px] w-full rounded-lg p-6">
+    <div className="bg-gray-200 h-[500px] w-full p-6">
       <div className="flex flex-col items-center">
         <form className="w-full max-w-md mt-10" onSubmit={handleSubmit}>
           <div className="grid grid-cols-1 gap-4">

@@ -8,7 +8,9 @@ import { toast } from "react-toastify";
 import { RootState } from "../../redux/store";
 
 function Header() {
-  let { franchiseInfo } = useSelector((state: RootState) => state.franchiseAuth);
+  let { franchiseInfo } = useSelector(
+    (state: RootState) => state.franchiseAuth
+  );
   const [isDropdownOpen, setIsDropdownOpen] = useState(false);
   const [isHamburger, setIsHamburger] = useState(false);
   const [userDropdown, setIsDropdown] = useState(false);
@@ -16,8 +18,10 @@ function Header() {
   let dispatch = useDispatch();
 
   const activeStyle = {
-    color: "yellow",
+    color: "#192955",
     fontWeight: 500,
+    borderBottom: "1px solid currentColor",
+    paddingBottom: "1px",
   };
 
   let handleLogout = () => {
@@ -44,7 +48,11 @@ function Header() {
   return (
     <nav className="sticky top-0 z-50 block w-full max-w-full   px-4 py-2 text-white bg-[#3968b6]  rounded-none shadow-md h-max   backdrop-blur-2xl backdrop-saturate-200 lg:px-8 lg:py-4">
       <div className="flex items-center justify-between text-blue-gray-900">
-        <img className="h-[40px]"  src="/public/logo/logo-white-removebg-preview.png" alt="" />
+        <img
+          className="h-[40px]"
+          src="/public/logo/logo-white-removebg-preview.png"
+          alt=""
+        />
 
         <div className="flex items-center gap-4">
           <div className="hidden mr-4 lg:block">
@@ -84,11 +92,8 @@ function Header() {
               type="button"
               onClick={toggleDropdown}
             >
-             
-                  <FaUserAlt />
-                  <span>{franchiseInfo.name}</span>
-                  <FaCaretDown />
-               
+              <span>{franchiseInfo.name}</span>
+              <FaCaretDown />
             </button>
             {isDropdownOpen && (
               <div className="absolute  right-0 mt-2 py-2 w-48 bg-gray-600 rounded-lg shadow-lg z-10">
@@ -138,13 +143,11 @@ function Header() {
                   type="button"
                   onClick={dropDown}
                 >
-                  
-                      <FaUserAlt />
-                      <span className="text-white text-xs ">
-                        {franchiseInfo.name}
-                      </span>
-                      <FaCaretDown />
-                 
+                  <FaUserAlt />
+                  <span className="text-white text-xs ">
+                    {franchiseInfo.name}
+                  </span>
+                  <FaCaretDown />
                 </button>
               </div>
               {userDropdown && (

@@ -2,15 +2,27 @@ import React, { useState, useEffect, useRef } from "react";
 import { getMessages, sendMessage } from "../../api/chat";
 import { FaTimes, FaPaperclip, FaUserCircle } from "react-icons/fa";
 import { MdOutlineEmojiEmotions } from "react-icons/md";
+import { FaImage, FaFile } from "react-icons/fa";
 import { IoMdChatbubbles } from "react-icons/io";
 import { format } from "date-fns";
-import Picker from 'emoji-picker-react';
+import Picker from "emoji-picker-react";
 import socket from "../socket";
 
 interface Message {
   sender: string;
   receiver: string;
   message: string;
+  timestamp: Date;
+  fileType?: "photo" | "file";
+  fileName?: string;
+  fileData?: string;
+}
+
+interface msg {
+  sender: string;
+  receiver: string;
+  content: string;
+  contentType: "text" | "file" | "photo";
   timestamp: Date;
 }
 
@@ -20,17 +32,17 @@ interface ChatRoomProps {
 }
 
 const ChatRoom: React.FC<ChatRoomProps> = ({ userId, franchiseId }) => {
-  const [messages, setMessages] = useState<Message[]>([]);
+  const [messages, setMessages] = useState<msg[]>([]);
   const [messageInput, setMessageInput] = useState<string>("");
   const [sender, setSender] = useState<string>(userId);
   const [receiver, setReceiver] = useState<string>(franchiseId);
   const [showChat, setShowChat] = useState<boolean>(true);
   const [roomId, setRoomId] = useState<string>(`${userId}-${franchiseId}`);
   const [showPicker, setShowPicker] = useState(false);
+  const [showAttachmentMenu, setShowAttachmentMenu] = useState(false);
   const messagesEndRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
-    // Join the room
     socket.emit("join", { room: roomId });
 
     // Fetch existing messages from the server
@@ -42,10 +54,11 @@ const ChatRoom: React.FC<ChatRoomProps> = ({ userId, franchiseId }) => {
         console.error("Error fetching messages:", error);
       }
     };
-    fetchMessages(); 
+    fetchMessages();
 
     // Listen for new messages from the server
-    const handleMessage = (message: Message) => {
+    const handleMessage = (message: msg) => {
+      console.log(message, "this is it");
       setMessages((prevMessages) => [...prevMessages, message]);
     };
 
@@ -63,6 +76,10 @@ const ChatRoom: React.FC<ChatRoomProps> = ({ userId, franchiseId }) => {
 
   const handleSendMessage = async () => {
     if (messageInput.trim() !== "") {
+      const formData = new FormData();
+      formData.append("sender", sender);
+      formData.append("receiver", receiver);
+      formData.append("message", messageInput);
       const newMessage: Message = {
         sender,
         receiver,
@@ -71,7 +88,7 @@ const ChatRoom: React.FC<ChatRoomProps> = ({ userId, franchiseId }) => {
       };
       try {
         // Send the message to the server
-        await sendMessage(sender, receiver, messageInput);
+        await sendMessage(formData);
         socket.emit("sendMessage", { room: roomId, message: newMessage });
         setMessageInput("");
       } catch (error) {
@@ -80,14 +97,58 @@ const ChatRoom: React.FC<ChatRoomProps> = ({ userId, franchiseId }) => {
     }
   };
 
-  const onEmojiClick = (event: any, emojiObject: any) => {
-    console.log(emojiObject.emoji)
+  const onEmojiClick = (emojiObject: any) => {
     setMessageInput((prevInput) => prevInput + emojiObject.emoji);
     setShowPicker(false);
   };
 
   const handleAttachFile = () => {
-    // Add your logic for attaching files here
+    setShowAttachmentMenu(!showAttachmentMenu);
+  };
+
+  const sendFile = async (file: File, type: "photo" | "file") => {
+    const reader = new FileReader();
+    reader.onload = async (e) => {
+      const fileData = e.target?.result;
+      if (fileData) {
+        const newMessage: Message = {
+          sender,
+          receiver,
+          message: "",
+          timestamp: new Date(),
+          fileType: type,
+          fileName: file.name,
+          fileData: fileData as string,
+        };
+        const formData = new FormData();
+        formData.append("sender", sender);
+        formData.append("receiver", receiver);
+        formData.append("message", "");
+        formData.append("file", file);
+        formData.append("fileType", type);
+        try {
+          // Send the file message to the server
+          await sendMessage(formData);
+          socket.emit("sendMessage", { room: roomId, message: newMessage });
+        } catch (error) {
+          console.error("Error sending file:", error);
+        }
+      }
+    };
+    reader.readAsDataURL(file);
+  };
+
+  const handleFileSelect = (type: "photo" | "file") => {
+    const input = document.createElement("input");
+    input.type = "file";
+    input.accept = type === "photo" ? "image/*" : "*";
+    input.onchange = (e) => {
+      const file = (e.target as HTMLInputElement).files?.[0];
+      if (file) {
+        sendFile(file, type);
+      }
+    };
+    input.click();
   };
 
   const handleKeyPress = (e: React.KeyboardEvent<HTMLInputElement>) => {
@@ -135,8 +196,26 @@ const ChatRoom: React.FC<ChatRoomProps> = ({ userId, franchiseId }) => {
                     : "bg-gray-300 text-gray-600 text-sm font-normal rounded-xl rounded-tl-none"
                 }`}
               >
-                <p>{message.message}</p>
-                <span className="block text-xs text-gray-400">
+                {message.contentType === "photo" ? (
+                  <div className="w-48 h-48 overflow-hidden rounded-lg shadow-md cursor-pointer">
+                    <img
+                      src={message.content}
+                      alt="Uploaded photo"
+                      className="w-full h-full object-cover"
+                    />
+                  </div>
+                ) : message.contentType === "file" ? (
+                  <a
+                    href={message.content}
+                    download
+                    className="text-blue-500 underline"
+                  >
+                    Download File
+                  </a>
+                ) : (
+                  <p>{message.content}</p>
+                )}
+                <span className="block text-xs text-gray-400 ">
                   {format(new Date(message.timestamp), "hh:mm a")}
                 </span>
               </div>
@@ -154,15 +233,15 @@ const ChatRoom: React.FC<ChatRoomProps> = ({ userId, franchiseId }) => {
           placeholder="Type your message..."
           className="w-full mb-2 px-4 py-3 rounded-md border text-sm font-light border-gray-300 focus:outline-none focus:ring-2 focus:ring-gray-400"
         />
-        <div className="flex justify-between">
+        <div className="flex justify-end">
           <div>
             <MdOutlineEmojiEmotions
-              size={32}
+              size={34}
               className="cursor-pointer text-gray-500 p-2 rounded-md hover:bg-gray-200"
               onClick={() => setShowPicker((val) => !val)}
             />
             {showPicker && (
-              <div className="absolute bottom-20">
+              <div className="absolute bottom-12 right-2">
                 <Picker onEmojiClick={onEmojiClick} />
               </div>
             )}
@@ -174,6 +253,22 @@ const ChatRoom: React.FC<ChatRoomProps> = ({ userId, franchiseId }) => {
             <FaPaperclip size={15} />
           </button>
         </div>
+        {showAttachmentMenu && (
+          <div className="absolute bottom-12 right-2 bg-white rounded-md shadow-lg">
+            <button
+              onClick={() => handleFileSelect("photo")}
+              className="block w-full text-left px-4 py-2 hover:bg-gray-100"
+            >
+              <FaImage className="inline-block mr-2 text-blue-400" /> Photo
+            </button>
+            <button
+              onClick={() => handleFileSelect("file")}
+              className="block w-full text-left px-4 py-2 hover:bg-gray-100"
+            >
+              <FaFile className="inline-block mr-2 text-red-400" /> File
+            </button>
+          </div>
+        )}
       </div>
     </div>
   );

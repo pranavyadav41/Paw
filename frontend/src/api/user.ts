@@ -270,7 +270,7 @@ export const getWallet = async (userId: string) => {
     const err: Error = error as Error;
     return errorHandle(err);
   }
-}; 
+};
 export const submitFeedback = async (formData: FormData) => {
   try {
     const response = await Api.post(userRoutes.submitFeedback, formData, {
@@ -291,6 +291,18 @@ export const getFeedbacks = async (serviceId: string) => {
       serviceId: serviceId,
     });
 
+    return response;
+  } catch (error) {
+    const err: Error = error as Error;
+    return errorHandle(err);
+  }
+};
+export const checkFeedback = async (userId: string, serviceId: string) => {
+  try {
+    const response = await Api.post(userRoutes.checkFeedback, {
+      userId: userId,
+      serviceId: serviceId,
+    });
     return response;
   } catch (error) {
     const err: Error = error as Error;

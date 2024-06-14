@@ -24,19 +24,18 @@ const SuccessBooking: React.FC = () => {
               alt=""
             />
           </div>
-          <p className="text-gray-600 mb-8 text-lg font-semibold bg-[#D7EBE9] py-3 mx-au rounded-md px-5">
+          <p className="text-gray-600 mb-8 text-lg font-semibold bg-[#D7EBE9] py-3 mx-au rounded-md px-2">
             Booking ID:{bookingId}
           </p>
           <div className="flex justify-center space-x-4">
             <button
-              //   onClick={onGoToMyBookings}
-              className="bg-[#0F689D] hover:bg-pink-500 text-white text-base font-semi-bold py-2 px-5 rounded-full"
+              className="bg-[#0F689D] hover:bg-blue-900 text-white text-base font-semi-bold py-2 px-5 rounded-full"
             >
               <Link to="/myBookings">My Bookings</Link>
             </button>
             <button
               //   onClick={onGoToHomepage}
-              className=" text-black font-bold py-2 px-4 rounded-full underline decoration-black underline-offset-4"
+              className=" text-black font-semibold py-2 px-4 rounded-full underline decoration-black underline-offset-4"
             >
               <Link to="/"> Go back to home</Link>
             </button>

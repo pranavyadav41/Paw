@@ -44,20 +44,20 @@ const ServiceDetail: React.FC = () => {
         className="absolute inset-0 bg-cover bg-center bg-no-repeat opacity-40 z-[-1]"
         style={{ backgroundImage: "url('/public/logo/pawBackground.jpg')" }}
       ></div>
-      <div className="bg-[#9AD1AA] rounded-lg shadow-md p-6 md:w-[800px] relative z-10 mt-10">
+      <div className="bg-[#6EC1E4] rounded-lg shadow-md p-6 md:w-[800px] relative z-10 mt-10">
         <div className="flex gap-4">
           <img
-            src="/public/logo/newOne.png"
+            src="/public/logo/Homepage/pngFlying-fur-Service-IllustrationsArtboard-1.png"
             alt="Service Image"
             className="w-40 h-40 rounded-lg"
           />
           <div>
-            <h2 className="text-xl font-bold text-white">{service.category}</h2>
+            <h2 className="text-2xl font-bold text-white ">{service.category}</h2>
             <div className="mt-4 grid grid-cols-2 gap-2">
               {service.services.map((serviceItem, index) => (
                 <div key={index} className="flex items-center gap-2">
-                  <CheckIcon color="#5F7093" boxSize={4} />
-                  <p className="text-[#5F7093] text-md">{serviceItem}</p>
+                  <CheckIcon color="white" boxSize={4} />
+                  <p className="text-[white] text-md">{serviceItem}</p>
                 </div>
               ))}
             </div>
@@ -67,7 +67,7 @@ const ServiceDetail: React.FC = () => {
           {Object.entries(service.price).map(([size, price]) => (
             <div
               key={size}
-              className="bg-white flex justify-center items-center h-10 rounded-[5px] p-2"
+              className="bg-[#FFCC00] flex justify-center items-center h-10  p-2"
             >
               <p className="text-black text-md">
                 {size.charAt(0).toUpperCase() + size.slice(1)} -{" "}

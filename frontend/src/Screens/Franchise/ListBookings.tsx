@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { getBookings,getService} from "../../api/franchise";
+import { getBookings, getService } from "../../api/franchise";
 import { useSelector } from "react-redux";
 import { Link } from "react-router-dom";
 import { RootState } from "../../redux/store";
@@ -13,13 +13,22 @@ const MyBookings = () => {
     if (franchiseInfo) {
       getBookings(franchiseInfo._id)
         .then((response) => {
-          console.log(response)
-          setBookings(response?.data)})
+          const sortedBookings = response?.data.sort((a: any, b: any) => {
+            if (a.bookingStatus.toLowerCase() === "pending" && b.bookingStatus.toLowerCase() !== "pending") {
+              return -1;
+            }
+            if (a.bookingStatus.toLowerCase() !== "pending" && b.bookingStatus.toLowerCase() === "pending") {
+              return 1;
+            }
+            return 0;
+          });
+          setBookings(sortedBookings);
+        })
         .catch((error) => console.error("Error fetching bookings:", error));
     }
   }, [franchiseInfo]);
 
-  useEffect(() => { 
+  useEffect(() => {
     if (bookings.length > 0) {
       bookings.forEach((booking: any) => {
         getService(booking.serviceId)
@@ -35,10 +44,6 @@ const MyBookings = () => {
       });
     }
   }, [bookings]);
-
-  const handleViewDetails = (bookingId: string) => {
-    // Navigate to booking details page
-  };
 
   const convertTo12HourFormat = (time: string) => {
     const [hour, minute] = time.split(":").map(Number);

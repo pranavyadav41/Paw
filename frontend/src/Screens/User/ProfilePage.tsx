@@ -110,7 +110,7 @@ const ProfilePage = () => {
             </button>
           </div>
         </div>
-        <div className="p-4 md:p-8 md:col-span-3">
+        <div className="md:col-span-3">
           {loadingProfile ? (
             <div className="text-center text-gray-500 text-sm md:text-lg">
               Loading Profile...

@@ -91,11 +91,6 @@ function Header() {
                   Franchise
                 </NavLink>
               </li>
-              <li className="block p-1 font-sans text-md antialiased font-normal leading-normal text-blue-gray-900">
-                <a href="#" className="flex items-center">
-                  Contact us
-                </a>
-              </li>
             </ul>
           </div>
           <div className="relative">
@@ -106,12 +101,12 @@ function Header() {
             >
               {userInfo ? (
                 <>
-                  <FaUserAlt className="text-gray-200" />
-                  <span className="text-gray-200">{userInfo.name}</span>
-                  <FaCaretDown className="text-gray-200" />
+                  {/* <FaUserAlt className="text-[#192955]" /> */}
+                  <span className="text-[#192955]">{userInfo.name}</span>
+                  <FaCaretDown className="text-[#192955]" />
                 </>
               ) : (
-                <span className="text-[14px] mt-1 text-gray-600">Login</span>
+                <span className="text-[14px] mt-1 text-gray-[#192955]">Login</span>
               )}
             </button>
             {isDropdownOpen && (

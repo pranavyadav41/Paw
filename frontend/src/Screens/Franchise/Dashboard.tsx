@@ -26,7 +26,7 @@ function Dashboard() {
       
       <div className="relative z-20 container mx-auto px-4 py-10 flex flex-col justify-center items-center h-full">
         <h1 className="text-4xl md:text-5xl lg:text-6xl font-bold leading-tight mb-6 text-center text-shadow">
-          Admin Dashboard
+          Franchise Dashboard
         </h1>
         
         <p className="text-xl mb-12 text-center text-gray-800">

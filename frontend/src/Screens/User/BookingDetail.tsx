@@ -8,6 +8,7 @@ import {
   checkDate,
   confirmCancel,
   submitFeedback,
+  checkFeedback,
 } from "../../api/user";
 import { FaCheckCircle, FaTimesCircle, FaCommentAlt } from "react-icons/fa";
 import { FcClock } from "react-icons/fc";
@@ -74,6 +75,7 @@ const BookingDetails = () => {
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [sameDate, setSameDate] = useState(false);
   const [shouldFetch, setShouldFetch] = useState(false);
+  const [reviewCheck, setReviewCheck] = useState(false);
   const [showChat, setShowChat] = useState(false);
 
   useEffect(() => {
@@ -93,11 +95,13 @@ const BookingDetails = () => {
 
     if (booking?.franchiseId) {
       getFranchise(booking.franchiseId).then((response) => {
-        console.log(response);
         setFranchise(response?.data);
       });
+      checkFeedback(booking.userId, booking.serviceId).then((response) => {
+        setReviewCheck(response?.data);
+      });
     }
-  }, [booking?.serviceId, booking?.franchiseId]);
+  }, [booking?.serviceId, booking?.franchiseId, shouldFetch]);
 
   if (!booking) {
     return (
@@ -149,7 +153,7 @@ const BookingDetails = () => {
     data.images.forEach((image) => {
       formData.append("images", image, image.name);
     });
-    formData.append("name",booking.name)
+    formData.append("name", booking.name);
     formData.append("serviceId", booking.serviceId);
     formData.append("userId", booking.userId);
 
@@ -158,6 +162,7 @@ const BookingDetails = () => {
       toast.success(response?.data.message, {
         position: "top-center",
       });
+      setShouldFetch((prev) => !prev);
     }
   };
   return (
@@ -256,11 +261,18 @@ const BookingDetails = () => {
               </h3>
               <p className="text-gray-600">
                 <strong className="text-gray-800">Phone:</strong>{" "}
-                {franchise.phone}
+                <a
+                  href={`tel:${franchise.phone}`}
+                  className="text-blue-600 hover:underline"
+                >
+                  {franchise.phone}
+                </a>
               </p>
               <div className="flex justify-start mt-4">
-                <button className="bg-blue-800 text-white px-6 py-1 md:py-2 rounded-md hover:bg-blue-600 flex items-center space-x-2"
-                 onClick={() => setShowChat(!showChat)}>
+                <button
+                  className="bg-blue-800 text-white px-6 py-1 md:py-2 rounded-md hover:bg-blue-600 flex items-center space-x-2"
+                  onClick={() => setShowChat(!showChat)}
+                >
                   <FaCommentAlt />
                   <span>Chat with Us</span>
                 </button>
@@ -276,14 +288,16 @@ const BookingDetails = () => {
                 </button>
               )}
             </div>
-            {booking.bookingStatus == "Completed" && (
+            {booking.bookingStatus === "Completed" && reviewCheck === false && (
               <ReviewComponent onSubmit={handleFeedback} />
             )}
           </div>
         )}
       </div>
 
-      {showChat && <Chat userId={booking.userId}  franchiseId={booking.franchiseId} />}
+      {showChat && (
+        <Chat userId={booking.userId} franchiseId={booking.franchiseId} />
+      )}
 
       <Modal
         isOpen={isModalOpen}

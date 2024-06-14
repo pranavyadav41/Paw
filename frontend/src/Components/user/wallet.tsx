@@ -7,11 +7,11 @@ interface WalletProps {
 
 const Wallet: React.FC<WalletProps> = ({ balance, history }) => {
   return (
-    <div className="bg-white rounded-lg shadow-md p-6 h-[500px] flex flex-col">
-      <h2 className="text-2xl font-semibold mb-4">My Wallet</h2>
-      <div className="bg-indigo-100 rounded-lg p-4 mb-6">
-        <h3 className="text-lg font-semibold mb-2">Current Balance</h3>
-        <p className="text-3xl font-bold text-indigo-600">₹{balance}</p>
+    <div className="bg-gray-200 shadow-md p-6 h-[500px] flex flex-col">
+      {/* <h2 className="text-2xl font-semibold mb-4">My Wallet</h2> */}
+      <div className="bg-slate-100 rounded-lg p-4 mb-6">
+        <h3 className="text-lg text-blue-900 font-semibold mb-2">Current Balance</h3>
+        <p className="text-3xl font-bold text-blue-900">₹{balance}</p>
       </div>
       <div className="overflow-auto">
         <h3 className="text-lg font-semibold mb-4">Transaction History</h3>
@@ -22,7 +22,7 @@ const Wallet: React.FC<WalletProps> = ({ balance, history }) => {
                 No Transactions..
               </div>
             ) : (
-              <tr className="bg-gray-200">
+              <tr className="bg-slate-300">
                 <th className="px-4 py-2 text-left font-semibold text-gray-700">
                   Date
                 </th>
@@ -34,7 +34,7 @@ const Wallet: React.FC<WalletProps> = ({ balance, history }) => {
           </thead>
           <tbody>
             {history.map((item, index) => (
-              <tr key={index} className={index % 2 === 0 ? "bg-gray-100" : ""}>
+              <tr key={index} className={index % 2 === 0 ? "bg-gray-50" : "bg-gray-100"}>
                 <td className="px-4 py-2 text-gray-700">
                   {new Date(item.date).toLocaleDateString()}
                 </td>

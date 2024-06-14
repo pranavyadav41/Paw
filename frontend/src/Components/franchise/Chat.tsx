@@ -1,10 +1,11 @@
 import React, { useState, useEffect, useRef } from "react";
-import io, { Socket } from "socket.io-client";
 import { getMessages, sendMessage } from "../../api/chat";
-import { FaTimes, FaPaperclip, FaUserCircle } from "react-icons/fa";
-import { IoMdChatbubbles } from "react-icons/io";
-import { ImExit, ImAttachment } from "react-icons/im";
+import { FaUserCircle } from "react-icons/fa";
+import { FaImage, FaFile } from "react-icons/fa";
+import { MdOutlineEmojiEmotions } from "react-icons/md";
+import { ImAttachment } from "react-icons/im";
 import { format } from "date-fns";
+import Picker from "emoji-picker-react";
 import socket from "../socket";
 
 interface Message {
@@ -12,28 +13,39 @@ interface Message {
   receiver: string;
   message: string;
   timestamp: Date;
+  fileType?: "photo" | "file";
+  fileName?: string;
+  fileData?: string;
 }
 
-interface ChatRoomProps { 
+interface msg {
+  sender: string;
+  receiver: string;
+  content: string;
+  contentType: "text" | "file" | "photo";
+  timestamp: Date;
+}
+
+interface ChatRoomProps {
   userId: string;
   franchiseId: string;
-  name:string;
+  name: string;
 }
 
-const ChatRoom: React.FC<ChatRoomProps> = ({ userId, franchiseId,name}) => {
-  const [messages, setMessages] = useState<Message[]>([]);
+const ChatRoom: React.FC<ChatRoomProps> = ({ userId, franchiseId, name }) => {
+  const [messages, setMessages] = useState<msg[]>([]);
   const [messageInput, setMessageInput] = useState<string>("");
   const [sender, setSender] = useState<string>(franchiseId);
   const [receiver, setReceiver] = useState<string>(userId);
   const [showChat, setShowChat] = useState<boolean>(true);
   const [roomId, setRoomId] = useState<string>(`${userId}-${franchiseId}`);
-  const messagesEndRef = useRef<HTMLDivElement>(null); 
+  const [showPicker, setShowPicker] = useState(false);
+  const [showAttachmentMenu, setShowAttachmentMenu] = useState(false);
+  const messagesEndRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
-    // Join the room
     socket.emit("join", { room: roomId });
 
-    // Fetch existing messages from the server
     const fetchMessages = async () => {
       try {
         const response = await getMessages(sender, receiver);
@@ -45,7 +57,8 @@ const ChatRoom: React.FC<ChatRoomProps> = ({ userId, franchiseId,name}) => {
     fetchMessages();
 
     // Listen for new messages from the server
-    const handleMessage = (message: Message) => {
+    const handleMessage = (message: msg) => {
+      console.log(message);
       setMessages((prevMessages) => [...prevMessages, message]);
     };
 
@@ -63,6 +76,10 @@ const ChatRoom: React.FC<ChatRoomProps> = ({ userId, franchiseId,name}) => {
 
   const handleSendMessage = async () => {
     if (messageInput.trim() !== "") {
+      const formData = new FormData();
+      formData.append("sender", sender);
+      formData.append("receiver", receiver);
+      formData.append("message",messageInput);
       const newMessage: Message = {
         sender,
         receiver,
@@ -71,7 +88,7 @@ const ChatRoom: React.FC<ChatRoomProps> = ({ userId, franchiseId,name}) => {
       };
       try {
         // Send the message to the server
-        await sendMessage(sender, receiver, messageInput);
+        await sendMessage(formData);
         socket.emit("sendMessage", { room: roomId, message: newMessage });
         setMessageInput("");
       } catch (error) {
@@ -80,12 +97,58 @@ const ChatRoom: React.FC<ChatRoomProps> = ({ userId, franchiseId,name}) => {
     }
   };
 
-  const handleEndChat = () => {
-    // Add your logic for ending the chat here
+  const onEmojiClick = (emojiObject: any) => {
+    setMessageInput((prevInput) => prevInput + emojiObject.emoji);
+    setShowPicker(false);
   };
 
   const handleAttachFile = () => {
-    // Add your logic for attaching files here
+    setShowAttachmentMenu(!showAttachmentMenu);
+  };
+
+  const sendFile = async (file: File, type: "photo" | "file") => {
+    const reader = new FileReader();
+    reader.onload = async (e) => {
+      const fileData = e.target?.result;
+      if (fileData) {
+        const newMessage: Message = {
+          sender,
+          receiver,
+          message: "",
+          timestamp: new Date(),
+          fileType: type,
+          fileName: file.name,
+          fileData: fileData as string,
+        };
+        const formData = new FormData();
+        formData.append("sender", sender);
+        formData.append("receiver", receiver);
+        formData.append("message", "");
+        formData.append("file", file);
+        formData.append("fileType", type);
+        try {
+          // Send the file message to the server
+          await sendMessage(formData);
+          socket.emit("sendMessage", { room: roomId, message: newMessage });
+        } catch (error) {
+          console.error("Error sending file:", error);
+        }
+      }
+    };
+    reader.readAsDataURL(file);
+  };
+
+  const handleFileSelect = (type: "photo" | "file") => {
+    const input = document.createElement("input");
+    input.type = "file";
+    input.accept = type === "photo" ? "image/*" : "*";
+    input.onchange = (e) => {
+      const file = (e.target as HTMLInputElement).files?.[0];
+      if (file) {
+        sendFile(file, type);
+      }
+    };
+    input.click();
   };
 
   const handleKeyPress = (e: React.KeyboardEvent<HTMLInputElement>) => {
@@ -96,15 +159,15 @@ const ChatRoom: React.FC<ChatRoomProps> = ({ userId, franchiseId,name}) => {
 
   return (
     <div
-      className={` bottom-4 md:right-5 m-4 bg-[#F5F5F5]  shadow-lg w-full h-full z-30 ${
+      className={` bottom-4 md:right-5 m-4 bg-gray-200  shadow-lg w-full h-full z-30 ${
         showChat ? "block" : "hidden"
       }`}
     >
-      <div className="flex items-center px-4 py-2 bg-[#3968B6] text-white rounded-t-lg">
+      <div className="flex items-center px-4 py-2 bg-gray-800 text-white rounded-t-lg">
         <FaUserCircle className="mr-2" size={20} />
         <span className="font-semibold">{name}</span>
       </div>
-      <div className="p-4 h-[calc(100%-144px)] max-h-[calc(100%-144px)] overflow-y-auto">
+      <div className="p-4 h-[calc(100%-144px)] max-h-[calc(100%-144px)] overflow-y-auto mr-3">
         {messages.map((message, index) => (
           <div
             key={index}
@@ -127,7 +190,25 @@ const ChatRoom: React.FC<ChatRoomProps> = ({ userId, franchiseId,name}) => {
                     : "bg-gray-300 text-gray-600 text-sm font-normal rounded-xl rounded-tl-none"
                 }`}
               >
-                <p>{message.message}</p>
+               {message.contentType === "photo" ? (
+                  <div className="w-48 h-48 overflow-hidden rounded-lg shadow-md cursor-pointer">
+                    <img
+                      src={message.content}
+                      alt="Uploaded photo"
+                      className="w-full h-full object-cover"
+                    />
+                  </div>
+                ) : message.contentType === "file" ? (
+                  <a
+                    href={message.content}
+                    download
+                    className="text-blue-500 underline"
+                  >
+                    Download File
+                  </a>
+                ) : (
+                  <p>{message.content}</p>
+                )}
                 <span className="block text-xs text-gray-500 mt-1">
                   {format(new Date(message.timestamp), "hh:mm a")}
                 </span>
@@ -137,7 +218,7 @@ const ChatRoom: React.FC<ChatRoomProps> = ({ userId, franchiseId,name}) => {
         ))}
         <div ref={messagesEndRef} />
       </div>
-      <div className="flex px-4 py-2 bg-white mt-12">
+      <div className="flex px-4 py-2 bg-white mt-12 justify-center items-center relative">
         <div className="flex-grow">
           <input
             type="text"
@@ -148,12 +229,40 @@ const ChatRoom: React.FC<ChatRoomProps> = ({ userId, franchiseId,name}) => {
             className="w-full px-4 py-2 rounded-md border text-sm font-light border-gray-300 focus:outline-none focus:ring-2 focus:ring-gray-400"
           />
         </div>
+        <div className="relative">
+          <MdOutlineEmojiEmotions
+            size={35}
+            className="cursor-pointer text-gray-500 p-2 rounded-md hover:bg-gray-200"
+            onClick={() => setShowPicker((val) => !val)}
+          />
+          {showPicker && (
+            <div className="absolute bottom-full right-0 mb-2 z-10">
+              <Picker onEmojiClick={onEmojiClick} />
+            </div>
+          )}
+        </div>
         <button
           onClick={handleAttachFile}
           className="ml-2 text-gray-500 p-2 rounded-md hover:bg-gray-200"
         >
           <ImAttachment size={15} />
         </button>
+        {showAttachmentMenu && (
+          <div className="absolute bottom-12 right-2 bg-white rounded-md shadow-lg">
+            <button
+              onClick={() => handleFileSelect("photo")}
+              className="block w-full text-left px-4 py-2 hover:bg-gray-100"
+            >
+              <FaImage className="inline-block mr-2 text-blue-400" /> Photo
+            </button>
+            <button
+              onClick={() => handleFileSelect("file")}
+              className="block w-full text-left px-4 py-2 hover:bg-gray-100"
+            >
+              <FaFile className="inline-block mr-2 text-red-400" /> File
+            </button>
+          </div>
+        )}
       </div>
     </div>
   );

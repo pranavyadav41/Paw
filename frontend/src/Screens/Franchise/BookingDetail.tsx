@@ -89,7 +89,7 @@ const BookingDetails = () => {
   };
 
   return (
-    <div className="relative container mx-auto p-6 min-h-screen w-full flex flex-col items-center">
+    <div className="relative container mx-auto p-6 min-h-screen w-full flex flex-col items-center ">
       <div
         className="absolute inset-0 bg-cover bg-center opacity-50 z-0"
         style={{ backgroundImage: "url('/logo/pawBackground.jpg')" }}
@@ -97,7 +97,7 @@ const BookingDetails = () => {
       <h2 className="text-3xl font-bold mb-6 text-center z-10 text-[#3968B6]">
         Booking Details
       </h2>
-      <div className="relative z-10 bg-gray-100 shadow-md rounded-lg p-6 md:w-[80%] w-full  grid grid-cols-1 md:grid-cols-2 gap-8">
+      <div className="relative z-10 bg-gray-100 shadow-md rounded-lg p-6 md:w-[80%] w-full md:h-[450px]   grid grid-cols-1 md:grid-cols-2 gap-8">
         <div>
           <div className="flex flex-col space-y-4">
             <p className="text-gray-800">
@@ -133,31 +133,29 @@ const BookingDetails = () => {
               {booking.address.pincode}
             </p>
           </div>
-          <div className="mt-6 flex items-center space-x-4">
-            <label htmlFor="status" className="text-gray-800">
-              <strong>Change Status:</strong>
-            </label>
-            <select
-              id="status"
-              value={newStatus}
-              onChange={(e) => setNewStatus(e.target.value)}
-              className="border border-gray-300 rounded-sm px-4 py-1"
-            >
-              <option value="">Select</option>
-              {booking.bookingStatus === "Pending" && (
+          {booking.bookingStatus === "Pending" && (
+            <div className="mt-6 flex items-center space-x-4">
+              <label htmlFor="status" className="text-gray-800">
+                <strong>Change Status:</strong>
+              </label>
+              <select
+                id="status"
+                value={newStatus}
+                onChange={(e) => setNewStatus(e.target.value)}
+                className="border border-gray-300 rounded-sm px-4 py-1"
+              >
+                <option value="">Select</option>
                 <option value="Completed">Completed</option>
-              )}
-              {booking.bookingStatus === "Completed" && (
-                <option value="Pending">Pending</option>
-              )}
-            </select>
-            <button
-              className="bg-[#9AD1AA] text-white text-sm md:text-base px-3 py-1 rounded-md hover:bg-green-300"
-              onClick={handleStatusChange}
-            >
-              Update Status
-            </button>
-          </div>
+                <option value="Cancelled">Cancelled</option>
+              </select>
+              <button
+                className="bg-[#9AD1AA] text-white text-sm md:text-base px-3 py-1 rounded-md hover:bg-green-300"
+                onClick={handleStatusChange}
+              >
+                Update Status
+              </button>
+            </div>
+          )}
         </div>
         {service && (
           <div className="flex flex-col gap-3">

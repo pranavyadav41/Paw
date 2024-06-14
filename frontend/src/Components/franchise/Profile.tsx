@@ -74,7 +74,7 @@ const Profile: React.FC<ProfileProps> = ({ profile, profileState }) => {
   };
 
   return (
-    <div className="bg-slate-100 h-[500px] w-full rounded-lg p-6">
+    <div className="bg-gray-200 h-[500px] w-full p-6">
       <div className="flex flex-col items-center">
         <form className="w-full max-w-md " onSubmit={handleSubmit}>
           <div className="grid grid-cols-1 gap-4">
@@ -130,7 +130,7 @@ const Profile: React.FC<ProfileProps> = ({ profile, profileState }) => {
               >
                 Address:
               </label>
-              <div className="flex items-center">
+              <div className="flex items-end flex-col">
                 <input
                   type="text"
                   id="address"
@@ -138,15 +138,17 @@ const Profile: React.FC<ProfileProps> = ({ profile, profileState }) => {
                   className="w-full px-4 py-4 rounded-md border border-gray-300 focus:outline-none focus:ring-2 focus:ring-green-500"
                   readOnly
                 />
-                
-                <button
+                 <button
                   type="button"
-                  className="ml-2 text-sm text-blue-500 hover:underline"
+                  className="ml-2 mt-2 text-sm text-blue-500 hover:underline"
                   onClick={handleEditAddress}
                 >
                   Edit
                 </button>
+                
+              
               </div>
+             
             </div>
           </div>
           <button

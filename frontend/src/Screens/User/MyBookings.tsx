@@ -12,11 +12,21 @@ const MyBookings = () => {
   useEffect(() => {
     if (userInfo) {
       getBookings(userInfo._id)
-        .then((response) => setBookings(response?.data))
+        .then((response) => {
+          const sortedBookings = response?.data.sort((a: any, b: any) => {
+            if (a.bookingStatus.toLowerCase() === "pending" && b.bookingStatus.toLowerCase() !== "pending") {
+              return -1;
+            } else if (a.bookingStatus.toLowerCase() !== "pending" && b.bookingStatus.toLowerCase() === "pending") {
+              return 1;
+            }
+            return 0;
+          });
+          setBookings(sortedBookings);
+        })
         .catch((error) => console.error("Error fetching bookings:", error));
     }
   }, [userInfo]);
- 
+
   useEffect(() => {
     if (bookings.length > 0) {
       bookings.forEach((booking: any) => {

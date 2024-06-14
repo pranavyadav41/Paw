@@ -28,7 +28,8 @@ const userRoutes={
     confirmCancel:'/user/confirmCancel',
     getWallet:'/user/getWallet',
     submitFeedback:'/user/submitFeedback',
-    getFeedbacks:'/user/getFeedbacks'
+    getFeedbacks:'/user/getFeedbacks',
+    checkFeedback:'/user/checkFeedback'
 }
 
 export default userRoutes 
