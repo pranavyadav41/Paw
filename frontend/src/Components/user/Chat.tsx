@@ -6,7 +6,8 @@ import { FaImage, FaFile } from "react-icons/fa";
 import { IoMdChatbubbles } from "react-icons/io";
 import { format } from "date-fns";
 import Picker from "emoji-picker-react";
-import socket from "../socket";
+import socket from "../common/socket";
+import ImageModal from "../common/ImageModal";
 
 interface Message {
   sender: string;
@@ -40,6 +41,7 @@ const ChatRoom: React.FC<ChatRoomProps> = ({ userId, franchiseId }) => {
   const [roomId, setRoomId] = useState<string>(`${userId}-${franchiseId}`);
   const [showPicker, setShowPicker] = useState(false);
   const [showAttachmentMenu, setShowAttachmentMenu] = useState(false);
+  const [selectedImage, setSelectedImage] = useState<string | null>(null); // State to manage the selected image
   const messagesEndRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
@@ -128,6 +130,7 @@ const ChatRoom: React.FC<ChatRoomProps> = ({ userId, franchiseId }) => {
         formData.append("fileType", type);
         try {
           // Send the file message to the server
+          setShowAttachmentMenu(false);
           await sendMessage(formData);
           socket.emit("sendMessage", { room: roomId, message: newMessage });
         } catch (error) {
@@ -157,120 +160,134 @@ const ChatRoom: React.FC<ChatRoomProps> = ({ userId, franchiseId }) => {
     }
   };
 
+  const handleImageClick = (imageUrl: string) => {
+    setSelectedImage(imageUrl);
+  };
+
+  const closeModal = () => {
+    setSelectedImage(null);
+  };
+
   return (
-    <div
-      className={`fixed bottom-4 md:right-5 m-4 bg-[#F5F5F5] rounded-lg shadow-lg w-[374px] h-[572px] z-30 ${
-        showChat ? "block" : "hidden"
-      }`}
-    >
-      <div className="flex justify-between items-center bg-[#9ad1aa] text-gray-600 px-4 py-2 rounded-t-lg">
-        <div className="flex items-center">
-          <IoMdChatbubbles className="mr-2" />
-          <h3 className="text-md font-medium">Live Support</h3>
+    <>
+      <div
+        className={`fixed bottom-4 md:right-5 m-4 bg-[#F5F5F5] rounded-lg shadow-lg w-[374px] h-[572px] z-30 ${
+          showChat ? "block" : "hidden"
+        }`}
+      >
+        <div className="flex justify-between items-center bg-[#9ad1aa] text-gray-600 px-4 py-2 rounded-t-lg">
+          <div className="flex items-center">
+            <IoMdChatbubbles className="mr-2" />
+            <h3 className="text-md font-medium">Live Support</h3>
+          </div>
+          <FaTimes
+            className="cursor-pointer"
+            onClick={() => setShowChat(!showChat)}
+          />
         </div>
-        <FaTimes
-          className="cursor-pointer"
-          onClick={() => setShowChat(!showChat)}
-        />
-      </div>
-      <div className="p-4 h-[calc(100%-144px)] max-h-[calc(100%-144px)] overflow-y-auto">
-        {messages.map((message, index) => (
-          <div
-            key={index}
-            className={`mb-2 ${
-              message.sender === sender ? "text-right" : "text-left"
-            }`}
-          >
+        <div className="p-4 h-[calc(100%-144px)] max-h-[calc(100%-144px)] overflow-y-auto">
+          {messages.map((message, index) => (
             <div
-              className={`inline-flex items-start ${
-                message.sender === sender ? "flex-row-reverse" : ""
+              key={index}
+              className={`mb-2 ${
+                message.sender === sender ? "text-right" : "text-left"
               }`}
             >
-              {message.sender !== sender && (
-                <FaUserCircle className="mr-2 text-gray-500" size={20} />
-              )}
               <div
-                className={`inline-block px-4 py-2 rounded-md ${
-                  message.sender === sender
-                    ? "bg-gray-800 text-white text-sm font-normal rounded-xl rounded-tr-none"
-                    : "bg-gray-300 text-gray-600 text-sm font-normal rounded-xl rounded-tl-none"
+                className={`inline-flex items-start ${
+                  message.sender === sender ? "flex-row-reverse" : ""
                 }`}
               >
-                {message.contentType === "photo" ? (
-                  <div className="w-48 h-48 overflow-hidden rounded-lg shadow-md cursor-pointer">
-                    <img
-                      src={message.content}
-                      alt="Uploaded photo"
-                      className="w-full h-full object-cover"
-                    />
-                  </div>
-                ) : message.contentType === "file" ? (
-                  <a
-                    href={message.content}
-                    download
-                    className="text-blue-500 underline"
-                  >
-                    Download File
-                  </a>
-                ) : (
-                  <p>{message.content}</p>
+                {message.sender !== sender && (
+                  <FaUserCircle className="mr-2 text-gray-500" size={20} />
                 )}
-                <span className="block text-xs text-gray-400 ">
-                  {format(new Date(message.timestamp), "hh:mm a")}
-                </span>
+                <div
+                  className={`inline-block px-4 py-2 rounded-md ${
+                    message.sender === sender
+                      ? "bg-gray-800 text-white text-sm font-normal rounded-xl rounded-tr-none"
+                      : "bg-gray-300 text-gray-600 text-sm font-normal rounded-xl rounded-tl-none"
+                  }`}
+                >
+                  {message.contentType === "photo" ? (
+                    <div
+                      className="w-48 h-48 overflow-hidden rounded-lg shadow-md cursor-pointer"
+                      onClick={() => handleImageClick(message.content)}
+                    >
+                      <img
+                        src={message.content}
+                        alt="Uploaded photo"
+                        className="w-full h-full object-cover"
+                      />
+                    </div>
+                  ) : message.contentType === "file" ? (
+                    <a
+                      href={message.content}
+                      download
+                      className="text-blue-500 underline"
+                    >
+                      Download File
+                    </a>
+                  ) : (
+                    <p>{message.content}</p>
+                  )}
+                  <span className="block text-xs text-gray-400 ">
+                    {format(new Date(message.timestamp), "hh:mm a")}
+                  </span>
+                </div>
               </div>
             </div>
-          </div>
-        ))}
-        <div ref={messagesEndRef} />
-      </div>
-      <div className="px-4 py-2">
-        <input
-          type="text"
-          value={messageInput}
-          onChange={(e) => setMessageInput(e.target.value)}
-          onKeyPress={handleKeyPress}
-          placeholder="Type your message..."
-          className="w-full mb-2 px-4 py-3 rounded-md border text-sm font-light border-gray-300 focus:outline-none focus:ring-2 focus:ring-gray-400"
-        />
-        <div className="flex justify-end">
-          <div>
-            <MdOutlineEmojiEmotions
-              size={34}
-              className="cursor-pointer text-gray-500 p-2 rounded-md hover:bg-gray-200"
-              onClick={() => setShowPicker((val) => !val)}
-            />
-            {showPicker && (
-              <div className="absolute bottom-12 right-2">
-                <Picker onEmojiClick={onEmojiClick} />
-              </div>
-            )}
-          </div>
-          <button
-            onClick={handleAttachFile}
-            className="text-gray-500 p-2 rounded-md hover:bg-gray-200"
-          >
-            <FaPaperclip size={15} />
-          </button>
+          ))}
+          <div ref={messagesEndRef} />
         </div>
-        {showAttachmentMenu && (
-          <div className="absolute bottom-12 right-2 bg-white rounded-md shadow-lg">
+        <div className="px-4 py-2">
+          <input
+            type="text"
+            value={messageInput}
+            onChange={(e) => setMessageInput(e.target.value)}
+            onKeyPress={handleKeyPress}
+            placeholder="Type your message..."
+            className="w-full mb-2 px-4 py-3 rounded-md border text-sm font-light border-gray-300 focus:outline-none focus:ring-2 focus:ring-gray-400"
+          />
+          <div className="flex justify-end">
+            <div>
+              <MdOutlineEmojiEmotions
+                size={34}
+                className="cursor-pointer text-gray-500 p-2 rounded-md hover:bg-gray-200"
+                onClick={() => setShowPicker((val) => !val)}
+              />
+              {showPicker && (
+                <div className="absolute bottom-12 right-2">
+                  <Picker onEmojiClick={onEmojiClick} />
+                </div>
+              )}
+            </div>
             <button
-              onClick={() => handleFileSelect("photo")}
-              className="block w-full text-left px-4 py-2 hover:bg-gray-100"
+              onClick={handleAttachFile}
+              className="text-gray-500 p-2 rounded-md hover:bg-gray-200"
             >
-              <FaImage className="inline-block mr-2 text-blue-400" /> Photo
-            </button>
-            <button
-              onClick={() => handleFileSelect("file")}
-              className="block w-full text-left px-4 py-2 hover:bg-gray-100"
-            >
-              <FaFile className="inline-block mr-2 text-red-400" /> File
+              <FaPaperclip size={15} />
             </button>
           </div>
-        )}
+          {showAttachmentMenu && (
+            <div className="absolute bottom-12 right-2 bg-white rounded-md shadow-lg">
+              <button
+                onClick={() => handleFileSelect("photo")}
+                className="block w-full text-left px-4 py-2 hover:bg-gray-100"
+              >
+                <FaImage className="inline-block mr-2 text-blue-400" /> Photo
+              </button>
+              <button
+                onClick={() => handleFileSelect("file")}
+                className="block w-full text-left px-4 py-2 hover:bg-gray-100"
+              >
+                <FaFile className="inline-block mr-2 text-red-400" /> File
+              </button>
+            </div>
+          )}
+        </div>
       </div>
-    </div>
+      {selectedImage && <ImageModal imageUrl={selectedImage} onClose={closeModal} />}
+    </>
   );
 };
 

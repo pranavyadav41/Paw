@@ -212,3 +212,83 @@ export const removeCoupon = async (Id: string) => {
     return errorHandle(err);
   }
 };
+export const weeklyReport = async () => {
+  try {
+    const response = await Api.get(adminRoutes.weeklyReport);
+    return response;
+  } catch (error) {
+    const err: Error = error as Error;
+    return errorHandle(err);
+  }
+};
+export const monthlyReport = async () => {
+  try {
+    const response = await Api.get(adminRoutes.monthlyReport);
+    return response;
+  } catch (error) {
+    const err: Error = error as Error;
+    return errorHandle(err);
+  }
+};
+export const yearlyReport = async () => {
+  try {
+    const response = await Api.get(adminRoutes.yearlyReport);
+    return response;
+  } catch (error) {
+    const err: Error = error as Error;
+    return errorHandle(err);
+  }
+};
+export const getStats = async () => {
+  try {
+    const response = await Api.get(adminRoutes.getStats);
+    return response;
+  } catch (error) {
+    const err: Error = error as Error;
+    return errorHandle(err);
+  }
+};
+export const franchiseweeklyReport = async (franchiseId: string) => {
+  try {
+    const response = await Api.post(adminRoutes.franchiseweeklyReport, {
+      franchiseId: franchiseId,
+    });
+    return response;
+  } catch (error) {
+    const err: Error = error as Error;
+    return errorHandle(err);
+  }
+};
+export const franchisemonthlyReport = async (franchiseId: string) => {
+  try {
+    const response = await Api.post(adminRoutes.franchisemonthlyReport, {
+      franchiseId: franchiseId,
+    });
+    return response;
+  } catch (error) {
+    const err: Error = error as Error;
+    return errorHandle(err);
+  }
+};
+export const franchiseyearlyReport = async (franchiseId: string) => {
+  try {
+    const response = await Api.post(adminRoutes.franchiseyearlyReport, {
+      franchiseId: franchiseId,
+    });
+    return response;
+  } catch (error) {
+    const err: Error = error as Error;
+    return errorHandle(err);
+  }
+};
+export const franchiseStats = async (franchiseId: string) => {
+  try {
+    const response = await Api.post(adminRoutes.franchiseStats, {
+      franchiseId: franchiseId,
+    });
+    return response;
+  } catch (error) {
+    const err: Error = error as Error;
+    return errorHandle(err);
+  }
+};

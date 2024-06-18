@@ -1,26 +1,16 @@
 import { useEffect, useState } from "react";
 import Profile from "../../Components/franchise/Profile";
-import { FaUserCircle, FaMapMarkerAlt, FaLock } from "react-icons/fa";
-import { MdMiscellaneousServices } from "react-icons/md";
-import Services from "../../Components/franchise/Services";
+import { FaUserCircle,FaLock } from "react-icons/fa";
 import ChangePassword from "../../Components/franchise/ChangePassword";
 import { getProfile } from "../../api/franchise";
-import { getServices } from "../../api/admin";
 import { useSelector } from "react-redux";
 import { RootState } from "../../redux/store";
 
-interface Service {
-  serviceName: string;
-  serviceId: string;
-  timeToComplete: any;
-  _id: string;
-}
 
 const ProfilePage = () => {
   const { franchiseInfo } = useSelector(
     (state: RootState) => state.franchiseAuth
   );
-  const [services, setServices] = useState([]);
   const [profile, setProfile] = useState({
     _id: "",
     name: "",
@@ -33,37 +23,19 @@ const ProfilePage = () => {
     pincode: "",
   });
   const [loadingProfile, setLoadingProfile] = useState(true);
-  const [loadingServices, setLoadingServices] = useState(true);
   const [state, setState] = useState(false);
   const [activeTab, setActiveTab] = useState("profile");
-  const [openingTime, setOpeningTime] = useState("");
-  const [closingTime, setClosingTime] = useState("");
-  const [availableServices, setAvailableServices] = useState<Service[]>([]);
 
-  let available={
-    opening:openingTime,
-    closing:closingTime,
-    available:availableServices
-  }
+
 
   useEffect(() => {
     getProfile(franchiseInfo._id).then((response) => {
       setProfile(response?.data);
-      setOpeningTime(response?.data.openingTime);
-      setClosingTime(response?.data.closingTime);
-      setAvailableServices(response?.data.services);
 
       setLoadingProfile(false);
       setState(false)
     });
   }, [state]);
-
-  useEffect(() => {
-    getServices().then((response) => {
-      setServices(response?.data);
-      setLoadingServices(false);
-    });
-  }, []);
 
   const handleTabChange = (tab: string) => {
     setActiveTab(tab);
@@ -95,17 +67,6 @@ const ProfilePage = () => {
             </button>
             <button
               className={`w-full flex items-center gap-3 p-4 rounded-md text-base transition-colors duration-300 ${
-                activeTab === "manageAddress" ? "bg-[#48808b]" : ""
-              }`}
-              onClick={() => handleTabChange("manageAddress")}
-            >
-              <MdMiscellaneousServices className="text-xl" />
-              <span className="font-semibold text-sm md:text-base">
-                Manage Services
-              </span>
-            </button>
-            <button
-              className={`w-full flex items-center gap-3 p-4 rounded-md text-base transition-colors duration-300 ${
                 activeTab === "changePassword" ? "bg-[#48808b]" : ""
               }`}
               onClick={() => handleTabChange("changePassword")}
@@ -123,13 +84,6 @@ const ProfilePage = () => {
           ) : (
             activeTab === "profile" && (
               <Profile profile={profile} profileState={handleState} />
-            )
-          )}
-          {loadingServices ? (
-            <div>Loading services...</div>
-          ) : (
-            activeTab === "manageAddress" && (
-              <Services services={services} available={available} Id={profile._id} state={handleState}/>
             )
           )}
           {activeTab === "changePassword" && (

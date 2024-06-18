@@ -6,12 +6,13 @@ import { FaUserAlt, FaCaretDown } from "react-icons/fa";
 import { NavLink } from "react-router-dom";
 import { toast } from "react-toastify";
 import { RootState } from "../../redux/store";
+import { useBoolean } from "@chakra-ui/react";
 
 function Header() {
   let { franchiseInfo } = useSelector(
     (state: RootState) => state.franchiseAuth
   );
-  const [isDropdownOpen, setIsDropdownOpen] = useState(false);
+  const [isDropdownOpen, setIsDropdownOpen] = useBoolean();
   const [isHamburger, setIsHamburger] = useState(false);
   const [userDropdown, setIsDropdown] = useState(false);
   // let navigate = useNavigate();
@@ -25,16 +26,11 @@ function Header() {
   };
 
   let handleLogout = () => {
-    setIsDropdownOpen(false);
     setIsDropdown(false);
     setIsHamburger(false);
     localStorage.removeItem("token");
     dispatch(logout());
     toast.success("Logged out succesfully");
-  };
-
-  const toggleDropdown = () => {
-    setIsDropdownOpen(!isDropdownOpen);
   };
 
   const dropDownMenu = () => {
@@ -90,13 +86,18 @@ function Header() {
             <button
               className="flex items-center gap-2 px-4 py-2 font-sans lg:visible invisible text-xs font-bold text-gray-900 uppercase rounded-lg hover:bg-gray-900/10 active:bg-gray-900/20 disabled:pointer-events-none disabled:opacity-50 disabled:shadow-none"
               type="button"
-              onClick={toggleDropdown}
+              onMouseEnter={() => setIsDropdownOpen.on()}
+              onClick={() => setIsDropdownOpen.toggle()}
             >
               <span>{franchiseInfo.name}</span>
               <FaCaretDown />
             </button>
             {isDropdownOpen && (
-              <div className="absolute  right-0 mt-2 py-2 w-48 bg-gray-600 rounded-lg shadow-lg z-10">
+              <div
+                className="absolute  right-0 mt-2 py-2 w-48 bg-gray-600 rounded-lg shadow-lg z-10"
+                onMouseLeave={() => setIsDropdownOpen.off()}
+                onClick={() => setIsDropdownOpen.toggle()}
+              >
                 <div>
                   <NavLink
                     to="/franchise/profile"

@@ -118,7 +118,7 @@ const ChangePassword = ({ Id }: ChangePassword) => {
           </div>
           <button
             type="submit"
-            className="mt-6 w-full bg-green-700 text-white py-2 rounded-md hover:bg-green-600 transition-colors duration-300 flex items-center justify-center gap-2 text-sm md:text-base"
+            className="mt-6 w-full bg-[#48808b] text-white py-2 rounded-md hover:bg-blue-900 transition-colors duration-300 flex items-center justify-center gap-2 text-sm md:text-base"
           >
             Change Password
           </button>

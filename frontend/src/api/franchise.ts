@@ -247,10 +247,55 @@ export const changeStatus = async (bookingId: string, status: string) => {
 };
 export const getService = async (id: string) => {
   try {
-    const response = await Api.post(franchiseRoutes.getService,{Id:id});
+    const response = await Api.post(franchiseRoutes.getService, { Id: id });
     return response;
   } catch (error) {
     const err: Error = error as Error;
     return errorHandle(err);
+  }
+};
+export const weeklyReport = async (franchiseId: string) => {
+  try {
+    const response = await Api.post(franchiseRoutes.weeklyReport, {
+      franchiseId: franchiseId,
+    });
+    return response;
+  } catch (error) {
+    const err: Error = error as Error;
+    return errorHandle(err);
+  }
+};
+export const monthlyReport = async (franchiseId: string) => {
+  try {
+    const response = await Api.post(franchiseRoutes.monthlyReport, {
+      franchiseId: franchiseId,
+    });
+    return response;
+  } catch (error) {
+    const err: Error = error as Error;
+    return errorHandle(err);
+  }
+};
+export const yearlyReport = async (franchiseId: string) => {
+  try {
+    const response = await Api.post(franchiseRoutes.yearlyReport, {
+      franchiseId: franchiseId,
+    });
+    return response;
+  } catch (error) {
+    const err: Error = error as Error;
+    return errorHandle(err);
+  }
+};
+export const getStats = async (franchiseId: string) => {
+  try {
+    const response = await Api.post(franchiseRoutes.getStats, {
+      franchiseId: franchiseId,
+    });
+
+    return response;
+  } catch (error) {
+    const err: Error = error as Error;
+    return errorHandle(err);  
   }
 };

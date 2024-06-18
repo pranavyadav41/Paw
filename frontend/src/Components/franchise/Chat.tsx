@@ -6,7 +6,7 @@ import { MdOutlineEmojiEmotions } from "react-icons/md";
 import { ImAttachment } from "react-icons/im";
 import { format } from "date-fns";
 import Picker from "emoji-picker-react";
-import socket from "../socket";
+import socket from "../common/socket";
 
 interface Message {
   sender: string;

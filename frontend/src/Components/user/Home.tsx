@@ -1,6 +1,6 @@
 import { useNavigate } from "react-router-dom";
 import { useSelector } from "react-redux";
-import { RootState } from "../redux/store";
+import { RootState } from "../../redux/store";
 import { toast } from "react-toastify";
 function Home() {
   const navigate = useNavigate();

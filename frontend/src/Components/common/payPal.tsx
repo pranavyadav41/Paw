@@ -43,13 +43,13 @@ const Payment: React.FC<PaymentProps> = ({ total, handleBooking }) => {
   };
 
   return (
-    <div className="checkout flex flex-col items-center justify-center p-4 bg-gray-100 rounded-lg shadow-lg">
+    <div className="checkout flex flex-col items-center justify-center p-4  rounded-lg">
       {isPending ? (
         <p className="text-lg font-semibold">LOADING...</p>
       ) : (
         <>
           <PayPalButtons
-            style={{ layout: "vertical" }}
+            style={{ layout: "vertical", }}
             createOrder={onCreateOrder}
             onApprove={onApproveOrder}
           />

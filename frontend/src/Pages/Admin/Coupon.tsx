@@ -33,6 +33,13 @@ const Coupon = () => {
     validTo: "",
     minCartValue: "",
   });
+  const [errors, setErrors] = useState({
+    code: "",
+    discount: "",
+    validFrom: "",
+    validTo: "",
+    minCartValue: "",
+  });
 
   const openModal = () => {
     setModalIsOpen(true);
@@ -42,6 +49,13 @@ const Coupon = () => {
     setModalIsOpen(false);
     setIsEditing(false);
     setNewCoupon({
+      code: "",
+      discount: "",
+      validFrom: "",
+      validTo: "",
+      minCartValue: "",
+    });
+    setErrors({
       code: "",
       discount: "",
       validFrom: "",
@@ -60,7 +74,23 @@ const Coupon = () => {
     setNewCoupon({ ...newCoupon, [name]: value });
   };
 
+  const validate = () => {
+    const { code, discount, validFrom, validTo, minCartValue } = newCoupon;
+    const newErrors = {
+      code: code ? "" : "Coupon code is required",
+      discount: discount ? "" : "Discount amount is required",
+      validFrom: validFrom ? "" : "Valid from date is required",
+      validTo: validTo ? "" : "Valid to date is required",
+      minCartValue: minCartValue ? "" : "Minimum cart value is required",
+    };
+    setErrors(newErrors);
+    return !Object.values(newErrors).some((error) => error);
+  };
+
   const saveCoupon = async () => {
+    if (!validate()) {
+      return;
+    }
     let response;
     if (isEditing && currentCouponId) {
       response = await editCoupon(currentCouponId, newCoupon);
@@ -96,7 +126,7 @@ const Coupon = () => {
   };
 
   return (
-    <div className="container mx-auto p-4 bg-black text-white">
+    <div className="container mx-auto p-4 bg-black text-white min-h-screen">
       <button
         onClick={openModal}
         className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-1 px-2 rounded"
@@ -108,16 +138,14 @@ const Coupon = () => {
         <table className="min-w-full bg-gray-900 text-white rounded-lg shadow-lg">
           <thead>
             <tr>
-              <th className="py-2 px-4 border-b border-gray-700">
-                Coupon Code
-              </th>
-              <th className="py-2 px-4 border-b border-gray-700">Discount</th>
-              <th className="py-2 px-4 border-b border-gray-700">Valid From</th>
-              <th className="py-2 px-4 border-b border-gray-700">Valid To</th>
-              <th className="py-2 px-4 border-b border-gray-700">
+              <th className="py-2 px-4 border border-gray-400">Coupon Code</th>
+              <th className="py-2 px-4 border  border-gray-400">Discount</th>
+              <th className="py-2 px-4 border  border-gray-400">Valid From</th>
+              <th className="py-2 px-4 border  border-gray-400">Valid To</th>
+              <th className="py-2 px-4 border  border-gray-400">
                 Min Cart Value
               </th>
-              <th className="py-2 px-4 border-b border-gray-700">Actions</th>
+              <th className="py-2 px-4 border  border-gray-400">Actions</th>
             </tr>
           </thead>
           <tbody>
@@ -168,6 +196,9 @@ const Coupon = () => {
               onChange={handleInputChange}
               className="w-full border rounded px-2 py-1"
             />
+            {errors.code && (
+              <p className="text-red-500 text-sm">{errors.code}</p>
+            )}
           </div>
           <div>
             <label className="block text-sm font-medium">Discount Amount</label>
@@ -178,6 +209,9 @@ const Coupon = () => {
               onChange={handleInputChange}
               className="w-full border rounded px-2 py-1"
             />
+            {errors.discount && (
+              <p className="text-red-500 text-sm">{errors.discount}</p>
+            )}
           </div>
           <div>
             <label className="block text-sm font-medium">Valid From</label>
@@ -188,6 +222,9 @@ const Coupon = () => {
               onChange={handleInputChange}
               className="w-full border rounded px-2 py-1"
             />
+            {errors.validFrom && (
+              <p className="text-red-500 text-sm">{errors.validFrom}</p>
+            )}
           </div>
           <div>
             <label className="block text-sm font-medium">Valid To</label>
@@ -198,6 +235,9 @@ const Coupon = () => {
               onChange={handleInputChange}
               className="w-full border rounded px-2 py-1"
             />
+            {errors.validTo && (
+              <p className="text-red-500 text-sm">{errors.validTo}</p>
+            )}
           </div>
           <div>
             <label className="block text-sm font-medium">
@@ -210,6 +250,9 @@ const Coupon = () => {
               onChange={handleInputChange}
               className="w-full border rounded px-2 py-1"
             />
+            {errors.minCartValue && (
+              <p className="text-red-500 text-sm">{errors.minCartValue}</p>
+            )}
           </div>
           <div className="flex justify-end space-x-4">
             <button

@@ -1,5 +1,5 @@
 import Api from "../services/axios";
-import chatRoutes from "../routes/ChatRoutes";
+import chatRoutes from "../services/endpoints/ChatRoutes";
 import errorHandle from "./error";
 
 

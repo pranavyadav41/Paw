@@ -5,7 +5,9 @@ import { Link } from "react-router-dom";
 import { RootState } from "../../redux/store";
 
 const MyBookings = () => {
-  const { franchiseInfo } = useSelector((state: RootState) => state.franchiseAuth);
+  const { franchiseInfo } = useSelector(
+    (state: RootState) => state.franchiseAuth
+  );
   const [bookings, setBookings] = useState<any>([]);
   const [services, setServices] = useState<{ [key: string]: string }>({});
 
@@ -14,13 +16,23 @@ const MyBookings = () => {
       getBookings(franchiseInfo._id)
         .then((response) => {
           const sortedBookings = response?.data.sort((a: any, b: any) => {
-            if (a.bookingStatus.toLowerCase() === "pending" && b.bookingStatus.toLowerCase() !== "pending") {
+            if (
+              a.bookingStatus.toLowerCase() === "pending" &&
+              b.bookingStatus.toLowerCase() !== "pending"
+            ) {
               return -1;
             }
-            if (a.bookingStatus.toLowerCase() !== "pending" && b.bookingStatus.toLowerCase() === "pending") {
+            if (
+              a.bookingStatus.toLowerCase() !== "pending" &&
+              b.bookingStatus.toLowerCase() === "pending"
+            ) {
               return 1;
             }
-            return 0;
+            // Sort by booking date in descending order
+            return (
+              new Date(b.bookingDate).getTime() -
+              new Date(a.bookingDate).getTime()
+            );
           });
           setBookings(sortedBookings);
         })
@@ -71,27 +83,36 @@ const MyBookings = () => {
               <div className="flex items-center justify-between mb-4">
                 <h3 className="text-xl font-semibold">
                   Status:
-                  {(booking.bookingStatus === "pending" || booking.bookingStatus === "Pending") && (
-                    <span className="text-yellow-500"> {booking.bookingStatus}</span>
+                  {(booking.bookingStatus === "pending" ||
+                    booking.bookingStatus === "Pending") && (
+                    <span className="text-yellow-500">
+                      {" "}
+                      {booking.bookingStatus}
+                    </span>
                   )}
                   {booking.bookingStatus === "Completed" && (
-                    <span className="text-green-500"> {booking.bookingStatus}</span>
+                    <span className="text-green-500">
+                      {" "}
+                      {booking.bookingStatus}
+                    </span>
                   )}
                   {booking.bookingStatus === "Cancelled" && (
-                    <span className="text-red-500"> {booking.bookingStatus}</span>
+                    <span className="text-red-500">
+                      {" "}
+                      {booking.bookingStatus}
+                    </span>
                   )}
                 </h3>
-                <button 
-                  className="bg-[#88c699] text-white font-semibold px-4 py-1 rounded hover:bg-green-400 transition-colors"
-                  // onClick={() => handleViewDetails(booking._id)}
-                ><Link to={`/franchise/bookingDetail/${booking._id}`}>View Details</Link>
-                  
+                <button className="bg-[#88c699] text-white font-semibold px-4 py-1 rounded hover:bg-green-400 transition-colors">
+                  <Link to={`/franchise/bookingDetail/${booking._id}`}>
+                    View Details
+                  </Link>
                 </button>
               </div>
               <div className="text-gray-600 flex flex-col gap-1">
                 <p>
-                  <strong>Booking Date:</strong>{" "}
-                  {new Date(booking.bookingDate).toLocaleDateString()}
+                  <strong>Scheduled on:</strong>{" "}
+                  {new Date(booking.scheduledDate).toLocaleDateString()}
                 </p>
                 <p>
                   <strong>Slot:</strong>{" "}

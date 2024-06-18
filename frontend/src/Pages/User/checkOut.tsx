@@ -1,4 +1,4 @@
-import { useEffect, useState, memo } from "react";
+import { useEffect, useState } from "react";
 import {
   FaMapMarkerAlt,
   FaTicketAlt,
@@ -13,8 +13,11 @@ import {
   getCoupons,
   applyCoupon,
   confirmBooking,
+  getWallet,
 } from "../../api/user";
 import Payment from "../../Components/common/payPal";
+import { useSelector } from "react-redux";
+import { RootState } from "../../redux/store";
 
 Modal.setAppElement("#root");
 
@@ -23,10 +26,20 @@ const Checkout = () => {
   const [appliedCoupon, setAppliedCoupon] = useState<any>(null);
   const [service, setService] = useState<any>({});
   const [coupons, setCoupons] = useState<any>([]);
+  const [wallet, setWallet] = useState<any>({});
   const [total, setTotal] = useState("");
   const [isModalOpen, setIsModalOpen] = useState(false);
   const location = useLocation();
   const bookingData = location.state;
+
+  const { userInfo } = useSelector((state: RootState) => state.auth);
+
+  useEffect(() => {
+    getWallet(userInfo._id).then((response) => {
+      setWallet(response?.data);
+    });
+  }, [userInfo._id]);
+
   useEffect(() => {
     if (bookingData) {
       getService(bookingData.typeOfService).then((response) => {
@@ -43,7 +56,7 @@ const Checkout = () => {
     }
   }, [service, bookingData]);
 
-  let navigate = useNavigate()
+  let navigate = useNavigate();
 
   const handleCouponChange = (e: any) => {
     setCouponCode(e.target.value);
@@ -75,11 +88,33 @@ const Checkout = () => {
       bookingData.name,
       bookingData.phone,
       bookingData.size,
-      total
+      total,
+      false
     );
 
-    if(response){
-      navigate('/success',{state:response.data})
+    if (response) {
+      navigate("/success", { state: response.data });
+    }
+  };
+
+  const handleWalletPayment = async () => {
+    const response = await confirmBooking(
+      bookingData.franchise,
+      bookingData.date,
+      bookingData.startTime,
+      bookingData.endTime,
+      bookingData.userId,
+      bookingData.address,
+      bookingData.typeOfService,
+      bookingData.name,
+      bookingData.phone,
+      bookingData.size,
+      total,
+      true 
+    );
+
+    if (response) {
+      navigate("/success", { state: response.data });
     }
   };
 
@@ -103,7 +138,6 @@ const Checkout = () => {
   };
 
   const openModal = () => {
-    console.log("hii",total)
     setIsModalOpen(true);
   };
 
@@ -117,13 +151,18 @@ const Checkout = () => {
       position: "top-center",
     });
   };
+
   return (
     <div className="min-h-screen flex justify-center items-center bg-gray-100">
-      <div className="bg-white rounded-lg shadow-lg max-w-6xl w-full mx-4 md:mx-0 p-8 mb-20">
+      <div
+        className="absolute inset-0 bg-cover bg-center bg-no-repeat opacity-50"
+        style={{ backgroundImage: "url('/public/logo/pawBackground.jpg')" }}
+      ></div>
+      <div className="bg-white rounded-lg shadow-lg max-w-7xl w-full mx-4 md:mx-0 p-8 mb-20 z-10">
         <h2 className="text-3xl font-bold mb-6 text-[#3968B6]">Checkout</h2>
         <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
           <div>
-            <div className="bg-gray-50 p-6 rounded-lg mb-4">
+            <div className="bg-gray-100 p-6 rounded-lg mb-4">
               <h3 className="text-xl font-semibold mb-2 flex items-center">
                 <FaTicketAlt className="mr-2 text-[#9AD1AA]" /> Service Details
               </h3>
@@ -136,7 +175,7 @@ const Checkout = () => {
                 {service.services?.join(", ")}
               </p>
             </div>
-            <div className="bg-gray-50 p-6 rounded-lg mb-4">
+            <div className="bg-gray-100 p-6 rounded-lg mb-4">
               <h3 className="text-lg font-bold mb-2 flex items-center">
                 <FaCalendarAlt className="mr-2 text-[#9AD1AA]" /> Booked Slot
               </h3>
@@ -150,7 +189,7 @@ const Checkout = () => {
                 {formatTime(bookingData.endTime)}
               </p>
             </div>
-            <div className="bg-gray-50 p-6 rounded-lg mb-4">
+            <div className="bg-gray-100 p-6 rounded-lg mb-4">
               <h3 className="text-xl font-semibold mb-2 flex items-center">
                 <FaMapMarkerAlt className="mr-2 text-[#9AD1AA]" /> Address
               </h3>
@@ -222,6 +261,14 @@ const Checkout = () => {
                   ₹{total || 29.99}
                 </span>
               </div>
+              {wallet.balance >= total && (
+                <button
+                  onClick={handleWalletPayment}
+                  className="bg-[#3968b6] lg:ml-28 text-white px-4 py-2 rounded hover:bg-green-500 focus:outline-none focus:ring focus:ring-indigo-300 transition duration-200 mb-4"
+                >
+                  Pay with Wallet (Balance: ₹{wallet.balance})
+                </button>
+              )}
               {!isModalOpen && (
                 <Payment total={total} handleBooking={handleBooking} />
               )}
@@ -233,31 +280,45 @@ const Checkout = () => {
         isOpen={isModalOpen}
         onRequestClose={closeModal}
         contentLabel="Available Coupons"
-        className="bg-white rounded-lg shadow-lg max-w-lg md:w-[500px] mx-auto p-6 mt-20"
+        className="bg-white rounded-lg shadow-lg max-w-lg md:w-[500px] mx-auto p-6 mt-20 "
         overlayClassName="fixed inset-0 bg-black bg-opacity-50 flex justify-center items-center"
+        style={{
+          content: { zIndex: 1000 },
+          overlay: {
+            backgroundColor: "rgba(0, 0, 0, 0.5)",
+            zIndex: 999,
+          },
+        }}
       >
         <h2 className="text-2xl font-semibold mb-4">Available Coupons</h2>
         <ul>
-          {coupons.map((coupon: any) => (
-            <li key={coupon._id} className="mb-2">
-              <div className="flex justify-between items-center bg-gray-50 p-4 rounded-lg shadow-md">
-                <div>
-                  <p className="text-lg font-medium text-gray-800">
-                    {coupon.code}
-                  </p>
-                  <p className="text-sm text-gray-600">
-                    Discount:₹{coupon.discount}
-                  </p>
+          {coupons
+            .filter((coupon: any) => {
+              const currentDate = new Date();
+              const validFromDate = new Date(coupon.validFrom);
+              const validToDate = new Date(coupon.validTo);
+              return currentDate >= validFromDate && currentDate <= validToDate;
+            })
+            .map((coupon: any) => (
+              <li key={coupon._id} className="mb-2">
+                <div className="flex justify-between items-center bg-gray-50 p-4 rounded-lg shadow-md">
+                  <div>
+                    <p className="text-lg font-medium text-gray-800">
+                      {coupon.code}
+                    </p>
+                    <p className="text-sm text-gray-600">
+                      Discount:₹{coupon.discount}
+                    </p>
+                  </div>
+                  <button
+                    onClick={() => handleCopy(coupon.code)}
+                    className="bg-green-600 text-white px-4 py-1 rounded hover:bg-green-700 focus:outline-none focus:ring focus:ring-indigo-300 transition duration-200"
+                  >
+                    Copy
+                  </button>
                 </div>
-                <button
-                  onClick={() => handleCopy(coupon.code)}
-                  className="bg-green-600 text-white px-4 py-1 rounded hover:bg-green-700 focus:outline-none focus:ring focus:ring-indigo-300 transition duration-200"
-                >
-                  Copy
-                </button>
-              </div>
-            </li>
-          ))}
+              </li>
+            ))}
         </ul>
         <button
           onClick={closeModal}

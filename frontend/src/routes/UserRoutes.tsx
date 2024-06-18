@@ -2,24 +2,24 @@ import { Suspense, lazy } from "react";
 import { Routes, Route } from "react-router-dom";
 import UserLayout from "../layout/userLayout/userLayout";
 import LoadingSpinner from "../Components/common/loadingSpinner";
-import Error404 from "../Screens/Error404";
+import Error404 from "../Pages/Error404";
 import UserProtect from "../protected/protectedRoute";
 
-const LoginPage = lazy(() => import("../Screens/User/loginPage"));
-const SignupPage = lazy(() => import("../Screens/User/signupPage"));
-const Otp = lazy(() => import("../Screens/User/otp"));
-const Home = lazy(() => import("../Components/Home"));
+const LoginPage = lazy(() => import("../Pages/User/loginPage"));
+const SignupPage = lazy(() => import("../Pages/User/signupPage"));
+const Otp = lazy(() => import("../Pages/User/otp"));
+const Home = lazy(() => import("../Components/user/Home"));
 const ForgetEmail = lazy(() => import("../Components/common/ForgetEmail"));
 const ResetPassword = lazy(() => import("../Components/common/ResetPassword"));
-const FranchisePage = lazy(() => import("../Screens/User/FrachisePage"));
-const Services = lazy(() => import("../Screens/User/Services"));
-const ServiceDetail = lazy(() => import("../Screens/User/ServiceDetail"));
-const BookingService = lazy(() => import("../Screens/User/BookingPage"));
-const ProfilePage = lazy(() => import("../Screens/User/ProfilePage"));
-const Checkout = lazy(()=>import("../Screens/User/checkOut"))
-const Success = lazy(()=>import("../Screens/User/successBooking"))
-const MyBookings = lazy(()=>import("../Screens/User/MyBookings"))
-const Booking = lazy(()=>import("../Screens/User/BookingDetail"))
+const FranchisePage = lazy(() => import("../Pages/User/FrachisePage"));
+const Services = lazy(() => import("../Pages/User/Services"));
+const ServiceDetail = lazy(() => import("../Pages/User/ServiceDetail"));
+const BookingService = lazy(() => import("../Pages/User/BookingPage"));
+const ProfilePage = lazy(() => import("../Pages/User/ProfilePage"));
+const Checkout = lazy(()=>import("../Pages/User/checkOut"))
+const Success = lazy(()=>import("../Pages/User/successBooking"))
+const MyBookings = lazy(()=>import("../Pages/User/MyBookings"))
+const Booking = lazy(()=>import("../Pages/User/BookingDetail"))
 
 
 

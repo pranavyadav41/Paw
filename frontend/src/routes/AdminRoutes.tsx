@@ -4,13 +4,13 @@ import LoadingSpinner from "../Components/common/loadingSpinner"
 
 
 const AdminLayout = lazy(() => import("../layout/adminLayout/adminLayout"));
-const Dashboard = lazy(() => import("../Screens/Admin/Dashboard"));
+const Dashboard = lazy(() => import("../Pages/Admin/Dashboard"));
 const Users = lazy(() => import("../Components/admin/Users"));
 const FranchiseReq = lazy(() => import("../Components/admin/FranchiseReq"));
 const AdminProtected = lazy(() => import("../protected/AdminProtected"));
 const FranchiseList = lazy(() => import("../Components/admin/FranchiseList"));
 const Service = lazy(() => import("../Components/admin/Service"));
-const Coupon = lazy(()=>import("../Screens/Admin/Coupon"))
+const Coupon = lazy(()=>import("../Pages/Admin/Coupon"))
 
 function AdminRoutes() {
   return (

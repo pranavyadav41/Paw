@@ -10,7 +10,7 @@ import {
   editTime,
 } from "../../api/franchise";
 import { toast } from "react-toastify";
-
+ 
 interface TimeToComplete {
   hours: number;
   minutes: number;
@@ -116,8 +116,9 @@ const Services: React.FC<ServicesProps> = ({
 
     if (response) {
       toast.success(response.data, { position: "top-center" });
+      state(true);
     }
-    state(true);
+    
   };
 
   const handleSetTime = async () => {
@@ -125,8 +126,9 @@ const Services: React.FC<ServicesProps> = ({
 
     if (response) {
       toast.success(response.data, { position: "top-center" });
+      state(true);
     }
-    state(true);
+    
   };
 
   const handleUpdateServiceTime = async (serviceId: string) => {
@@ -143,18 +145,18 @@ const Services: React.FC<ServicesProps> = ({
       toast.success(response.data, { position: "top-center" });
       setEditModalIsOpen(false);
       state(true);
-    }
+    } 
   };
 
   return (
     <div className="flex flex-col items-center md:items-end">
-      <div className="bg-white w-full md:w-[900px] md:h-[500px] rounded-md relative p-4 border-slate-400 shadow-lg">
+      <div className=" bg-transparent w-full md:w-[1100px] md:h-full rounded-md relative p-2 right-4 border-slate-400 shadow-lg overflow-auto">
         <div className="flex flex-col md:flex-row justify-between items-center mb-4">
           <div className="flex gap-4 mb-4 md:mb-0">
             <div className="flex flex-col">
               <label
                 htmlFor="opening-time"
-                className="text-sm font-semibold text-slate-700"
+                className="text-sm font-semibold text-slate-100"
               >
                 Opening Time
               </label>
@@ -169,7 +171,7 @@ const Services: React.FC<ServicesProps> = ({
             <div className="flex flex-col">
               <label
                 htmlFor="closing-time"
-                className="text-sm font-semibold text-slate-700"
+                className="text-sm font-semibold text-slate-100"
               >
                 Closing Time
               </label>
@@ -183,7 +185,7 @@ const Services: React.FC<ServicesProps> = ({
             </div>
             <Button
               className="mt-5 md:mt-8 px-6"
-              colorScheme="green"
+              colorScheme="blue"
               size="xs"
               onClick={handleSetTime}
             >
@@ -192,7 +194,7 @@ const Services: React.FC<ServicesProps> = ({
           </div>
           <button
             onClick={openModal}
-            className="bg-blue-400 hover:bg-blue-500 text-white px-5 py-1 rounded-md shadow-md flex items-center gap-2"
+            className="bg-gray-900 hover:bg-blue-500 text-white px-5 py-1 rounded-md shadow-md flex items-center gap-2"
           >
             <AddIcon />
             Add Service
@@ -203,32 +205,33 @@ const Services: React.FC<ServicesProps> = ({
             <h1 className="font-semibold text-lg">No services</h1>
           </div>
         ) : (
+          
           <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
             {availableServices.map((service) => (
               <div
                 key={service._id}
-                className="bg-[#9AD1AA] shadow-md rounded-lg overflow-hidden flex"
+                className="bg-[#6EC1E4] shadow-md rounded-lg overflow-hidden flex"
               >
                 <div className="flex items-center">
-                  <div className="relative mr-4">
+                  <div className="relative mr-2 ml-2">
                     <img
-                      src="/public/logo/newOne.png"
+                      src="/public/logo/Homepage/pngFlying-fur-Service-IllustrationsArtboard-1.png"
                       alt="Service Image"
                       className="w-20 h-15 rounded-lg mb-10"
                     />
                   </div>
                 </div>
                 <div className="flex-1 p-4">
-                  <h3 className="text-base font-semibold leading-6 text-gray-900">
+                  <h3 className="text-base font-semibold leading-6 text-white">
                     Service: {service.serviceName}
                   </h3>
-                  <p className="mt-1 text-md text-gray-600">
+                  <p className="mt-1 text-md text-white">
                     Time to Complete: {service.timeToComplete.hours}h{" "}
                     {service.timeToComplete.minutes}m
                   </p>
                   <div className="mt-4 flex justify-end gap-3">
                     <button
-                      className="text-sm font-medium text-green-900 hover:text-green-900"
+                      className="text-sm font-medium text-black hover:text-green-900"
                       onClick={() => openEditModal(service)}
                     >
                       <EditIcon />
@@ -260,9 +263,11 @@ const Services: React.FC<ServicesProps> = ({
               maxHeight: "80vh",
               overflowY: "auto",
               backgroundColor: "#CCCCCC",
+              zIndex:1000
             },
             overlay: {
               backgroundColor: "rgba(0, 0, 0, 0.5)",
+              zIndex:999
             },
           }}
           contentLabel="Add Service Modal"
@@ -301,9 +306,11 @@ const Services: React.FC<ServicesProps> = ({
               maxHeight: "80vh",
               overflowY: "auto",
               backgroundColor: "#CCCCCC",
+              zIndex:1000
             },
             overlay: {
               backgroundColor: "rgba(0, 0, 0, 0.5)",
+              zIndex:999
             },
           }}
           contentLabel="Edit Service Time Modal"

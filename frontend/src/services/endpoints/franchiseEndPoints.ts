@@ -17,6 +17,10 @@ const franchiseRoutes = {
   fetchBooking: "/franchise/getBooking",
   getUser: "/franchise/getFranchise",
   changeStatus: "/franchise/changeStatus",
-  getService:"/franchise/getService"
+  getService:"/franchise/getService",
+  weeklyReport:"/franchise/weeklyReport",
+  monthlyReport:"/franchise/monthlyReport",
+  yearlyReport :"/franchise/yearlyReport", 
+  getStats:"/franchise/getStats"
 };
 export default franchiseRoutes;

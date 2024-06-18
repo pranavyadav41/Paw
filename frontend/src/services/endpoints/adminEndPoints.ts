@@ -17,7 +17,15 @@ const adminRoutes={
     addCoupon:'/admin/addCoupon',
     deleteCoupon:'/admin/deleteCoupon',
     editCoupon:'/admin/editCoupon',
-    getCoupons:'/admin/getCoupons'
+    getCoupons:'/admin/getCoupons', 
+    weeklyReport:"/admin/weeklyReport",
+    monthlyReport:"/admin/monthlyReport",
+    yearlyReport :"/admin/yearlyReport",
+    getStats:"/admin/getStats",
+    franchiseweeklyReport:"/admin/franchiseweeklyReport",
+    franchisemonthlyReport:"/admin/franchisemonthlyReport",
+    franchiseyearlyReport :"/admin/franchiseyearlyReport",
+    franchiseStats:"/admin/franchiseStats"
 }
 
 export default adminRoutes

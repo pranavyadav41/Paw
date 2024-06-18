@@ -19,7 +19,8 @@ const MyBookings = () => {
             } else if (a.bookingStatus.toLowerCase() !== "pending" && b.bookingStatus.toLowerCase() === "pending") {
               return 1;
             }
-            return 0;
+            // Sort by booking date in descending order
+            return new Date(b.scheduledDate).getTime() - new Date(a.scheduledDate).getTime();
           });
           setBookings(sortedBookings);
         })
@@ -80,11 +81,10 @@ const MyBookings = () => {
                     <span className="text-red-500"> {booking.bookingStatus}</span>
                   )}
                 </h3>
-               <button 
-                  className="bg-[#88c699] text-white lg:px-5 lg:py-2 px-3 py-1 rounded hover:bg-green-400  transition-colors"
-                  // onClick={() => handleViewDetails(booking._id)}
-                ><Link to={`/bookingDetail/${booking._id}`}>View Details</Link>
-                  
+                <button 
+                  className="bg-[#88c699] text-white lg:px-5 lg:py-2 px-3 py-1 rounded hover:bg-green-400 transition-colors"
+                >
+                  <Link to={`/bookingDetail/${booking._id}`}>View Details</Link>
                 </button>
               </div>
               <div className="text-gray-600 flex flex-col gap-1">

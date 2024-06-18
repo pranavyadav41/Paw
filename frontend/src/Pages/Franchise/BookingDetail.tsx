@@ -3,9 +3,13 @@ import { useParams } from "react-router-dom";
 import Modal from "react-modal";
 import { toast } from "react-toastify";
 import { fetchBooking, changeStatus, getService } from "../../api/franchise";
-import { FaCheckCircle, FaTimesCircle} from "react-icons/fa";
+import { FaCheckCircle, FaTimesCircle } from "react-icons/fa";
+import { FaMapLocationDot } from "react-icons/fa6";
+import GetDirection from "../../Components/common/getDirection";
+import { useSelector } from "react-redux";
+import { RootState } from "../../redux/store";
 
-Modal.setAppElement("#root"); // Ensure to set the app element for accessibility
+Modal.setAppElement("#root");
 
 interface Address {
   houseName: string;
@@ -13,6 +17,7 @@ interface Address {
   city: string;
   state: string;
   pincode: string;
+  location: [longitude: number, latitude: number];
 }
 
 interface Booking {
@@ -21,6 +26,7 @@ interface Booking {
   phone: string;
   franchiseId: string;
   bookingDate: Date;
+  scheduledDate: Date;
   startTime: string;
   endTime: string;
   userId: string;
@@ -49,6 +55,34 @@ const BookingDetails = () => {
   const [booking, setBooking] = useState<Booking>();
   const [service, setService] = useState<Service>();
   const [newStatus, setNewStatus] = useState<string>("");
+  const [isModalOpen, setIsModalOpen] = useState(false);
+  const [franchiseLocation, setFranchiseLocation] = useState({
+    longitude: 0,
+    latitude: 0,
+  });
+  const [userLocation, setUserLocation] = useState({
+    longitude: 0,
+    latitude: 0,
+  });
+
+  console.log("parent",franchiseLocation,userLocation)
+
+  let { franchiseInfo } = useSelector(
+    (state: RootState) => state.franchiseAuth
+  );
+
+  useEffect(() => {
+    if (franchiseInfo && booking) {
+      setFranchiseLocation({
+        longitude: franchiseInfo.location.coordinates[0],
+        latitude: franchiseInfo.location.coordinates[1],
+      });
+      setUserLocation({
+        longitude: booking.address.location[0],
+        latitude: booking.address.location[1],
+      });
+    }
+  }, [franchiseInfo, booking]);
 
   useEffect(() => {
     if (id) {
@@ -62,7 +96,9 @@ const BookingDetails = () => {
 
   useEffect(() => {
     if (booking) {
-      getService(booking.serviceId).then((response) => setService(response?.data));
+      getService(booking.serviceId).then((response) =>
+        setService(response?.data)
+      );
     }
   }, [booking]);
 
@@ -88,6 +124,14 @@ const BookingDetails = () => {
     setState(true);
   };
 
+  const openModal = () => {
+    setIsModalOpen(true);
+  };
+
+  const closeModal = () => {
+    setIsModalOpen(false);
+  };
+
   return (
     <div className="relative container mx-auto p-6 min-h-screen w-full flex flex-col items-center ">
       <div
@@ -97,7 +141,7 @@ const BookingDetails = () => {
       <h2 className="text-3xl font-bold mb-6 text-center z-10 text-[#3968B6]">
         Booking Details
       </h2>
-      <div className="relative z-10 bg-gray-100 shadow-md rounded-lg p-6 md:w-[80%] w-full md:h-[450px]   grid grid-cols-1 md:grid-cols-2 gap-8">
+      <div className="relative z-10 bg-gray-100 shadow-md rounded-lg p-6 md:w-[80%] w-full md:h-[500px]   grid grid-cols-1 md:grid-cols-2 gap-8">
         <div>
           <div className="flex flex-col space-y-4">
             <p className="text-gray-800">
@@ -111,6 +155,10 @@ const BookingDetails = () => {
               {new Date(booking.bookingDate).toLocaleDateString()}
             </p>
             <p className="text-gray-800">
+              <strong>Scheduled Date:</strong>{" "}
+              {new Date(booking.scheduledDate).toLocaleDateString()}
+            </p>
+            <p className="text-gray-800">
               <strong>Slot:</strong> {convertTo12HourFormat(booking.startTime)}{" "}
               - {convertTo12HourFormat(booking.endTime)}
             </p>
@@ -122,7 +170,7 @@ const BookingDetails = () => {
                 <FaTimesCircle className="text-red-500" />
               )}
             </p>
-           
+
             <p className="text-gray-800">
               <strong>Address:</strong>
               <br />
@@ -133,6 +181,13 @@ const BookingDetails = () => {
               {booking.address.pincode}
             </p>
           </div>
+          <button
+            className="rounded-md mt-2 text-blue-600 flex items-center gap-2"
+            onClick={openModal}
+          >
+            <FaMapLocationDot />
+            Get direction
+          </button>
           {booking.bookingStatus === "Pending" && (
             <div className="mt-6 flex items-center space-x-4">
               <label htmlFor="status" className="text-gray-800">
@@ -178,6 +233,50 @@ const BookingDetails = () => {
             </div>
           </div>
         )}
+        <Modal
+          isOpen={isModalOpen}
+          onRequestClose={closeModal}
+          contentLabel="Get Direction Modal"
+          className="h-[full] md:w-[30%] w-[95%] bg-white rounded-lg shadow-lg mx-auto my-8 outline-none"
+          style={{
+            overlay: {
+              position: "fixed",
+              top: 0,
+              left: 0,
+              right: 0,
+              bottom: 0,
+              backgroundColor: "rgba(0, 0, 0, 0.75)",
+              zIndex: 1000,
+            },
+            content: {
+              position: "fixed",
+              top: "50%",
+              left: "50%",
+              transform: "translate(-50%, -50%)",
+              background: "white",
+              padding: "20px",
+              borderRadius: "8px",
+              outline: "none",
+              zIndex: 1001,
+              maxHeight: "80vh",
+              overflowY: "auto",
+            },
+          }}
+        >
+          <div style={{ height: "60%" }}>
+            
+           <GetDirection
+              userLocation={userLocation}
+              providerLocation={franchiseLocation}
+            />
+          </div>
+          <button
+            onClick={closeModal}
+            className="absolute top-2 right-2 text-red-600 text-lg"
+          >
+            &times;
+          </button>
+        </Modal>
       </div>
     </div>
   );

@@ -158,7 +158,8 @@ export const confirmBooking = async (
   name: string,
   phone: string,
   size: string,
-  total: string
+  total: string,
+  isWallet:boolean
 ) => {
   try {
     const response = await Api.post(userRoutes.confirmBooking, {
@@ -173,6 +174,7 @@ export const confirmBooking = async (
       phone,
       size,
       totalAmount: total,
+      isWallet:isWallet
     });
     return response;
   } catch (error) {

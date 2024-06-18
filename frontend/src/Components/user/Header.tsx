@@ -1,16 +1,17 @@
 import { useSelector, useDispatch } from "react-redux";
 import { useState, useEffect } from "react";
 import { useNavigate, NavLink, useLocation } from "react-router-dom";
-import { userLogout } from "../redux/slices/authSlice";
+import { userLogout } from "../../redux/slices/authSlice";
 import { FaUserAlt, FaCaretDown, FaUserCircle } from "react-icons/fa";
 import { SlCalender } from "react-icons/sl";
 import { FaPowerOff } from "react-icons/fa6";
 import { toast } from "react-toastify";
-import { RootState } from "../redux/store";
+import { RootState } from "../../redux/store";
+import { useBoolean } from "@chakra-ui/react";
 
 function Header() {
   let { userInfo } = useSelector((state: RootState) => state.auth);
-  const [isDropdownOpen, setIsDropdownOpen] = useState(false);
+  const [isDropdownOpen, setIsDropdownOpen] = useBoolean();
   const [isHamburger, setIsHamburger] = useState(false);
   const [userDropdown, setIsDropdown] = useState(false);
   let navigate = useNavigate();
@@ -18,7 +19,6 @@ function Header() {
   const location = useLocation();
 
   useEffect(() => {
-    setIsDropdownOpen(false);
     setIsHamburger(false);
     setIsDropdown(false);
   }, [location]);
@@ -31,17 +31,12 @@ function Header() {
   };
 
   let handleLogout = () => {
-    setIsDropdownOpen(false);
     setIsDropdown(false);
     setIsHamburger(false);
     localStorage.removeItem("token");
     dispatch(userLogout());
     navigate("/");
     toast.success("Logged out successfully");
-  };
-
-  const toggleDropdown = () => {
-    setIsDropdownOpen(!isDropdownOpen);
   };
 
   const dropDownMenu = () => {
@@ -57,9 +52,13 @@ function Header() {
   };
 
   return (
-    <nav className="sticky top-0 z-50 block w-full max-w-full px-4 py-2 text-white bg-[#3968B6] rounded-none shadow-md h-max backdrop-blur-2xl backdrop-saturate-200 lg:px-8 lg:py-4">
+    <nav className="sticky top-0 z-50 block w-full max-w-full px-4 py-2 text-white bg-[#1679AB] rounded-none shadow-md h-max backdrop-blur-2xl backdrop-saturate-200 lg:px-8 lg:py-4">
       <div className="flex items-center justify-between text-blue-gray-900">
-        <img className="h-[40px]" src="/public/logo/logo-white-removebg-preview.png" alt="" />
+        <img
+          className="h-[40px]"
+          src="/public/logo/logo-white-removebg-preview.png"
+          alt=""
+        />
 
         <div className="flex items-center gap-4">
           <div className="hidden mr-4 lg:block">
@@ -97,7 +96,20 @@ function Header() {
             <button
               className="flex items-center gap-2 px-4 py-2 font-sans lg:visible invisible text-xs font-bold text-gray-900 uppercase rounded-lg hover:bg-gray-900/10 active:bg-gray-900/20 disabled:pointer-events-none disabled:opacity-50 disabled:shadow-none"
               type="button"
-              onClick={userInfo ? toggleDropdown : redirect}
+              onMouseEnter={() => {
+                if (userInfo) {
+                  setIsDropdownOpen.on();
+                  return;
+                }
+                redirect();
+              }}
+              onClick={() => {
+                if (userInfo) {
+                  setIsDropdownOpen.toggle();
+                } else {
+                  redirect();
+                }
+              }}
             >
               {userInfo ? (
                 <>
@@ -106,15 +118,21 @@ function Header() {
                   <FaCaretDown className="text-[#192955]" />
                 </>
               ) : (
-                <span className="text-[14px] mt-1 text-gray-[#192955]">Login</span>
+                <span className="text-[14px] mt-1 text-gray-[#192955]">
+                  Login
+                </span>
               )}
             </button>
             {isDropdownOpen && (
-              <div className="absolute right-0 mt-2 py-2 w-48 bg-gray-600 rounded-md  shadow-lg z-10">
+              <div
+                className="absolute right-0 mt-2 py-2 w-48 bg-gray-600 rounded-md  shadow-lg z-10"
+                onMouseLeave={() => setIsDropdownOpen.off()}
+                onClick={()=> setIsDropdownOpen.toggle()}
+              >
                 <NavLink
                   to="/profile"
                   className="px-4 py-2 text-white hover:bg-gray-800 flex gap-2 items-center"
-                  onClick={() => setIsDropdownOpen(false)}
+                  // onClick={() => setIsDropdownOpen(false)}
                 >
                   <FaUserCircle />
                   Profile
@@ -122,7 +140,7 @@ function Header() {
                 <NavLink
                   to="/myBookings"
                   className="flex items-center gap-2 px-4 py-2 text-white hover:bg-gray-800"
-                  onClick={() => setIsDropdownOpen(false)}
+                  // onClick={() => setIsDropdownOpen(false)}
                 >
                   <SlCalender />
                   My bookings
@@ -172,7 +190,7 @@ function Header() {
                       <span className="text-white text-xs ">
                         {userInfo.name}
                       </span>
-                      <FaCaretDown />
+                      <FaCaretDown /> 
                     </>
                   ) : (
                     <span className="text-white text-xs">Login</span>
@@ -184,7 +202,7 @@ function Header() {
                   <NavLink
                     to="/profile"
                     className="px-4 py-2 text-white hover:bg-gray-800 flex gap-2 items-center"
-                    onClick={() => setIsDropdownOpen(false)}
+                    // onClick={() => setIsDropdownOpen(false)}
                   >
                     <FaUserCircle />
                     Profile
@@ -192,7 +210,7 @@ function Header() {
                   <NavLink
                     to="/myBookings"
                     className="flex items-center gap-2 px-4 py-2 text-white hover:bg-gray-800"
-                    onClick={() => setIsDropdownOpen(false)}
+                    // onClick={() => setIsDropdownOpen(false)}
                   >
                     <SlCalender />
                     My bookings

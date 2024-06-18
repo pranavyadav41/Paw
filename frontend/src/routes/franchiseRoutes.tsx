@@ -3,18 +3,18 @@ import { Routes, Route, Navigate } from "react-router-dom";
 import LoadingSpinner from "../Components/common/loadingSpinner";
 
 
-const RegisterPage = lazy(() => import("../Screens/Franchise/RegisterPage"));
+const RegisterPage = lazy(() => import("../Pages/Franchise/RegisterPage"));
 const FranchiseLayout = lazy(() => import("../layout/franchiseLayout/franchiseLayout"));
-const LoginPage = lazy(() => import("../Screens/Franchise/LoginPage"));
+const LoginPage = lazy(() => import("../Pages/Franchise/LoginPage"));
 const FranchiseProtected = lazy(() => import("../protected/FranchiseProtected"));
-const ForgetEmail = lazy(() => import("../Screens/Franchise/ForgotEmail"));
-const ResetPassword = lazy(() => import("../Screens/Franchise/ResetPassword"));
-const ProfilePage = lazy(() => import("../Screens/Franchise/ProfilePage"));
-const Otp = lazy(() => import("../Screens/Franchise/OtpPage"));
-const MyBookings = lazy(() => import("../Screens/Franchise/ListBookings"));
-const Booking = lazy(() => import("../Screens/Franchise/BookingDetail"));
-const AllChat = lazy(() => import("../Screens/Franchise/AllChats"));
-const Dashboard = lazy(() => import("../Screens/Franchise/Dashboard"));
+const ForgetEmail = lazy(() => import("../Pages/Franchise/ForgotEmail"));
+const ResetPassword = lazy(() => import("../Pages/Franchise/ResetPassword"));
+const ProfilePage = lazy(() => import("../Pages/Franchise/ProfilePage"));
+const Otp = lazy(() => import("../Pages/Franchise/OtpPage"));
+const MyBookings = lazy(() => import("../Pages/Franchise/ListBookings"));
+const Booking = lazy(() => import("../Pages/Franchise/BookingDetail"));
+const AllChat = lazy(() => import("../Pages/Franchise/AllChats"));
+const Dashboard = lazy(() => import("../Pages/Franchise/Dashboard"));
 
 function FranchiseRoutes() {
   return (
