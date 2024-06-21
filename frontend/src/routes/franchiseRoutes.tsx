@@ -18,6 +18,7 @@ const MyBookings = lazy(() => import("../Pages/Franchise/ListBookings"));
 const Booking = lazy(() => import("../Pages/Franchise/BookingDetail"));
 const AllChat = lazy(() => import("../Pages/Franchise/AllChats"));
 const Dashboard = lazy(() => import("../Pages/Franchise/Dashboard"));
+const VideoCall = lazy(()=>import ("../Pages/Franchise/VideoChat"))
 const Error404 = lazy(()=>import("../Pages/Error404"))
 
 function FranchiseRoutes() {
@@ -38,6 +39,7 @@ function FranchiseRoutes() {
             <Route path="/chat" element={<AllChat />} />
             <Route path="/dashboard" element={<Dashboard />} />
             <Route index element={<Navigate to="/franchise/dashboard" />} />
+            <Route path="/videoChat" element={<VideoCall/>} />
           </Route>
         </Route>
       </Routes>

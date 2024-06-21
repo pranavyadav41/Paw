@@ -20,7 +20,7 @@ const Checkout = lazy(() => import("../Pages/User/checkOut"));
 const Success = lazy(() => import("../Pages/User/successBooking"));
 const MyBookings = lazy(() => import("../Pages/User/MyBookings"));
 const Booking = lazy(() => import("../Pages/User/BookingDetail"));
-const Video = lazy(() => import("../Components/common/videoCall"));
+const VideoCall = lazy(()=>import("../Pages/User/VideoChat"))
 
 function UserRoutes() {
   return (
@@ -39,7 +39,7 @@ function UserRoutes() {
             <Route path="/success" element={<Success />} />
             <Route path="/myBookings" element={<MyBookings />} />
             <Route path="/bookingDetail/:id" element={<Booking />} />
-            <Route path="/videoChat/:roomID" element={<Video />} />
+            <Route path="/videoChat" element={<VideoCall />} />
           </Route>
         </Route>
 

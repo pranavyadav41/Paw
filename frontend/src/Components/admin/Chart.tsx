@@ -96,9 +96,9 @@ const MyAreaChart = () => {
       setFranchiseCount(response?.data.totalfranchises);
     });
 
-    getFranchises().then((response) => {
-      setFranchises(response?.data);
-    });
+    // getFranchises().then((response) => {
+    //   setFranchises(response?.data);
+    // });
   }, []);
 
   useEffect(() => {

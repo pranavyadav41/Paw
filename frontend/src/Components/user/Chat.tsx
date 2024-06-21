@@ -5,9 +5,12 @@ import { MdOutlineEmojiEmotions } from "react-icons/md";
 import { FaImage, FaFile } from "react-icons/fa";
 import { IoMdChatbubbles } from "react-icons/io";
 import { formatDistanceToNow } from "date-fns";
+import { MdVideoCall } from "react-icons/md";
 import Picker from "emoji-picker-react";
 import socket from "../common/socket";
 import ImageModal from "../common/ImageModal";
+import { randomID } from "../../utils/randomID";
+import { useNavigate } from "react-router-dom";
 
 interface Message {
   sender: string;
@@ -42,8 +45,10 @@ const ChatRoom: React.FC<ChatRoomProps> = ({ userId, franchiseId }) => {
   const [showPicker, setShowPicker] = useState(false);
   const [showAttachmentMenu, setShowAttachmentMenu] = useState(false);
   const [selectedImage, setSelectedImage] = useState<string | null>(null);
-  const [isTyping, setIsTyping] = useState<boolean>(false); // Added state for typing status
+  const [isTyping, setIsTyping] = useState<boolean>(false);
   const messagesEndRef = useRef<HTMLDivElement>(null);
+
+  const navigate = useNavigate();
 
   useEffect(() => {
     socket.emit("join", { room: roomId });
@@ -79,13 +84,21 @@ const ChatRoom: React.FC<ChatRoomProps> = ({ userId, franchiseId }) => {
       }
     });
 
+    socket.on("incomingCall", ({ from, roomID }) => {
+      if (confirm(`Incoming call from ${from}. Answer?`)) {
+        const role = from === "user" ? "provider" : "user";
+        navigate(`/videoChat?roomID=${roomID}&role=${role}`);
+      }
+    });
+
     return () => {
       socket.off("newMessage", handleMessage);
       socket.off("typing");
       socket.off("stopTyping");
+      socket.off("incomingCall");
       socket.emit("leave", { room: roomId });
     };
-  }, [sender, receiver, roomId]);
+  }, [sender, receiver, roomId, navigate]);
 
   useEffect(() => {
     messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
@@ -187,6 +200,14 @@ const ChatRoom: React.FC<ChatRoomProps> = ({ userId, franchiseId }) => {
     socket.emit("typing", { room: roomId, user: sender });
   };
 
+  const initiateCall = async () => {
+    const roomID = randomID(10);
+    if (roomID) {
+      socket.emit("initiateCall", { room: roomId, from: "user", roomId:roomID });
+      navigate(`/videoChat?roomID=${roomID}&role=user`);
+    }
+  };
+
   return (
     <>
       <div
@@ -199,72 +220,83 @@ const ChatRoom: React.FC<ChatRoomProps> = ({ userId, franchiseId }) => {
             <IoMdChatbubbles className="mr-2" />
             <h3 className="text-md font-medium">Live Support</h3>
           </div>
-          <div className="flex justify-center items-center gap-3">
+          <div className="flex justify-center items-center gap-4">
+            <MdVideoCall
+              size={20}
+              className="text-gray-800"
+              onClick={initiateCall}
+            />
             <FaTimes
-              className="cursor-pointer"
+              className="cursor-pointer text-gray-800"
               onClick={() => setShowChat(!showChat)}
             />
           </div>
         </div>
         <div className="p-4 h-[calc(100%-144px)] max-h-[calc(100%-144px)] overflow-y-auto">
-        {messages.length > 0 ? (
-        messages.map((message, index) => (
-          <div
-            key={index}
-            className={`mb-2 ${
-              message.sender === sender ? "text-right" : "text-left"
-            }`}
-          >
-            <div
-              className={`inline-flex items-start ${
-                message.sender === sender ? "flex-row-reverse" : ""
-              }`}
-            >
-              {message.sender !== sender && (
-                <FaUserCircle className="mr-2 text-gray-500" size={20} />
-              )}
+          {messages.length > 0 ? (
+            messages.map((message, index) => (
               <div
-                className={`inline-block px-4 py-2 rounded-md ${
-                  message.sender === sender
-                    ? "bg-gray-800 text-white text-sm font-normal rounded-xl rounded-tr-none"
-                    : "bg-gray-300 text-gray-600 text-sm font-normal rounded-xl rounded-tl-none"
+                key={index}
+                className={`mb-2 ${
+                  message.sender === sender ? "text-right" : "text-left"
                 }`}
               >
-                {message.contentType === "photo" ? (
+                <div
+                  className={`inline-flex items-start ${
+                    message.sender === sender ? "flex-row-reverse" : ""
+                  }`}
+                >
+                  {message.sender !== sender && (
+                    <FaUserCircle className="mr-2 text-gray-500" size={20} />
+                  )}
                   <div
-                    className="w-48 h-48 overflow-hidden rounded-lg shadow-md cursor-pointer"
-                    onClick={() => handleImageClick(message.content)}
+                    className={`inline-block px-4 py-2 rounded-md ${
+                      message.sender === sender
+                        ? "bg-gray-800 text-white text-sm font-normal rounded-xl rounded-tr-none"
+                        : "bg-gray-300 text-gray-600 text-sm font-normal rounded-xl rounded-tl-none"
+                    }`}
                   >
-                    <img
-                      src={message.content}
-                      alt="Uploaded photo"
-                      className="w-full h-full object-cover"
-                    />
+                    {message.contentType === "photo" ? (
+                      <div
+                        className="w-48 h-48 overflow-hidden rounded-lg shadow-md cursor-pointer"
+                        onClick={() => handleImageClick(message.content)}
+                      >
+                        <img
+                          src={message.content}
+                          alt="Uploaded photo"
+                          className="w-full h-full object-cover"
+                        />
+                      </div>
+                    ) : message.contentType === "file" ? (
+                      <a
+                        href={message.content}
+                        download
+                        className="text-blue-500 underline"
+                      >
+                        Download File
+                      </a>
+                    ) : (
+                      <p>{message.content}</p>
+                    )}
+                    <span className="block text-xs text-gray-400">
+                      {formatDistanceToNow(new Date(message.timestamp), {
+                        addSuffix: true,
+                      })}
+                    </span>
                   </div>
-                ) : message.contentType === "file" ? (
-                  <a
-                    href={message.content}
-                    download
-                    className="text-blue-500 underline"
-                  >
-                    Download File
-                  </a>
-                ) : (
-                  <p>{message.content}</p>
-                )}
-                <span className="block text-xs text-gray-400">
-                  {formatDistanceToNow(new Date(message.timestamp), { addSuffix: true })}
-                </span>
+                </div>
               </div>
+            ))
+          ) : (
+            <div className="text-center text-gray-500">
+              No messages to display
             </div>
-          </div>
-        ))
-      ) : (
-        <div className="text-center text-gray-500">
-          No messages to display
-        </div>
-      )}
-       {isTyping && <div className="text-gray-500 text-center text-sm">The other user is typing...</div>} 
+          )}
+          {isTyping && (
+            <div className="text-gray-500 text-center text-sm">
+              The other user is typing...
+            </div>
+          )}
           <div ref={messagesEndRef} />
         </div>
         <div className="px-4 py-2">
@@ -275,7 +307,9 @@ const ChatRoom: React.FC<ChatRoomProps> = ({ userId, franchiseId }) => {
             onKeyPress={handleKeyPress}
             placeholder="Type your message..."
             className="w-full mb-2 px-4 py-3 rounded-md border text-sm font-light border-gray-300 focus:outline-none focus:ring-2 focus:ring-gray-400"
-            onBlur={() => socket.emit("stopTyping", { room: roomId, user: sender })}
+            onBlur={() =>
+              socket.emit("stopTyping", { room: roomId, user: sender })
+            }
           />
           <div className="flex justify-end items-center">
             <div>

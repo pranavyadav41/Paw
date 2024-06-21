@@ -4,9 +4,12 @@ import { FaUserCircle } from "react-icons/fa";
 import { FaImage, FaFile } from "react-icons/fa";
 import { MdOutlineEmojiEmotions } from "react-icons/md";
 import { formatDistanceToNow } from "date-fns";
+import { MdVideoCall } from "react-icons/md";
 import { ImAttachment } from "react-icons/im";
 import Picker from "emoji-picker-react";
 import socket from "../common/socket";
+import { useNavigate } from "react-router-dom";
+import { randomID } from "../../utils/randomID";
 
 interface Message {
   sender: string;
@@ -44,6 +47,8 @@ const ChatRoom: React.FC<ChatRoomProps> = ({ userId, franchiseId, name }) => {
   const [showAttachmentMenu, setShowAttachmentMenu] = useState(false);
   const [isTyping, setIsTyping] = useState<boolean>(false);
   const messagesEndRef = useRef<HTMLDivElement>(null);
+
+  const navigate = useNavigate();
 
   useEffect(() => {
     setSender(franchiseId);
@@ -83,10 +88,18 @@ const ChatRoom: React.FC<ChatRoomProps> = ({ userId, franchiseId, name }) => {
       }
     });
 
+    socket.on("incomingCall", ({ from, roomId }) => {
+      if (confirm(`Incoming call from ${from}. Answer?`)) {
+        const role = from === "user" ? "provider" : "user";
+        navigate(`/franchise/videoChat?roomID=${roomId}&role=${role}`);
+      }
+    });
+
     return () => {
       socket.off("newMessage", handleMessage);
       socket.off("typing");
       socket.off("stopTyping");
+      socket.off("incomingCall");
       socket.emit("leave", { room: roomId });
     };
   }, [sender, receiver, roomId]);
@@ -181,6 +194,14 @@ const ChatRoom: React.FC<ChatRoomProps> = ({ userId, franchiseId, name }) => {
     socket.emit("typing", { room: roomId, user: sender });
   };
 
+  const initiateCall = () => {
+    const roomID = randomID(10);
+    if (roomID) {
+      socket.emit("initiateCall", { room: roomId, from: "provider",roomId: roomID });
+      navigate(`/franchise/videoChat?roomID=${roomID}&role=provider`);
+    }
+  };
+
   return (
     <div
       className={`bottom-4 md:right-5 m-4 bg-gray-200 shadow-lg w-full h-full z-30 ${
@@ -192,6 +213,11 @@ const ChatRoom: React.FC<ChatRoomProps> = ({ userId, franchiseId, name }) => {
           <FaUserCircle className="mr-2" size={20} />
           <span className="font-semibold">{name}</span>
         </div>
+        <MdVideoCall
+          size={25}
+          className="text-gray-100 mr-5"
+          onClick={initiateCall}
+        />
       </div>
       <div className="p-4 h-[calc(100%-144px)] max-h-[calc(100%-144px)] overflow-y-auto mr-3">
         {messages.map((message, index) => (
