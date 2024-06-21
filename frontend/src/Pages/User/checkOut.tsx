@@ -36,6 +36,7 @@ const Checkout = () => {
 
   useEffect(() => {
     getWallet(userInfo._id).then((response) => {
+      console.log(response,"wallet")
       setWallet(response?.data);
     });
   }, [userInfo._id]);
@@ -258,7 +259,7 @@ const Checkout = () => {
               <div className="flex justify-between font-semibold mb-4">
                 <span>Total Amount</span>
                 <span className="text-xl text-[#3968B6]">
-                  ₹{total || 29.99}
+                  ₹{total}
                 </span>
               </div>
               {wallet.balance >= total && (

@@ -4,7 +4,7 @@ import { FaTimes, FaPaperclip, FaUserCircle } from "react-icons/fa";
 import { MdOutlineEmojiEmotions } from "react-icons/md";
 import { FaImage, FaFile } from "react-icons/fa";
 import { IoMdChatbubbles } from "react-icons/io";
-import { format } from "date-fns";
+import { formatDistanceToNow } from "date-fns";
 import Picker from "emoji-picker-react";
 import socket from "../common/socket";
 import ImageModal from "../common/ImageModal";
@@ -41,7 +41,8 @@ const ChatRoom: React.FC<ChatRoomProps> = ({ userId, franchiseId }) => {
   const [roomId, setRoomId] = useState<string>(`${userId}-${franchiseId}`);
   const [showPicker, setShowPicker] = useState(false);
   const [showAttachmentMenu, setShowAttachmentMenu] = useState(false);
-  const [selectedImage, setSelectedImage] = useState<string | null>(null); // State to manage the selected image
+  const [selectedImage, setSelectedImage] = useState<string | null>(null);
+  const [isTyping, setIsTyping] = useState<boolean>(false); // Added state for typing status
   const messagesEndRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
@@ -66,8 +67,22 @@ const ChatRoom: React.FC<ChatRoomProps> = ({ userId, franchiseId }) => {
 
     socket.on("newMessage", handleMessage);
 
+    socket.on("typing", ({ user }) => {
+      if (user !== sender) {
+        setIsTyping(true);
+      }
+    });
+
+    socket.on("stopTyping", ({ user }) => {
+      if (user !== sender) {
+        setIsTyping(false);
+      }
+    });
+
     return () => {
       socket.off("newMessage", handleMessage);
+      socket.off("typing");
+      socket.off("stopTyping");
       socket.emit("leave", { room: roomId });
     };
   }, [sender, receiver, roomId]);
@@ -129,7 +144,6 @@ const ChatRoom: React.FC<ChatRoomProps> = ({ userId, franchiseId }) => {
         formData.append("file", file);
         formData.append("fileType", type);
         try {
-          // Send the file message to the server
           setShowAttachmentMenu(false);
           await sendMessage(formData);
           socket.emit("sendMessage", { room: roomId, message: newMessage });
@@ -168,6 +182,11 @@ const ChatRoom: React.FC<ChatRoomProps> = ({ userId, franchiseId }) => {
     setSelectedImage(null);
   };
 
+  const handleTyping = (e: React.ChangeEvent<HTMLInputElement>) => {
+    setMessageInput(e.target.value);
+    socket.emit("typing", { room: roomId, user: sender });
+  };
+
   return (
     <>
       <div
@@ -180,75 +199,85 @@ const ChatRoom: React.FC<ChatRoomProps> = ({ userId, franchiseId }) => {
             <IoMdChatbubbles className="mr-2" />
             <h3 className="text-md font-medium">Live Support</h3>
           </div>
-          <FaTimes
-            className="cursor-pointer"
-            onClick={() => setShowChat(!showChat)}
-          />
+          <div className="flex justify-center items-center gap-3">
+            <FaTimes
+              className="cursor-pointer"
+              onClick={() => setShowChat(!showChat)}
+            />
+          </div>
         </div>
         <div className="p-4 h-[calc(100%-144px)] max-h-[calc(100%-144px)] overflow-y-auto">
-          {messages.map((message, index) => (
+        {messages.length > 0 ? (
+        messages.map((message, index) => (
+          <div
+            key={index}
+            className={`mb-2 ${
+              message.sender === sender ? "text-right" : "text-left"
+            }`}
+          >
             <div
-              key={index}
-              className={`mb-2 ${
-                message.sender === sender ? "text-right" : "text-left"
+              className={`inline-flex items-start ${
+                message.sender === sender ? "flex-row-reverse" : ""
               }`}
             >
+              {message.sender !== sender && (
+                <FaUserCircle className="mr-2 text-gray-500" size={20} />
+              )}
               <div
-                className={`inline-flex items-start ${
-                  message.sender === sender ? "flex-row-reverse" : ""
+                className={`inline-block px-4 py-2 rounded-md ${
+                  message.sender === sender
+                    ? "bg-gray-800 text-white text-sm font-normal rounded-xl rounded-tr-none"
+                    : "bg-gray-300 text-gray-600 text-sm font-normal rounded-xl rounded-tl-none"
                 }`}
               >
-                {message.sender !== sender && (
-                  <FaUserCircle className="mr-2 text-gray-500" size={20} />
+                {message.contentType === "photo" ? (
+                  <div
+                    className="w-48 h-48 overflow-hidden rounded-lg shadow-md cursor-pointer"
+                    onClick={() => handleImageClick(message.content)}
+                  >
+                    <img
+                      src={message.content}
+                      alt="Uploaded photo"
+                      className="w-full h-full object-cover"
+                    />
+                  </div>
+                ) : message.contentType === "file" ? (
+                  <a
+                    href={message.content}
+                    download
+                    className="text-blue-500 underline"
+                  >
+                    Download File
+                  </a>
+                ) : (
+                  <p>{message.content}</p>
                 )}
-                <div
-                  className={`inline-block px-4 py-2 rounded-md ${
-                    message.sender === sender
-                      ? "bg-gray-800 text-white text-sm font-normal rounded-xl rounded-tr-none"
-                      : "bg-gray-300 text-gray-600 text-sm font-normal rounded-xl rounded-tl-none"
-                  }`}
-                >
-                  {message.contentType === "photo" ? (
-                    <div
-                      className="w-48 h-48 overflow-hidden rounded-lg shadow-md cursor-pointer"
-                      onClick={() => handleImageClick(message.content)}
-                    >
-                      <img
-                        src={message.content}
-                        alt="Uploaded photo"
-                        className="w-full h-full object-cover"
-                      />
-                    </div>
-                  ) : message.contentType === "file" ? (
-                    <a
-                      href={message.content}
-                      download
-                      className="text-blue-500 underline"
-                    >
-                      Download File
-                    </a>
-                  ) : (
-                    <p>{message.content}</p>
-                  )}
-                  <span className="block text-xs text-gray-400 ">
-                    {format(new Date(message.timestamp), "hh:mm a")}
-                  </span>
-                </div>
+                <span className="block text-xs text-gray-400">
+                  {formatDistanceToNow(new Date(message.timestamp), { addSuffix: true })}
+                </span>
               </div>
             </div>
-          ))}
+          </div>
+        ))
+      ) : (
+        <div className="text-center text-gray-500">
+          No messages to display
+        </div>
+      )}
+       {isTyping && <div className="text-gray-500 text-center text-sm">The other user is typing...</div>} 
           <div ref={messagesEndRef} />
         </div>
         <div className="px-4 py-2">
           <input
             type="text"
             value={messageInput}
-            onChange={(e) => setMessageInput(e.target.value)}
+            onChange={handleTyping}
             onKeyPress={handleKeyPress}
             placeholder="Type your message..."
             className="w-full mb-2 px-4 py-3 rounded-md border text-sm font-light border-gray-300 focus:outline-none focus:ring-2 focus:ring-gray-400"
+            onBlur={() => socket.emit("stopTyping", { room: roomId, user: sender })}
           />
-          <div className="flex justify-end">
+          <div className="flex justify-end items-center">
             <div>
               <MdOutlineEmojiEmotions
                 size={34}
@@ -286,7 +315,9 @@ const ChatRoom: React.FC<ChatRoomProps> = ({ userId, franchiseId }) => {
           )}
         </div>
       </div>
-      {selectedImage && <ImageModal imageUrl={selectedImage} onClose={closeModal} />}
+      {selectedImage && (
+        <ImageModal imageUrl={selectedImage} onClose={closeModal} />
+      )}
     </>
   );
 };

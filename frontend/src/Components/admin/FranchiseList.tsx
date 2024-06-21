@@ -1,7 +1,6 @@
+import React, { useState, useEffect } from "react";
 import UserCard3 from "./Card3";
-import { useState, useEffect } from "react";
-import { getFranchises } from "../../api/admin";
-import { blockFranchise, unBlockFranchise } from "../../api/admin";
+import { getFranchises, blockFranchise, unBlockFranchise } from "../../api/admin";
 import { toast } from "react-toastify";
 import {
   Modal,
@@ -12,10 +11,12 @@ import {
   ModalBody,
   ModalCloseButton,
   Button,
+  Flex,
+  Box,
 } from "@chakra-ui/react";
 
 interface franchise {
-  _id:string
+  _id: string;
   name: string;
   email: string;
   password: string;
@@ -24,15 +25,39 @@ interface franchise {
   city: string;
   pincode: string;
   state: string;
-  isBlocked:boolean
+  isBlocked: boolean;
 }
 
 const FranchiseList = () => {
   const [franchises, setFranchises] = useState([]);
-  const [searchTerm, setSearchTerm] = useState("");
   const [selectedFranchise, setSelectedFranchise] = useState<any>(null);
   const [modalIsOpen, setModalIsOpen] = useState(false);
   const [state, setState] = useState(false);
+  const [searchTerm, setSearchTerm] = useState("");
+  const [page, setPage] = useState(1);
+  const [limit] = useState(4);
+  const [total, setTotal] = useState(0);
+
+  const fetchFranchises = async () => {
+    try {
+      const response = await getFranchises(page, limit, searchTerm);
+      console.log(response)
+      setFranchises(response?.data.data);
+      setTotal(response?.data.total);
+      setState(false);
+      const updatedFranchise = response?.data.data.find(
+        (franchise: franchise) => franchise._id === selectedFranchise?._id
+      );
+      if (updatedFranchise) setSelectedFranchise(updatedFranchise);
+    } catch (error) {
+      console.error("Error fetching franchises:", error);
+      toast.error("Failed to fetch franchises");
+    }
+  };
+
+  useEffect(() => {
+    fetchFranchises();
+  }, [page, searchTerm, state]);
 
   const handle = (franchiseId: string) => {
     const data = franchises.find(
@@ -45,10 +70,9 @@ const FranchiseList = () => {
 
   const handleBlock = (franchiseId: string, block: boolean) => {
     if (block == true) {
-      console.log("hello");
       unBlockFranchise({ franchiseId }).then((response) => {
         toast.success(response?.data, {
-          position:"top-center",
+          position: "top-center",
         });
         setState(true);
       });
@@ -56,14 +80,14 @@ const FranchiseList = () => {
     if (block == false) {
       blockFranchise({ franchiseId }).then((response) => {
         toast.success(response?.data, {
-          position:"top-center",
+          position: "top-center",
         });
         setState(true);
       });
     }
   };
 
-  const openModal = (franchise:franchise) => {
+  const openModal = (franchise: franchise) => {
     setSelectedFranchise(franchise);
     setModalIsOpen(true);
   };
@@ -73,42 +97,65 @@ const FranchiseList = () => {
     setModalIsOpen(false);
   };
 
-  useEffect(() => {
-    getFranchises().then((response) => {
-      setFranchises(response?.data);
-      setState(false);
-      const updatedFranchise = response?.data.find(
-        (franchise:franchise) => franchise._id === selectedFranchise?._id
-      );
-      if (updatedFranchise) setSelectedFranchise(updatedFranchise);
-    });
-  }, [state]);
+  const handleSearchChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    setSearchTerm(e.target.value);
+    setPage(1);
+  };
 
-  const filteredUsers = franchises.filter((franchise:franchise) =>
-    `${franchise.name} ${franchise.city} ${franchise.district}`
-      .toLowerCase()
-      .includes(searchTerm.toLowerCase())
-  );
+  const handlePageChange = (newPage: number) => {
+    setPage(newPage);
+  };
+
+  const totalPages = Math.ceil(total / limit);
 
   return (
     <div className="p-6 bg-[#000000] min-h-screen w-full">
       <div className="container mx-auto px-4">
-        <div className=" flex justify-between items-center mb-4">
+        <div className="flex justify-between items-center mb-4">
           <h2 className="text-2xl font-bold mb-4 text-white">Franchise List</h2>
           <input
             type="text"
             placeholder="Search..."
             value={searchTerm}
-            onChange={(e) => setSearchTerm(e.target.value)}
+            onChange={handleSearchChange}
             className="px-3 py-2 border focus:outline-none rounded-md bg-black text-white"
           />
         </div>
 
-        {filteredUsers.map((franchise, index) => (
+        {franchises.map((franchise, index) => (
           <UserCard3 key={index} franchise={franchise} state={handle} />
         ))}
+
+        <Flex justifyContent="center" mt={4}>
+          <Box>
+            <Button
+              disabled={page === 1}
+              onClick={() => handlePageChange(page - 1)}
+              mr={2}
+            >
+              Previous
+            </Button>
+            {Array.from({ length: totalPages }, (_, i) => i + 1).map((pageNum) => (
+              <Button
+                key={pageNum}
+                onClick={() => handlePageChange(pageNum)}
+                colorScheme={page === pageNum ? "blue" : "gray"}
+                mr={2}
+              >
+                {pageNum}
+              </Button>
+            ))}
+            <Button
+              disabled={page === totalPages}
+              onClick={() => handlePageChange(page + 1)}
+            >
+              Next
+            </Button>
+          </Box>
+        </Flex>
       </div>
-      <Modal isOpen={modalIsOpen} onClose={closeModal} size="xl" >
+
+      <Modal isOpen={modalIsOpen} onClose={closeModal} size="xl">
         <ModalOverlay />
         <ModalContent bg="#191C24">
           <ModalHeader textColor="white">Franchise Details</ModalHeader>

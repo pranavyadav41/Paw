@@ -1,4 +1,6 @@
 import { NavLink } from "react-router-dom";
+import Lottie from "lottie-react";
+import error from "../assets/404.json";
 
 const Error404 = () => {
   return (
@@ -8,9 +10,11 @@ const Error404 = () => {
         style={{ backgroundImage: "url('/public/logo/404.png')" }}
       >
         <div className="flex flex-col justify-center items-center gap-3">
-          <p className="text-9xl font-bold text-[#8FC42A]">404</p>
+          <div className="w-60 h-40">
+            <Lottie animationData={error} loop={true} />
+          </div>
           <p className="text-4xl font-semibold">Oops! Page not found</p>
-          <button className="bg-[#E34F61] hover:bg-pink-600 text-white font-medium py-3 px-7 mt-5 rounded-full">
+          <button className="bg-[#265BFF] hover:bg-pink-600 text-white font-medium py-3 px-7 mt-5 rounded-full">
             <NavLink to="/">Go to homepage</NavLink>
           </button>
         </div>

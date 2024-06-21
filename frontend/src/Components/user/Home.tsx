@@ -2,8 +2,20 @@ import { useNavigate } from "react-router-dom";
 import { useSelector } from "react-redux";
 import { RootState } from "../../redux/store";
 import { toast } from "react-toastify";
+import SocialMediaIcons from "./socialMediaIcons";
+import { useEffect, useState } from "react";
+import { homePageData } from "../../api/user";
+import { useInView } from "react-intersection-observer";
+
 function Home() {
   const navigate = useNavigate();
+  const [totalUsers, setTotalUsers] = useState(0);
+  const [totalFranchises, setTotalFranchises] = useState(0);
+  const [totalBooking, setTotalBooking] = useState(0);
+  const [usersCount, setUsersCount] = useState(0);
+  const [franchisesCount, setFranchisesCount] = useState(0);
+  const [bookingsCount, setBookingsCount] = useState(0);
+  const { ref, inView } = useInView({ triggerOnce: true });
 
   let { userInfo } = useSelector((state: RootState) => state.auth);
 
@@ -17,6 +29,37 @@ function Home() {
     }
   }
 
+  useEffect(() => {
+    homePageData().then((response: any) => {
+      setTotalBooking(response?.data?.totalBookings);
+      setTotalFranchises(response?.data?.totalFranchises);
+      setTotalUsers(response?.data?.totalUsers);
+    }).catch(error => {
+      console.error("Error fetching home page data:", error);
+    });
+  }, []);
+
+  useEffect(() => {
+    if (inView) {
+      animateCount(totalUsers, setUsersCount);
+      animateCount(totalFranchises, setFranchisesCount);
+      animateCount(totalBooking, setBookingsCount);
+    }
+  }, [inView, totalUsers, totalFranchises, totalBooking]);
+
+  const animateCount = (end: number, setCount: React.Dispatch<React.SetStateAction<number>>) => {
+    let start = 0;
+    const duration = 1500;
+    const stepTime = Math.abs(Math.floor(duration / end));
+    const timer = setInterval(() => {
+      start += 1;
+      setCount(start);
+      if (start === end) {
+        clearInterval(timer);
+      }
+    }, stepTime);
+  };
+
   return (
     <>
       <div>
@@ -24,13 +67,14 @@ function Home() {
           className="bg-cover bg-center w-full h-[684px]"
           style={{ backgroundImage: "url('/public/logo/slide3-3.jpg')" }}
         >
+          <SocialMediaIcons />
           <div className="relative w-full h-full">
             <div className="absolute top-48 left-40 w-[600px]  flex flex-col  gap-3">
               <h1 className="text-white text-6xl">Every Pet Deserves</h1>
               <h1 className="text-white text-6xl  font-bold">Celebrity Care</h1>
               <h1 className="text-white text-lg">
-                We provide personal ininterrupted attention for you and your pet
-                in a quite and stress free enviornment.
+                We provide personal uninterrupted attention for you and your pet
+                in a quiet and stress-free environment.
               </h1>
               <button
                 onClick={handleClick}
@@ -145,8 +189,8 @@ function Home() {
                   comfortable bathing experience, it is also fully
                   air-conditioned keeping your pet’s comfort in mind, full sized
                   tub and a state of the art grooming table. We provide personal
-                  uninterrupted attention for you and your pet in a quite and
-                  stress free environment.
+                  uninterrupted attention for you and your pet in a quiet and
+                  stress-free environment.
                 </p>
 
                 <button className="bg-[#192955] text-white w-32 h-10 rounded-full">
@@ -162,6 +206,22 @@ function Home() {
                 alt=""
               />
             </div>
+          </div>
+        </div>
+        <div ref={ref} className=" h-96 w-full flex justify-center items-center gap-8">
+          <div className="bg-yellow-400 p-10 rounded-lg shadow-md flex flex-col justify-center items-center">
+            <h2 className="text-7xl font-semibold mb-2">{usersCount}</h2>
+            <span className="text-3xl font-semibold">HAPPY CLIENTS</span>
+          </div>
+
+          <div className="bg-yellow-400 p-10 rounded-lg shadow-md flex flex-col justify-center items-center">
+            <h2 className="text-7xl font-semibold mb-2">{franchisesCount}</h2>
+            <span className="text-3xl font-semibold">TOTAL FRANCHISES</span>
+          </div>
+
+          <div className="bg-yellow-400 p-10 rounded-lg shadow-md flex flex-col justify-center items-center">
+            <h2 className="text-7xl font-semibold mb-2">{bookingsCount}</h2>
+            <span className="text-3xl font-semibold">PETS GROOMED</span>
           </div>
         </div>
 

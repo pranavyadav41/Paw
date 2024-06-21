@@ -17,12 +17,16 @@ const franchiseSlice = createSlice({
         logout:(state)=>{
             state.franchiseInfo=null;
             localStorage.removeItem('franchiseInfo');
+        },
+        clearFranchise:(state)=>{
+            state.franchiseInfo = null;
+            localStorage.removeItem('franchiseInfo')
         }
     }
 
 })
 
 
-export const {setCredentials,logout} = franchiseSlice.actions
+export const {setCredentials,logout,clearFranchise} = franchiseSlice.actions
 
 export default franchiseSlice.reducer

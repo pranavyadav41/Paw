@@ -204,11 +204,9 @@ export const editTime = async (
     return errorHandle(err);
   }
 };
-export const getBookings = async (franchiseId: string) => {
+export const getBookings = async (franchiseId: string,page=1,limit=4) => {
   try {
-    const response = await Api.post(franchiseRoutes.getBookings, {
-      franchiseId: franchiseId,
-    });
+    const response = await Api.post(`${franchiseRoutes.getBookings}/${franchiseId}?page=${page}&limit=${limit}`);
     return response;
   } catch (error) {
     const err: Error = error as Error;
@@ -273,7 +271,7 @@ export const monthlyReport = async (franchiseId: string) => {
     return response;
   } catch (error) {
     const err: Error = error as Error;
-    return errorHandle(err);
+    return errorHandle(err); 
   }
 };
 export const yearlyReport = async (franchiseId: string) => {

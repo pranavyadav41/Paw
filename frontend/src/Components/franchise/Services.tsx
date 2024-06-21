@@ -3,6 +3,10 @@ import { AddIcon, EditIcon, DeleteIcon } from "@chakra-ui/icons";
 import Modal from "react-modal";
 import { Button } from "@chakra-ui/react";
 import ServiceCard from "../franchise/ServiceCard";
+import { useSelector } from 'react-redux';
+import { getProfile } from "../../api/franchise";
+import { getServices } from "../../api/admin";
+import { RootState } from '../../redux/store';
 import {
   addServices,
   deleteService,
@@ -41,37 +45,38 @@ interface Available {
   available: AvailableService[];
 }
 
-interface ServicesProps {
-  services: Service[];
-  Id: string;
-  available: Available;
-  state: (data: boolean) => void;
-}
-
-const Services: React.FC<ServicesProps> = ({
-  services,
-  Id,
-  available,
-  state,
-}) => {
+const Services: React.FC = () => {
   const [modalIsOpen, setIsOpen] = useState(false);
   const [editModalIsOpen, setEditModalIsOpen] = useState(false);
   const [openingTime, setOpeningTime] = useState("");
   const [closingTime, setClosingTime] = useState("");
-  const [availableServices, setAvailableServices] = useState<
-    AvailableService[]
-  >([]);
-  const [currentService, setCurrentService] = useState<AvailableService | null>(
-    null
-  );
+  const [availableServices, setAvailableServices] = useState<AvailableService[]>([]);
+  const [currentService, setCurrentService] = useState<AvailableService | null>(null);
   const [editHours, setEditHours] = useState(0);
   const [editMinutes, setEditMinutes] = useState(0);
+  const [services, setServices] = useState([]);
+  const [state,setState]=useState(false)
+
+  const { franchiseInfo } = useSelector(
+    (state: RootState) => state.franchiseAuth
+  );
 
   useEffect(() => {
-    setAvailableServices(available.available);
-    setOpeningTime(available.opening);
-    setClosingTime(available.closing);
-  }, [available]);
+    getProfile(franchiseInfo._id).then((response) => {
+      console.log("calledddddd")
+      setOpeningTime(response?.data.openingTime);
+      setClosingTime(response?.data.closingTime);
+      setAvailableServices(response?.data.services);
+      setState(false)
+    });
+  }, [franchiseInfo._id,state]);
+
+  useEffect(() => {
+    getServices().then((response) => {
+      setServices(response?.data);
+    });
+  }, []);
+
 
   function openModal() {
     setIsOpen(true);
@@ -103,30 +108,30 @@ const Services: React.FC<ServicesProps> = ({
     };
     const time = { hours, minutes };
 
-    const response = await addServices(Id, serviceDetail, time);
+    const response = await addServices(franchiseInfo._id, serviceDetail, time);
 
     if (response) {
       toast.success(response.data, { position: "top-center" });
+      setState(true)
     }
-    state(true);
   }
 
   const handleDelete = async (serviceId: string) => {
-    const response = await deleteService(Id, serviceId);
+    const response = await deleteService(franchiseInfo._id, serviceId);
 
     if (response) {
       toast.success(response.data, { position: "top-center" });
-      state(true);
+      setState(true)
     }
     
   };
 
   const handleSetTime = async () => {
-    const response = await setTime(Id, openingTime, closingTime);
+    const response = await setTime(franchiseInfo._id, openingTime, closingTime);
 
     if (response) {
       toast.success(response.data, { position: "top-center" });
-      state(true);
+      setState(true)
     }
     
   };
@@ -139,12 +144,12 @@ const Services: React.FC<ServicesProps> = ({
       timeToComplete: { hours: editHours, minutes: editMinutes },
     };
 
-    const response = await editTime(Id, serviceId, editHours, editMinutes);
+    const response = await editTime(franchiseInfo._id, serviceId, editHours, editMinutes);
 
     if (response) {
       toast.success(response.data, { position: "top-center" });
       setEditModalIsOpen(false);
-      state(true);
+      setState(true)
     } 
   };
 
@@ -165,7 +170,7 @@ const Services: React.FC<ServicesProps> = ({
                 id="opening-time"
                 value={openingTime}
                 onChange={(e) => setOpeningTime(e.target.value)}
-                className="mt-1 p-2 border rounded-md shadow-sm text-slate-700 focus:outline-none focus:ring-2 focus:ring-blue-400"
+                className="mt-1 py-2 w-32 text-center border rounded-md shadow-sm text-slate-700 focus:outline-none focus:ring-2 focus:ring-blue-400"
               />
             </div>
             <div className="flex flex-col">
@@ -180,7 +185,7 @@ const Services: React.FC<ServicesProps> = ({
                 id="closing-time"
                 value={closingTime}
                 onChange={(e) => setClosingTime(e.target.value)}
-                className="mt-1 p-2 border rounded-md shadow-sm text-slate-700 focus:outline-none focus:ring-2 focus:ring-blue-400"
+                className="mt-1 py-2 w-32 text-center border rounded-md shadow-sm text-slate-700 focus:outline-none focus:ring-2 focus:ring-blue-400"
               />
             </div>
             <Button
@@ -284,7 +289,7 @@ const Services: React.FC<ServicesProps> = ({
           <div className="mt-4">
             {services.map((service) => (
               <ServiceCard
-                key={service._id}
+                // key={service._id}
                 service={service}
                 onAddService={handleAddService}
               />

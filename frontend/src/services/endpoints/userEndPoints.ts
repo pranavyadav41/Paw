@@ -29,7 +29,8 @@ const userRoutes={
     getWallet:'/user/getWallet',
     submitFeedback:'/user/submitFeedback',
     getFeedbacks:'/user/getFeedbacks',
-    checkFeedback:'/user/checkFeedback'
+    checkFeedback:'/user/checkFeedback',
+    homePageData:'/user/homePageData'
 }
 
 export default userRoutes 

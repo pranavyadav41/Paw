@@ -159,7 +159,7 @@ export const confirmBooking = async (
   phone: string,
   size: string,
   total: string,
-  isWallet:boolean
+  isWallet: boolean
 ) => {
   try {
     const response = await Api.post(userRoutes.confirmBooking, {
@@ -174,7 +174,7 @@ export const confirmBooking = async (
       phone,
       size,
       totalAmount: total,
-      isWallet:isWallet
+      isWallet: isWallet
     });
     return response;
   } catch (error) {
@@ -197,15 +197,15 @@ export const applyCoupon = async (total: string, couponCode: string) => {
       total: total,
       couponCode: couponCode,
     });
-    return response;
+    return response; 
   } catch (error) {
-    const err: Error = error as Error;
+    const err: Error = error as Error; 
     return errorHandle(err);
   }
 };
-export const getBookings = async (userId: string) => {
+export const getBookings = async (userId: string,page=1,limit=4) => {
   try {
-    const response = await Api.post(userRoutes.getBookings, { userId: userId });
+    const response = await Api.post(`${userRoutes.getBookings}/${userId}?page=${page}&limit=${limit}`);
     return response;
   } catch (error) {
     const err: Error = error as Error;
@@ -311,3 +311,15 @@ export const checkFeedback = async (userId: string, serviceId: string) => {
     return errorHandle(err);
   }
 };
+export const homePageData = async () => {
+  try {
+    const response = await Api.get(userRoutes.homePageData)
+    return response;
+
+  } catch (error) {
+
+    const err: Error = error as Error;
+    return errorHandle(err);
+
+  }
+}

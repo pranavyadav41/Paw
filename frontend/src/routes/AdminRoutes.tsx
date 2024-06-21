@@ -11,6 +11,7 @@ const AdminProtected = lazy(() => import("../protected/AdminProtected"));
 const FranchiseList = lazy(() => import("../Components/admin/FranchiseList"));
 const Service = lazy(() => import("../Components/admin/Service"));
 const Coupon = lazy(()=>import("../Pages/Admin/Coupon"))
+const Error404 = lazy(()=>import("../Pages/Error404"))
 
 function AdminRoutes() {
   return (
@@ -24,6 +25,7 @@ function AdminRoutes() {
             <Route path="/franchises" element={<FranchiseList />} />
             <Route path="/services" element={<Service />} />
             <Route path="/coupons" element={<Coupon />} />
+            <Route path="*" element={<Error404 />} />
           </Route>
         </Route>
       </Routes>

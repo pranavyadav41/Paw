@@ -3,8 +3,8 @@ import { getMessages, sendMessage } from "../../api/chat";
 import { FaUserCircle } from "react-icons/fa";
 import { FaImage, FaFile } from "react-icons/fa";
 import { MdOutlineEmojiEmotions } from "react-icons/md";
+import { formatDistanceToNow } from "date-fns";
 import { ImAttachment } from "react-icons/im";
-import { format } from "date-fns";
 import Picker from "emoji-picker-react";
 import socket from "../common/socket";
 
@@ -33,6 +33,7 @@ interface ChatRoomProps {
 }
 
 const ChatRoom: React.FC<ChatRoomProps> = ({ userId, franchiseId, name }) => {
+  console.log(userId, franchiseId, name, "lhgglfhgfhgjfh");
   const [messages, setMessages] = useState<msg[]>([]);
   const [messageInput, setMessageInput] = useState<string>("");
   const [sender, setSender] = useState<string>(franchiseId);
@@ -41,7 +42,14 @@ const ChatRoom: React.FC<ChatRoomProps> = ({ userId, franchiseId, name }) => {
   const [roomId, setRoomId] = useState<string>(`${userId}-${franchiseId}`);
   const [showPicker, setShowPicker] = useState(false);
   const [showAttachmentMenu, setShowAttachmentMenu] = useState(false);
+  const [isTyping, setIsTyping] = useState<boolean>(false);
   const messagesEndRef = useRef<HTMLDivElement>(null);
+
+  useEffect(() => {
+    setSender(franchiseId);
+    setReceiver(userId);
+    setRoomId(`${userId}-${franchiseId}`);
+  }, [userId, franchiseId]);
 
   useEffect(() => {
     socket.emit("join", { room: roomId });
@@ -56,7 +64,6 @@ const ChatRoom: React.FC<ChatRoomProps> = ({ userId, franchiseId, name }) => {
     };
     fetchMessages();
 
-    // Listen for new messages from the server
     const handleMessage = (message: msg) => {
       console.log(message);
       setMessages((prevMessages) => [...prevMessages, message]);
@@ -64,8 +71,22 @@ const ChatRoom: React.FC<ChatRoomProps> = ({ userId, franchiseId, name }) => {
 
     socket.on("newMessage", handleMessage);
 
+    socket.on("typing", ({ user }) => {
+      if (user !== sender) {
+        setIsTyping(true);
+      }
+    });
+
+    socket.on("stopTyping", ({ user }) => {
+      if (user !== sender) {
+        setIsTyping(false);
+      }
+    });
+
     return () => {
       socket.off("newMessage", handleMessage);
+      socket.off("typing");
+      socket.off("stopTyping");
       socket.emit("leave", { room: roomId });
     };
   }, [sender, receiver, roomId]);
@@ -79,7 +100,7 @@ const ChatRoom: React.FC<ChatRoomProps> = ({ userId, franchiseId, name }) => {
       const formData = new FormData();
       formData.append("sender", sender);
       formData.append("receiver", receiver);
-      formData.append("message",messageInput);
+      formData.append("message", messageInput);
       const newMessage: Message = {
         sender,
         receiver,
@@ -87,7 +108,6 @@ const ChatRoom: React.FC<ChatRoomProps> = ({ userId, franchiseId, name }) => {
         timestamp: new Date(),
       };
       try {
-        // Send the message to the server
         await sendMessage(formData);
         socket.emit("sendMessage", { room: roomId, message: newMessage });
         setMessageInput("");
@@ -127,7 +147,6 @@ const ChatRoom: React.FC<ChatRoomProps> = ({ userId, franchiseId, name }) => {
         formData.append("file", file);
         formData.append("fileType", type);
         try {
-          // Send the file message to the server
           await sendMessage(formData);
           socket.emit("sendMessage", { room: roomId, message: newMessage });
         } catch (error) {
@@ -141,7 +160,7 @@ const ChatRoom: React.FC<ChatRoomProps> = ({ userId, franchiseId, name }) => {
   const handleFileSelect = (type: "photo" | "file") => {
     const input = document.createElement("input");
     input.type = "file";
-    input.accept = type === "photo" ? "image/*" : "*";
+    input.accept = type === "photo" ? "image/" : "";
     input.onchange = (e) => {
       const file = (e.target as HTMLInputElement).files?.[0];
       if (file) {
@@ -157,15 +176,22 @@ const ChatRoom: React.FC<ChatRoomProps> = ({ userId, franchiseId, name }) => {
     }
   };
 
+  const handleTyping = (e: React.ChangeEvent<HTMLInputElement>) => {
+    setMessageInput(e.target.value);
+    socket.emit("typing", { room: roomId, user: sender });
+  };
+
   return (
     <div
-      className={` bottom-4 md:right-5 m-4 bg-gray-200  shadow-lg w-full h-full z-30 ${
+      className={`bottom-4 md:right-5 m-4 bg-gray-200 shadow-lg w-full h-full z-30 ${
         showChat ? "block" : "hidden"
       }`}
     >
-      <div className="flex items-center px-4 py-2 bg-gray-800 text-white rounded-t-lg">
-        <FaUserCircle className="mr-2" size={20} />
-        <span className="font-semibold">{name}</span>
+      <div className="flex items-center justify-between px-4 py-2 bg-gray-800 text-white rounded-t-lg">
+        <div className="flex">
+          <FaUserCircle className="mr-2" size={20} />
+          <span className="font-semibold">{name}</span>
+        </div>
       </div>
       <div className="p-4 h-[calc(100%-144px)] max-h-[calc(100%-144px)] overflow-y-auto mr-3">
         {messages.map((message, index) => (
@@ -176,7 +202,7 @@ const ChatRoom: React.FC<ChatRoomProps> = ({ userId, franchiseId, name }) => {
             }`}
           >
             <div
-              className={`inline-flex items-start  ${
+              className={`inline-flex items-start ${
                 message.sender === sender ? "flex-row-reverse" : ""
               }`}
             >
@@ -190,7 +216,7 @@ const ChatRoom: React.FC<ChatRoomProps> = ({ userId, franchiseId, name }) => {
                     : "bg-gray-300 text-gray-600 text-sm font-normal rounded-xl rounded-tl-none"
                 }`}
               >
-               {message.contentType === "photo" ? (
+                {message.contentType === "photo" ? (
                   <div className="w-48 h-48 overflow-hidden rounded-lg shadow-md cursor-pointer">
                     <img
                       src={message.content}
@@ -210,12 +236,20 @@ const ChatRoom: React.FC<ChatRoomProps> = ({ userId, franchiseId, name }) => {
                   <p>{message.content}</p>
                 )}
                 <span className="block text-xs text-gray-500 mt-1">
-                  {format(new Date(message.timestamp), "hh:mm a")}
+                  {formatDistanceToNow(new Date(message.timestamp), {
+                    addSuffix: true,
+                  })}
                 </span>
               </div>
             </div>
           </div>
         ))}
+        {isTyping && (
+          <div className="text-gray-500 text-center mb-10 text-sm">
+            The other user is typing...
+          </div>
+        )}
+
         <div ref={messagesEndRef} />
       </div>
       <div className="flex px-4 py-2 bg-white mt-12 justify-center items-center relative">
@@ -223,16 +257,19 @@ const ChatRoom: React.FC<ChatRoomProps> = ({ userId, franchiseId, name }) => {
           <input
             type="text"
             value={messageInput}
-            onChange={(e) => setMessageInput(e.target.value)}
+            onChange={handleTyping}
             onKeyPress={handleKeyPress}
             placeholder="Type your message..."
-            className="w-full px-4 py-2 rounded-md border text-sm font-light border-gray-300 focus:outline-none focus:ring-2 focus:ring-gray-400"
+            className="w-full mb-2 px-4 py-3 rounded-md border text-sm font-light border-gray-300 focus:outline-none focus:ring-2 focus:ring-gray-400"
+            onBlur={() =>
+              socket.emit("stopTyping", { room: roomId, user: sender })
+            }
           />
         </div>
         <div className="relative">
           <MdOutlineEmojiEmotions
             size={35}
-            className="cursor-pointer text-gray-500 p-2 rounded-md hover:bg-gray-200"
+            className="cursor-pointer text-gray-500 p-2 rounded-md hover"
             onClick={() => setShowPicker((val) => !val)}
           />
           {showPicker && (
@@ -251,13 +288,13 @@ const ChatRoom: React.FC<ChatRoomProps> = ({ userId, franchiseId, name }) => {
           <div className="absolute bottom-12 right-2 bg-white rounded-md shadow-lg">
             <button
               onClick={() => handleFileSelect("photo")}
-              className="block w-full text-left px-4 py-2 hover:bg-gray-100"
+              className="block w-full text-left px-4 py-2 hover"
             >
               <FaImage className="inline-block mr-2 text-blue-400" /> Photo
             </button>
             <button
               onClick={() => handleFileSelect("file")}
-              className="block w-full text-left px-4 py-2 hover:bg-gray-100"
+              className="block w-full text-left px-4 py-2 hover"
             >
               <FaFile className="inline-block mr-2 text-red-400" /> File
             </button>

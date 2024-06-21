@@ -14,6 +14,7 @@ import { FaCheckCircle, FaTimesCircle, FaCommentAlt } from "react-icons/fa";
 import { FcClock } from "react-icons/fc";
 import { toast } from "react-toastify";
 import ReviewComponent from "../../Components/user/feedback";
+import VideoChat from "../../Components/common/videoCall";
 import Chat from "../../Components/user/Chat";
 
 Modal.setAppElement("#root");
@@ -293,7 +294,7 @@ const BookingDetails = () => {
             )}
           </div>
         )}
-      </div>
+      </div>  
 
       {showChat && (
         <Chat userId={booking.userId} franchiseId={booking.franchiseId} />

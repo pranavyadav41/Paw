@@ -1,6 +1,8 @@
 import React from "react";
 import { Link } from "react-router-dom";
 import { useLocation } from "react-router-dom";
+import Lottie from "lottie-react";
+import animation from "../../assets/successPage.json"
 
 const SuccessBooking: React.FC = () => {
 
@@ -9,14 +11,17 @@ const SuccessBooking: React.FC = () => {
 
   return (
     <div className="flex items-start justify-center min-h-screen bg-white">
-      <div className="flex flex-col md:flex-row md:items-center md:justify-center bg-slate-100 p-10 rounded-md md:h-[400px] md:mt-20">
+      <div className="flex flex-col md:flex-row md:items-center md:justify-center bg-slate-100 p-10 rounded-md md:h-[420px] md:mt-20">
         <div className="md:mr-8 mb-8 md:mb-0">
-          <img src="/public/logo/file.png" alt="Success" className="max-w-sm" />
+          <div className="w-96 h-96">
+          <Lottie animationData={animation} loop={true} />
+          </div>
+        
         </div>
         <div className="rounded-lg  p-8 max-w-md text-center">
           <div className="flex gap-2 ">
             <h2 className="text-3xl font-bold mb-4 text-[#4AAE88]">
-              Booking Successful
+              Booking Successful 
             </h2>
             <img
               className="h-8"

@@ -4,15 +4,21 @@ import { useState, useEffect } from "react";
 
 const Services = () => {
   const [services, setServices] = useState([]);
+  const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    try {
-      getServices().then((response) => {
+    const fetchServices = async () => {
+      try {
+        const response = await getServices();
         setServices(response?.data);
-      });
-    } catch (error) {
-      console.log(error);
-    }
+      } catch (error) {
+        console.log(error);
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchServices();
   }, []);
 
   return (
@@ -43,17 +49,19 @@ const Services = () => {
           <ServiceCard key={index} service={service} imgIndex={index} />
         ))}
       </div>
-      <div className="flex justify-center md:mt-20">
-        <img
-          src="/public/logo/FranchisePage/footer-bottom-image-removebg.png"
-          alt="Footer Image"
-          style={{
-            width: "100%",
-            height: "auto",
-            backgroundColor: "transparent",
-          }}
-        />
-      </div>
+      {!loading && (
+        <div className="flex justify-center md:mt-20">
+          <img
+            src="/public/logo/FranchisePage/footer-bottom-image-removebg.png"
+            alt="Footer Image"
+            style={{
+              width: "100%",
+              height: "auto",
+              backgroundColor: "transparent",
+            }}
+          />
+        </div>
+      )}
     </div>
   );
 };
