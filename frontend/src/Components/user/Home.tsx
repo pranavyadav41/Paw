@@ -7,7 +7,7 @@ import SocialMediaIcons from "./socialMediaIcons";
 import { homePageData } from "../../api/user";
 import { useInView } from "react-intersection-observer";
 import { motion } from "framer-motion";
-import ResponsiveImage from './ResponsiveImage';
+import ResponsiveImage from "./ResponsiveImage";
 
 function Home() {
   const navigate = useNavigate();
@@ -31,28 +31,39 @@ function Home() {
     }
   }
 
+  const handleService = ()=>{
+    navigate("/services")
+  }
+
   useEffect(() => {
-    homePageData().then((response: any) => {
-      setTotalBooking(response?.data?.totalBookings);
-      setTotalFranchises(response?.data?.totalFranchises);
-      setTotalUsers(response?.data?.totalUsers);
-    }).catch(error => {
-      console.error("Error fetching home page data:", error);
-    });
+    homePageData()
+      .then((response: any) => {
+        setTotalBooking(response?.data?.totalBookings);
+        setTotalFranchises(response?.data?.totalFranchises);
+        setTotalUsers(response?.data?.totalUsers);
+      })
+      .catch((error) => {
+        console.error("Error fetching home page data:", error);
+      });
   }, []);
 
   useEffect(() => {
     if (inView) {
-      animateCount(totalUsers, setUsersCount);
-      animateCount(totalFranchises, setFranchisesCount);
-      animateCount(totalBooking, setBookingsCount);
+      if (totalUsers > 0) animateCount(totalUsers, setUsersCount);
+      if (totalFranchises > 0)
+        animateCount(totalFranchises, setFranchisesCount);
+      if (totalBooking > 0) animateCount(totalBooking, setBookingsCount);
     }
   }, [inView, totalUsers, totalFranchises, totalBooking]);
 
-  const animateCount = (end: number, setCount: React.Dispatch<React.SetStateAction<number>>) => {
+  const animateCount = (
+    end: number,
+    setCount: React.Dispatch<React.SetStateAction<number>>
+  ) => {
     let start = 0;
     const duration = 1500;
     const stepTime = Math.abs(Math.floor(duration / end));
+
     const timer = setInterval(() => {
       start += 1;
       setCount(start);
@@ -65,17 +76,17 @@ function Home() {
   const fadeInUp = {
     initial: { opacity: 0, y: 20 },
     animate: { opacity: 1, y: 0 },
-    transition: { duration: 0.6 }
+    transition: { duration: 0.6 },
   };
 
   const staggerContainer = {
-    animate: { transition: { staggerChildren: 0.1 } }
+    animate: { transition: { staggerChildren: 0.1 } },
   };
 
   const iconAnimation = {
     initial: { scale: 0, opacity: 0 },
     animate: { scale: 1, opacity: 1 },
-    transition: { type: "spring", stiffness: 260, damping: 20 }
+    transition: { type: "spring", stiffness: 260, damping: 20 },
   };
 
   return (
@@ -92,11 +103,15 @@ function Home() {
           {...fadeInUp}
           className="absolute top-1/4 left-5 md:left-10 lg:left-40 w-full md:w-[600px] flex flex-col gap-3 p-4"
         >
-          <h1 className="text-white text-3xl sm:text-4xl md:text-6xl">Every Pet Deserves</h1>
-          <h1 className="text-white text-3xl sm:text-4xl md:text-6xl font-bold">Celebrity Care</h1>
+          <h1 className="text-white text-3xl sm:text-4xl md:text-6xl">
+            Every Pet Deserves
+          </h1>
+          <h1 className="text-white text-3xl sm:text-4xl md:text-6xl font-bold">
+            Celebrity Care
+          </h1>
           <h1 className="text-white text-sm sm:text-base md:text-lg">
-            We provide personal uninterrupted attention for you and your pet
-            in a quiet and stress-free environment.
+            We provide personal uninterrupted attention for you and your pet in
+            a quiet and stress-free environment.
           </h1>
           <motion.button
             whileHover={{ scale: 1.05 }}
@@ -143,12 +158,14 @@ function Home() {
                 src="/public/logo/Homepage/WFF.png"
                 alt=""
               />
-              <h1 className="text-2xl sm:text-3xl md:text-4xl font-bold text-[#3968B6] ml-2">Why Paw</h1>
+              <h1 className="text-2xl sm:text-3xl md:text-4xl font-bold text-[#3968B6] ml-2">
+                Why Paw
+              </h1>
             </div>
             <p className="text-black text-xs sm:text-sm md:text-base">
-              Flying Fur Mobile pet grooming offers the utmost comfort for
-              your pet and convenience for you. Here are just some of the
-              benefits that a mobile grooming salon offers
+              Flying Fur Mobile pet grooming offers the utmost comfort for your
+              pet and convenience for you. Here are just some of the benefits
+              that a mobile grooming salon offers
             </p>
             <motion.div
               variants={staggerContainer}
@@ -158,12 +175,25 @@ function Home() {
               className="grid grid-cols-2 gap-2 sm:gap-4 md:gap-6 mt-3"
             >
               {[
-                { img: "flying-fur-iconsArtboard-4.png", title: "Doorstep Service" },
+                {
+                  img: "flying-fur-iconsArtboard-4.png",
+                  title: "Doorstep Service",
+                },
                 { img: "flying-fur-iconsArtboard-2.png", title: "AC Van" },
-                { img: "flying-fur-iconsArtboard-3.png", title: "Trained Staff" },
-                { img: "flying-fur-iconsArtboard-1.png", title: "Hot & Cold Water" },
+                {
+                  img: "flying-fur-iconsArtboard-3.png",
+                  title: "Trained Staff",
+                },
+                {
+                  img: "flying-fur-iconsArtboard-1.png",
+                  title: "Hot & Cold Water",
+                },
               ].map((item, index) => (
-                <motion.div key={index} variants={iconAnimation} className="flex flex-col items-center">
+                <motion.div
+                  key={index}
+                  variants={iconAnimation}
+                  className="flex flex-col items-center"
+                >
                   <img
                     className="w-12 h-12 sm:w-16 sm:h-16 md:w-20 md:h-20 mb-2 md:mb-4 transition-transform transform hover:scale-110"
                     src={`/public/logo/Booking page/${item.img}`}
@@ -186,7 +216,8 @@ function Home() {
         viewport={{ once: true }}
         className="min-h-screen w-full"
         style={{
-          backgroundImage: "url('/public/logo/Homepage/Untitled design (1).png')",
+          backgroundImage:
+            "url('/public/logo/Homepage/Untitled design (1).png')",
           backgroundSize: "cover",
           backgroundRepeat: "no-repeat",
           backgroundPosition: "center",
@@ -204,20 +235,27 @@ function Home() {
                   src="/public/logo/Homepage/WFF.png"
                   alt=""
                 />
-                <h1 className="text-2xl sm:text-3xl md:text-4xl font-bold text-[#3968B6] ml-2">Services</h1>
+                <h1 className="text-2xl sm:text-3xl md:text-4xl font-bold text-[#3968B6] ml-2">
+                  Services
+                </h1>
               </div>
-              <p className="text-black text-xs sm:text-sm md:text-base" style={{ lineHeight: "1.8" }}>
+              <p
+                className="text-black text-xs sm:text-sm md:text-base"
+                style={{ lineHeight: "1.8" }}
+              >
                 Our Salon is equipped with hot & cold running water for a
-                comfortable bathing experience, it is also fully
-                air-conditioned keeping your pet's comfort in mind, full sized
-                tub and a state of the art grooming table. We provide personal
-                uninterrupted attention for you and your pet in a quiet and
-                stress-free environment.
+                comfortable bathing experience, it is also fully air-conditioned
+                keeping your pet's comfort in mind, full sized tub and a state
+                of the art grooming table. We provide personal uninterrupted
+                attention for you and your pet in a quiet and stress-free
+                environment.
               </p>
               <motion.button
                 whileHover={{ scale: 1.05 }}
                 whileTap={{ scale: 0.95 }}
                 className="bg-[#192955] text-white w-28 sm:w-32 h-8 sm:h-10 rounded-full text-xs sm:text-sm md:text-base mt-4"
+                onClick={handleService}
+                
               >
                 Services
               </motion.button>
@@ -249,9 +287,16 @@ function Home() {
           { count: franchisesCount, label: "TOTAL FRANCHISES" },
           { count: bookingsCount, label: "PETS GROOMED" },
         ].map((item, index) => (
-          <div key={index} className="bg-yellow-400 p-4 sm:p-6 md:p-10 rounded-lg shadow-md flex flex-col justify-center items-center">
-            <h2 className="text-2xl sm:text-4xl md:text-7xl font-semibold mb-2">{item.count}</h2>
-            <span className="text-sm sm:text-xl md:text-3xl font-semibold text-center">{item.label}</span>
+          <div
+            key={index}
+            className="bg-yellow-400 p-4 sm:p-6 md:p-10 rounded-lg shadow-md flex flex-col justify-center items-center"
+          >
+            <h2 className="text-2xl sm:text-4xl md:text-7xl font-semibold mb-2">
+              {item.count}
+            </h2>
+            <span className="text-sm sm:text-xl md:text-3xl font-semibold text-center">
+              {item.label}
+            </span>
           </div>
         ))}
       </motion.div>

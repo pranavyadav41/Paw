@@ -137,7 +137,7 @@ const Coupon = () => {
       <div className="mt-4 overflow-x-auto">
         <table className="min-w-full bg-gray-900 text-white rounded-lg shadow-lg">
           <thead>
-            <tr>
+           {coupons.length>0 ?(<tr>
               <th className="py-2 px-4 border border-gray-400">Coupon Code</th>
               <th className="py-2 px-4 border  border-gray-400">Discount</th>
               <th className="py-2 px-4 border  border-gray-400">Valid From</th>
@@ -146,7 +146,9 @@ const Coupon = () => {
                 Min Cart Value
               </th>
               <th className="py-2 px-4 border  border-gray-400">Actions</th>
-            </tr>
+            </tr>):(
+              <tr>No coupons found</tr>
+            )}
           </thead>
           <tbody>
             {coupons.map((coupon) => (

@@ -1,6 +1,7 @@
 import { useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
 import Modal from "react-modal";
+import { motion } from "framer-motion";
 import {
   fetchBooking,
   getService,
@@ -103,10 +104,27 @@ const BookingDetails = () => {
     }
   }, [booking?.serviceId, booking?.franchiseId, shouldFetch]);
 
+  const fadeIn = {
+    hidden: { opacity: 0 },
+    visible: { opacity: 1, transition: { duration: 0.5 } }
+  };
+ 
+  const slideIn = {
+    hidden: { x: -50, opacity: 0 },
+    visible: { x: 0, opacity: 1, transition: { duration: 0.5 } }
+  };
+
   if (!booking) {
     return (
       <div className="min-h-screen flex items-center justify-center">
-        Loading...
+        <motion.div
+          initial={{ scale: 0.8, opacity: 0 }}
+          animate={{ scale: 1, opacity: 1 }}
+          transition={{ duration: 0.5, repeat: Infinity, repeatType: "reverse" }}
+          className="text-2xl text-blue-600 font-semibold"
+        >
+          Loading...
+        </motion.div>
       </div>
     );
   }
@@ -114,7 +132,7 @@ const BookingDetails = () => {
   const convertTo12HourFormat = (time: string) => {
     const [hour, minute] = time.split(":").map(Number);
     const period = hour >= 12 ? "PM" : "AM";
-    const adjustedHour = hour % 12 || 12; // Convert "0" hour to "12"
+    const adjustedHour = hour % 12 || 12;
     return `${adjustedHour}:${minute < 10 ? "0" + minute : minute} ${period}`;
   };
 
@@ -165,18 +183,32 @@ const BookingDetails = () => {
       setShouldFetch((prev) => !prev);
     }
   };
+
   return (
-    <div className="relative container mx-auto py-8 min-h-screen w-full  flex flex-col items-center">
+    <div className="relative container mx-auto py-8 min-h-screen w-full flex flex-col items-center bg-gradient-to-br from-blue-50 to-purple-100">
       <div
-        className="absolute inset-0 bg-cover bg-center opacity-50"
+        className="absolute inset-0 bg-cover bg-center opacity-40"
         style={{ backgroundImage: "url('/public/logo/pawBackground.jpg')" }}
       />
-      <h2 className="lg:text-3xl text-xl font-semibold lg:font-bold mb-6 text-center text-[#3968B6] z-10">
+      <motion.h2
+        initial="hidden"
+        animate="visible"
+        variants={fadeIn}
+        className="lg:text-3xl text-2xl font-bold mb-8 text-center text-[#3968B6] z-10"
+      >
         Booking Details
-      </h2>
-      <div className="relative bg-gray-100  rounded-lg p-8 w-[90%] md:w-[80%] lg:w-[70%]">
+      </motion.h2>
+      <motion.div
+        initial="hidden"
+        animate="visible"
+        variants={slideIn}
+        className="relative bg-white shadow-2xl rounded-lg p-8 w-[95%] md:w-[85%] lg:w-[75%]"
+      >
         <div className="flex flex-col lg:flex-row justify-between gap-8">
-          <div className="flex flex-col space-y-4 md:col-span-2">
+          <motion.div
+            variants={fadeIn}
+            className="flex flex-col space-y-4 md:col-span-2"
+          >
             <div className="flex items-center space-x-2">
               <p className="text-gray-600">
                 <strong className="text-gray-800">Name:</strong> {booking.name}
@@ -225,10 +257,13 @@ const BookingDetails = () => {
               </p>
               <p>{booking.address.pincode}</p>
             </div>
-          </div>
+          </motion.div>
           {service && (
-            <div className="md:col-span-1 flex flex-col space-y-6 bg-gray-200 p-4 lg:w-[500px] rounded-lg">
-              <h3 className="text-xl font-bold text-gray-800">
+            <motion.div
+              variants={fadeIn}
+              className="md:col-span-1 flex flex-col space-y-6 bg-gray-100 p-6 lg:w-[500px] rounded-lg shadow-md"
+            >
+              <h3 className="text-2xl font-bold text-gray-800 border-b pb-2">
                 Service Details
               </h3>
               <p className="text-gray-600">
@@ -250,12 +285,15 @@ const BookingDetails = () => {
                   ))}
                 </div>
               </div>
-            </div>
+            </motion.div>
           )}
         </div>
         {franchise && (
-          <div className="flex flex-col lg:flex-row gap-3 items-center">
-            <div className="mt-8">
+          <motion.div
+            variants={fadeIn}
+            className="flex flex-col lg:flex-row gap-6 items-center mt-8"
+          >
+            <div>
               <h3 className="text-xl font-bold text-gray-800 mb-4">
                 Franchise Details
               </h3>
@@ -268,45 +306,61 @@ const BookingDetails = () => {
                   {franchise.phone}
                 </a>
               </p>
-              <div className="flex justify-start mt-4">
-                <button
-                  className="bg-blue-800 text-white px-6 py-1 md:py-2 rounded-md hover:bg-blue-600 flex items-center space-x-2"
-                  onClick={() => setShowChat(!showChat)}
-                >
-                  <FaCommentAlt />
-                  <span>Chat with Us</span>
-                </button>
-              </div>
             </div>
-            <div className="md:mr-36 md:mt-28">
-              {booking.bookingStatus == "Pending" && (
-                <button
-                  className="bg-red-500 text-white px-6 py-1  md:py-2 rounded-md hover:bg-red-600 transition-colors duration-300"
+            <div className="flex space-x-4">
+              {booking.bookingStatus === "Pending" && (
+                <motion.button
+                  whileHover={{ scale: 1.05 }}
+                  whileTap={{ scale: 0.95 }}
+                  className="bg-red-500 text-white px-6 py-2 rounded-md hover:bg-red-600 transition-colors duration-300 shadow-md"
                   onClick={handleCancel}
                 >
                   Cancel Booking
-                </button>
+                </motion.button>
               )}
+              <motion.button
+                whileHover={{ scale: 1.05 }}
+                whileTap={{ scale: 0.95 }}
+                className="bg-blue-800 text-white px-6 py-2 rounded-md hover:bg-blue-600 flex items-center space-x-2 shadow-md"
+                onClick={() => setShowChat(!showChat)}
+              >
+                <FaCommentAlt />
+                <span>Chat with Us</span>
+              </motion.button>
             </div>
-            {booking.bookingStatus === "Completed" && reviewCheck === false && (
-              <ReviewComponent onSubmit={handleFeedback} />
-            )}
-          </div>
+          </motion.div>
         )}
-      </div>  
+        {booking.bookingStatus === "Completed" && !reviewCheck && (
+          <motion.div
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ delay: 0.5 }}
+          >
+            <ReviewComponent onSubmit={handleFeedback} />
+          </motion.div>
+        )}
+      </motion.div>
 
       {showChat && (
-        <Chat userId={booking.userId} franchiseId={booking.franchiseId} />
+        <motion.div
+          initial={{ opacity: 0, y: 50 }}
+          animate={{ opacity: 1, y: 0 }}
+          exit={{ opacity: 0, y: 50 }}
+          transition={{ duration: 0.3 }}
+          className="mt-8 w-full md:w-2/3 lg:w-1/2"
+        >
+          <Chat userId={booking.userId} franchiseId={booking.franchiseId} />
+        </motion.div>
       )}
 
       <Modal
         isOpen={isModalOpen}
         onRequestClose={() => setIsModalOpen(false)}
         contentLabel="Cancel Booking Modal"
-        className="relative md:w-1/3 mx-auto my-24 bg-white rounded-lg shadow-lg p-6"
-        overlayClassName="fixed inset-0 bg-gray-600 bg-opacity-75 flex justify-center items-center z-40"
+        className="relative w-11/12 md:w-2/3 lg:w-1/2 xl:w-1/3 mx-auto my-24 bg-white rounded-lg shadow-xl p-8"
+        overlayClassName="fixed inset-0 bg-gray-600 bg-opacity-75 flex justify-center items-center z-50"
       >
-        <h2 className="text-xl font-bold mb-4">Cancel Booking</h2>
+        <h2 className="text-2xl font-bold mb-6">Cancel Booking</h2>
         {sameDate ? (
           <p className="text-gray-700 mb-4">
             If you cancel the booking on the same day it is scheduled, a 15% fee
@@ -318,19 +372,23 @@ const BookingDetails = () => {
             Are you sure you want to cancel this booking?
           </p>
         )}
-        <div className="flex justify-end space-x-4">
-          <button
-            className="bg-gray-400 text-white px-4 py-2 rounded-md hover:bg-gray-500"
+        <div className="flex justify-end space-x-4 mt-8">
+          <motion.button
+            whileHover={{ scale: 1.05 }}
+            whileTap={{ scale: 0.95 }}
+            className="bg-gray-400 text-white px-6 py-2 rounded-md hover:bg-gray-500 transition-colors duration-300"
             onClick={() => setIsModalOpen(false)}
           >
             Close
-          </button>
-          <button
-            className="bg-red-400 text-white px-4 py-2 rounded-md hover:bg-red-500"
+          </motion.button>
+          <motion.button
+            whileHover={{ scale: 1.05 }}
+            whileTap={{ scale: 0.95 }}
+            className="bg-red-500 text-white px-6 py-2 rounded-md hover:bg-red-600 transition-colors duration-300"
             onClick={ConfirmCancel}
           >
             Confirm Cancel
-          </button>
+          </motion.button>
         </div>
       </Modal>
     </div>

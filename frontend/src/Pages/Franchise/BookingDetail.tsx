@@ -4,6 +4,8 @@ import Modal from "react-modal";
 import { toast } from "react-toastify";
 import { fetchBooking, changeStatus, getService } from "../../api/franchise";
 import { FaCheckCircle, FaTimesCircle, FaDirections } from "react-icons/fa";
+import { motion } from "framer-motion";
+
 Modal.setAppElement("#root");
 
 interface Address {
@@ -69,10 +71,32 @@ const BookingDetails = () => {
     }
   }, [booking]);
 
+  const containerVariants = {
+    hidden: { opacity: 0, y: 50 },
+    visible: {
+      opacity: 1,
+      y: 0,
+      transition: {
+        type: "spring",
+        damping: 20,
+        stiffness: 100,
+      },
+    },
+  };
+
+  const itemVariants = {
+    hidden: { opacity: 0, x: -20 },
+    visible: { opacity: 1, x: 0 },
+  };
+
   if (!booking) {
     return (
       <div className="min-h-screen flex items-center justify-center">
-        Loading...
+        <motion.div
+          animate={{ rotate: 360 }}
+          transition={{ duration: 1, repeat: Infinity, ease: "linear" }}
+          className="w-16 h-16 border-t-4 border-blue-500 border-solid rounded-full"
+        ></motion.div>
       </div>
     );
   }
@@ -91,45 +115,56 @@ const BookingDetails = () => {
   };
 
   return (
-    <div className="relative container mx-auto p-6 min-h-screen w-full flex flex-col items-center">
+    <motion.div
+      className="relative container mx-auto p-6 min-h-screen w-full flex flex-col items-center bg-gradient-to-br from-blue-50 to-purple-100"
+      initial="hidden"
+      animate="visible"
+      variants={containerVariants}
+    >
       <div
-        className="absolute inset-0 bg-cover bg-center opacity-50 z-0"
+        className="absolute inset-0 bg-cover bg-center opacity-40 z-0"
         style={{ backgroundImage: "url('/logo/pawBackground.jpg')" }}
       ></div>
-      <h2 className="text-3xl font-bold mb-6 text-center z-10 text-[#3968B6]">
+      <motion.h2
+        className="text-4xl font-bold mb-8 text-center z-10 text-[#3968B6]"
+        variants={itemVariants}
+      >
         Booking Details
-      </h2>
-      <div className="relative z-10 bg-gray-100 shadow-md rounded-lg p-6 md:w-[80%] w-full md:h-[470px] grid grid-cols-1 md:grid-cols-2 gap-8">
-        <div>
+      </motion.h2>
+      <motion.div
+        className="relative z-10 bg-white shadow-xl rounded-lg p-8 md:w-[80%] w-full md:h-auto grid grid-cols-1 md:grid-cols-2 gap-8"
+        variants={containerVariants}
+      >
+        <motion.div variants={itemVariants}>
           <div className="flex flex-col space-y-4">
-            <p className="text-gray-800">
+            <motion.p className="text-gray-800" variants={itemVariants}>
               <strong>Name:</strong> {booking.name}
-            </p>
-            <p className="text-gray-800">
+            </motion.p>
+            <motion.p className="text-gray-800" variants={itemVariants}>
               <strong>Phone:</strong> {booking.phone}
-            </p>
-            <p className="text-gray-800">
+            </motion.p>
+            <motion.p className="text-gray-800" variants={itemVariants}>
               <strong>Booking Date:</strong>{" "}
               {new Date(booking.bookingDate).toLocaleDateString()}
-            </p>
-            <p className="text-gray-800">
+            </motion.p>
+            <motion.p className="text-gray-800" variants={itemVariants}>
               <strong>Scheduled Date:</strong>{" "}
               {new Date(booking.scheduledDate).toLocaleDateString()}
-            </p>
-            <p className="text-gray-800">
+            </motion.p>
+            <motion.p className="text-gray-800" variants={itemVariants}>
               <strong>Slot:</strong> {convertTo12HourFormat(booking.startTime)}{" "}
               - {convertTo12HourFormat(booking.endTime)}
-            </p>
-            <p className="text-gray-800 flex items-center gap-1">
+            </motion.p>
+            <motion.p className="text-gray-800 flex items-center gap-1" variants={itemVariants}>
               <strong>Booking Status:</strong> {booking.bookingStatus}
               {booking.bookingStatus === "Completed" ? (
                 <FaCheckCircle className="text-green-500" />
               ) : (
                 <FaTimesCircle className="text-red-500" />
               )}
-            </p>
+            </motion.p>
 
-            <p className="text-gray-800">
+            <motion.p className="text-gray-800" variants={itemVariants}>
               <strong>Address:</strong>
               <br />
               {booking.address.houseName}, {booking.address.area}
@@ -137,11 +172,14 @@ const BookingDetails = () => {
               {booking.address.city}, {booking.address.state}
               <br />
               {booking.address.pincode}
-            </p>
+            </motion.p>
           </div>
 
           {booking.bookingStatus === "Pending" && (
-            <div className="mt-6 flex items-center space-x-4">
+            <motion.div
+              className="mt-6 flex items-center space-x-4"
+              variants={itemVariants}
+            >
               <label htmlFor="status" className="text-gray-800">
                 <strong>Change Status:</strong>
               </label>
@@ -149,44 +187,51 @@ const BookingDetails = () => {
                 id="status"
                 value={newStatus}
                 onChange={(e) => setNewStatus(e.target.value)}
-                className="border border-gray-300 rounded-sm px-4 py-1"
+                className="border border-gray-300 rounded-md px-4 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500"
               >
                 <option value="">Select</option>
                 <option value="Completed">Completed</option>
                 <option value="Cancelled">Cancelled</option>
               </select>
-              <button
-                className="bg-[#9AD1AA] text-white text-sm md:text-base px-3 py-1 rounded-md hover:bg-green-300"
+              <motion.button
+                className="bg-[#3968B6] text-white text-sm md:text-base px-4 py-2 rounded-md hover:bg-blue-600 transition-colors duration-300"
                 onClick={handleStatusChange}
+                whileHover={{ scale: 1.05 }}
+                whileTap={{ scale: 0.95 }}
               >
                 Update Status
-              </button>
-            </div>
+              </motion.button>
+            </motion.div>
           )}
-        </div>
+        </motion.div>
         {service && (
-          <div className="flex flex-col gap-3">
+          <motion.div className="flex flex-col gap-3" variants={itemVariants}>
             <h3 className="text-2xl font-bold mb-4">Service Details</h3>
-            <p className="text-gray-800">
+            <motion.p className="text-gray-800" variants={itemVariants}>
               <strong>Category:</strong> {service.category}
-            </p>
-            <p className="text-gray-800">
+            </motion.p>
+            <motion.p className="text-gray-800" variants={itemVariants}>
               <strong>Price:</strong> ₹{service.price[booking.sizeOfPet]}
-            </p>
-            <div className="grid grid-cols-2 gap-4 mt-4">
+            </motion.p>
+            <motion.div
+              className="grid grid-cols-2 gap-4 mt-4"
+              variants={containerVariants}
+            >
               {service.services.map((serviceName, index) => (
-                <div
+                <motion.div
                   key={index}
-                  className="bg-gray-200 rounded-md p-2 flex items-center justify-center"
+                  className="bg-gray-100 rounded-md p-3 flex items-center justify-center shadow-md"
+                  variants={itemVariants}
+                  whileHover={{ scale: 1.05, backgroundColor: "#f0f0f0" }}
                 >
                   <span className="text-gray-800">{serviceName}</span>
-                </div>
+                </motion.div>
               ))}
-            </div>
-          </div>
+            </motion.div>
+          </motion.div>
         )}
-      </div>
-    </div>
+      </motion.div>
+    </motion.div>
   );
 };
 

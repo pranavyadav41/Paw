@@ -13,6 +13,7 @@ import {
   Button,
   Flex,
   Box,
+  Text,
 } from "@chakra-ui/react";
 
 interface franchise {
@@ -29,19 +30,21 @@ interface franchise {
 }
 
 const FranchiseList = () => {
-  const [franchises, setFranchises] = useState([]);
-  const [selectedFranchise, setSelectedFranchise] = useState<any>(null);
+  const [franchises, setFranchises] = useState<franchise[]>([]);
+  const [selectedFranchise, setSelectedFranchise] = useState<franchise | null>(null);
   const [modalIsOpen, setModalIsOpen] = useState(false);
   const [state, setState] = useState(false);
   const [searchTerm, setSearchTerm] = useState("");
   const [page, setPage] = useState(1);
   const [limit] = useState(4);
   const [total, setTotal] = useState(0);
+  const [loading, setLoading] = useState(false);
 
   const fetchFranchises = async () => {
+    setLoading(true);
     try {
       const response = await getFranchises(page, limit, searchTerm);
-      console.log(response)
+      console.log(response);
       setFranchises(response?.data.data);
       setTotal(response?.data.total);
       setState(false);
@@ -52,6 +55,8 @@ const FranchiseList = () => {
     } catch (error) {
       console.error("Error fetching franchises:", error);
       toast.error("Failed to fetch franchises");
+    } finally {
+      setLoading(false);
     }
   };
 
@@ -122,37 +127,45 @@ const FranchiseList = () => {
           />
         </div>
 
-        {franchises.map((franchise, index) => (
-          <UserCard3 key={index} franchise={franchise} state={handle} />
-        ))}
-
-        <Flex justifyContent="center" mt={4}>
-          <Box>
-            <Button
-              disabled={page === 1}
-              onClick={() => handlePageChange(page - 1)}
-              mr={2}
-            >
-              Previous
-            </Button>
-            {Array.from({ length: totalPages }, (_, i) => i + 1).map((pageNum) => (
-              <Button
-                key={pageNum}
-                onClick={() => handlePageChange(pageNum)}
-                colorScheme={page === pageNum ? "blue" : "gray"}
-                mr={2}
-              >
-                {pageNum}
-              </Button>
+        {loading ? (
+          <Text className="text-white text-center mt-10">Loading...</Text>
+        ) : franchises.length > 0 ? (
+          <>
+            {franchises.map((franchise, index) => (
+              <UserCard3 key={index} franchise={franchise} state={handle} />
             ))}
-            <Button
-              disabled={page === totalPages}
-              onClick={() => handlePageChange(page + 1)}
-            >
-              Next
-            </Button>
-          </Box>
-        </Flex>
+
+            <Flex justifyContent="center" mt={4}>
+              <Box>
+                <Button
+                  disabled={page === 1}
+                  onClick={() => handlePageChange(page - 1)}
+                  mr={2}
+                >
+                  Previous
+                </Button>
+                {Array.from({ length: totalPages }, (_, i) => i + 1).map((pageNum) => (
+                  <Button
+                    key={pageNum}
+                    onClick={() => handlePageChange(pageNum)}
+                    colorScheme={page === pageNum ? "blue" : "gray"}
+                    mr={2}
+                  >
+                    {pageNum}
+                  </Button>
+                ))}
+                <Button
+                  disabled={page === totalPages}
+                  onClick={() => handlePageChange(page + 1)}
+                >
+                  Next
+                </Button>
+              </Box>
+            </Flex>
+          </>
+        ) : (
+          <Text className="text-white text-center mt-10">No franchises found</Text>
+        )}
       </div>
 
       <Modal isOpen={modalIsOpen} onClose={closeModal} size="xl">
@@ -213,8 +226,8 @@ const FranchiseList = () => {
                 width="100px"
                 onClick={() =>
                   handleBlock(
-                    selectedFranchise._id,
-                    selectedFranchise.isBlocked
+                    selectedFranchise!._id,
+                    selectedFranchise!.isBlocked
                   )
                 }
               >

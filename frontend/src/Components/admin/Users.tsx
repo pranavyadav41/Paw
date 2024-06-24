@@ -2,7 +2,7 @@ import React, { useState, useEffect } from "react";
 import UserCard from "../admin/Card";
 import { getUsers } from "../../api/admin";
 import { toast } from "react-toastify";
-import { Button, Flex, Box } from "@chakra-ui/react";
+import { Button, Flex, Box, Text } from "@chakra-ui/react";
 
 const UserList: React.FC = () => {
   const [users, setUsers] = useState([]);
@@ -55,12 +55,11 @@ const UserList: React.FC = () => {
         </div>
         {loading ? (
           <p className="text-white">Loading...</p>
-        ) : (
+        ) : users.length > 0 ? (
           <>
             {users.map((user, index) => (
               <UserCard key={index} user={user} state={() => fetchUsers()} />
             ))}
-
             <Flex justifyContent="center" mt={4}>
               <Box>
                 <Button
@@ -89,6 +88,8 @@ const UserList: React.FC = () => {
               </Box>
             </Flex>
           </>
+        ) : (
+          <Text className="text-white text-center mt-10">No users found</Text>
         )}
       </div>
     </div>

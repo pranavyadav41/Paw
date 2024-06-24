@@ -10,13 +10,13 @@ const Services = () => {
     const fetchServices = async () => {
       try {
         const response = await getServices();
-        setServices(response?.data);
+        setServices(response?.data || []);
       } catch (error) {
         console.log(error);
       } finally {
         setLoading(false);
       }
-    }; 
+    };
     fetchServices();
   }, []);
 
@@ -43,11 +43,17 @@ const Services = () => {
           alt=""
         />
       </div>
-      <div className="w-full sm:w-[83%] h-full bg-transparent grid grid-cols-1 sm:grid-cols-2 gap-3 p-2 sm:p-5 z-10">
-        {services.map((service, index) => (
-          <ServiceCard key={index} service={service} imgIndex={index} />
-        ))}
-      </div>
+      {loading ? (
+        <div className="text-center mt-10">Loading...</div>
+      ) : services.length > 0 ? (
+        <div className="w-full sm:w-[83%] h-full bg-transparent grid grid-cols-1 sm:grid-cols-2 gap-3 p-2 sm:p-5 z-10">
+          {services.map((service, index) => (
+            <ServiceCard key={index} service={service} imgIndex={index} />
+          ))}
+        </div>
+      ) : (
+        <div className="text-center mt-10 text-lg font-medium">No services available</div>
+      )}
       {!loading && (
         <div className="flex justify-center mt-10 sm:mt-20 w-full">
           <img

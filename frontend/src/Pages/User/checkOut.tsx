@@ -4,6 +4,7 @@ import {
   FaTicketAlt,
   FaCalendarAlt,
   FaRupeeSign,
+  FaSpinner,
 } from "react-icons/fa";
 import { useLocation, useNavigate } from "react-router-dom";
 import Modal from "react-modal";
@@ -18,6 +19,7 @@ import {
 import Payment from "../../Components/common/payPal";
 import { useSelector } from "react-redux";
 import { RootState } from "../../redux/store";
+import "./checkOut.css"
 
 Modal.setAppElement("#root");
 
@@ -29,6 +31,7 @@ const Checkout = () => {
   const [wallet, setWallet] = useState<any>({});
   const [total, setTotal] = useState("");
   const [isModalOpen, setIsModalOpen] = useState(false);
+  const [isLoading, setIsLoading] = useState(false);
   const location = useLocation();
   const bookingData = location.state;
 
@@ -36,7 +39,7 @@ const Checkout = () => {
 
   useEffect(() => {
     getWallet(userInfo._id).then((response) => {
-      console.log(response,"wallet")
+      console.log(response, "wallet");
       setWallet(response?.data);
     });
   }, [userInfo._id]);
@@ -64,20 +67,21 @@ const Checkout = () => {
   };
 
   const handleApplyCoupon = async () => {
+    setIsLoading(true);
     const response = await applyCoupon(total, couponCode);
-
     setTotal(response?.data.total);
     setAppliedCoupon(response?.data.coupon);
     setCouponCode("");
+    setIsLoading(false);
   };
 
   const handleRemoveCoupon = () => {
     setTotal(service.price?.[bookingData.size]);
-
     setAppliedCoupon(null);
   };
 
   const handleBooking = async () => {
+    setIsLoading(true);
     const response = await confirmBooking(
       bookingData.franchise,
       bookingData.date,
@@ -96,9 +100,11 @@ const Checkout = () => {
     if (response) {
       navigate("/success", { state: response.data });
     }
+    setIsLoading(false);
   };
 
   const handleWalletPayment = async () => {
+    setIsLoading(true);
     const response = await confirmBooking(
       bookingData.franchise,
       bookingData.date,
@@ -117,6 +123,7 @@ const Checkout = () => {
     if (response) {
       navigate("/success", { state: response.data });
     }
+    setIsLoading(false);
   };
 
   const formatDate = (date: Date) => {
@@ -154,16 +161,16 @@ const Checkout = () => {
   };
 
   return (
-    <div className="min-h-screen flex justify-center items-center bg-gray-100">
+    <div className="min-h-screen flex justify-center items-center bg-gradient-to-br from-blue-50 to-purple-100">
       <div
-        className="absolute inset-0 bg-cover bg-center bg-no-repeat opacity-50"
+        className="absolute inset-0 bg-cover bg-center bg-no-repeat opacity-40 parallax"
         style={{ backgroundImage: "url('/public/logo/pawBackground.jpg')" }}
       ></div>
-      <div className="bg-white rounded-lg shadow-lg max-w-7xl w-full mx-4 md:mx-0 p-8 mb-20 z-10">
+      <div className="bg-white rounded-lg shadow-lg max-w-7xl w-full mx-4 md:mx-0 md:mt-5 p-8 mb-20 z-10">
         <h2 className="text-3xl font-bold mb-6 text-[#3968B6]">Checkout</h2>
         <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
           <div>
-            <div className="bg-gray-100 p-6 rounded-lg mb-4">
+            <div className="bg-gray-100 p-6 rounded-lg mb-4 hover-card">
               <h3 className="text-xl font-semibold mb-2 flex items-center">
                 <FaTicketAlt className="mr-2 text-[#9AD1AA]" /> Service Details
               </h3>
@@ -176,7 +183,7 @@ const Checkout = () => {
                 {service.services?.join(", ")}
               </p>
             </div>
-            <div className="bg-gray-100 p-6 rounded-lg mb-4">
+            <div className="bg-gray-100 p-6 rounded-lg mb-4 hover-card">
               <h3 className="text-lg font-bold mb-2 flex items-center">
                 <FaCalendarAlt className="mr-2 text-[#9AD1AA]" /> Booked Slot
               </h3>
@@ -190,7 +197,7 @@ const Checkout = () => {
                 {formatTime(bookingData.endTime)}
               </p>
             </div>
-            <div className="bg-gray-100 p-6 rounded-lg mb-4">
+            <div className="bg-gray-100 p-6 rounded-lg mb-4 hover-card">
               <h3 className="text-xl font-semibold mb-2 flex items-center">
                 <FaMapMarkerAlt className="mr-2 text-[#9AD1AA]" /> Address
               </h3>
@@ -208,12 +215,12 @@ const Checkout = () => {
           </div>
           <div>
             <div
-              className="h-14 bg-gray-200 relative flex justify-center items-center hover:cursor-pointer"
+              className="h-14 bg-gray-200 relative flex justify-center items-center hover:cursor-pointer pulse"
               onClick={openModal}
             >
               <p>View available coupons</p>
             </div>
-            <div className="bg-gray-50 p-6 rounded-lg mb-4 relative">
+            <div className="bg-gray-50 p-6 rounded-md mb-4 relative hover-card">
               <h3 className="text-xl font-semibold mb-4 flex items-center">
                 <FaRupeeSign className="mr-2 text-[#9AD1AA]" /> Billing
               </h3>
@@ -237,8 +244,13 @@ const Checkout = () => {
                   <button
                     onClick={handleApplyCoupon}
                     className="bg-[#9AD1AA] text-white px-4 py-2 rounded-r hover:bg-green-500 focus:outline-none focus:ring focus:ring-indigo-300 transition duration-200"
+                    disabled={isLoading}
                   >
-                    Apply
+                    {isLoading ? (
+                      <FaSpinner className="animate-spin" />
+                    ) : (
+                      "Apply"
+                    )}
                   </button>
                 </div>
                 {appliedCoupon && (
@@ -265,9 +277,14 @@ const Checkout = () => {
               {wallet.balance >= total && (
                 <button
                   onClick={handleWalletPayment}
-                  className="bg-[#3968b6] lg:ml-28 text-white px-4 py-2 rounded hover:bg-green-500 focus:outline-none focus:ring focus:ring-indigo-300 transition duration-200 mb-4"
+                  className="bg-[#3968b6] lg:ml-28 text-white px-4 py-2 rounded hover:bg-green-500 focus:outline-none focus:ring focus:ring-indigo-300 transition duration-200 mb-4 payment-button"
+                  disabled={isLoading}
                 >
-                  Pay with Wallet (Balance: ₹{wallet.balance})
+                  {isLoading ? (
+                    <FaSpinner className="animate-spin" />
+                  ) : (
+                    `Pay with Wallet (Balance: ₹${wallet.balance})`
+                  )}
                 </button>
               )}
               {!isModalOpen && (
@@ -281,7 +298,7 @@ const Checkout = () => {
         isOpen={isModalOpen}
         onRequestClose={closeModal}
         contentLabel="Available Coupons"
-        className="bg-white rounded-lg shadow-lg max-w-lg md:w-[500px] mx-auto p-6 mt-20 "
+        className="bg-white rounded-lg shadow-lg max-w-lg md:w-[500px] mx-auto p-6 mt-20 slide-in"
         overlayClassName="fixed inset-0 bg-black bg-opacity-50 flex justify-center items-center"
         style={{
           content: { zIndex: 1000 },
@@ -302,7 +319,7 @@ const Checkout = () => {
             })
             .map((coupon: any) => (
               <li key={coupon._id} className="mb-2">
-                <div className="flex justify-between items-center bg-gray-50 p-4 rounded-lg shadow-md">
+                <div className="flex justify-between items-center bg-gray-50 p-4 rounded-lg shadow-md hover-card">
                   <div>
                     <p className="text-lg font-medium text-gray-800">
                       {coupon.code}
