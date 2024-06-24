@@ -9,12 +9,11 @@ import { PayPalScriptProvider } from "@paypal/react-paypal-js";
 import "react-toastify/dist/ReactToastify.css";
 import "./index.css";
 
-const CLIENT_ID =
-  "AQfGdzRqN2AI8KMjftw1H6GyxshTx0QxieZ3oELTUfN0qH-1F5zCofB6GHtu0G6rxhGT8Kgg6MYyF8IW";
+const CLIENT_ID =import.meta.env.VITE_PAYPAL_CLIENT_ID;
 
 ReactDOM.createRoot(document.getElementById("root")!).render(
   <Provider store={store}>
-    <GoogleOAuthProvider clientId="337606298738-1700n518dumqome58ngcvmfarrsate57.apps.googleusercontent.com">
+    <GoogleOAuthProvider clientId={import.meta.env.VITE_G_CLIENT_ID}>
       <React.StrictMode>
         <PayPalScriptProvider options={{ clientId: CLIENT_ID }}>
           <App />

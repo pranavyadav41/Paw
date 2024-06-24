@@ -1,10 +1,10 @@
 import axios from "axios";
 import errorHandle from "../api/error";
 
-const BASE_URL = "http://localhost:7000/api";
+const BASE_URL = import.meta.env.VITE_BASE_URL;
 
 const Api = axios.create({
-  baseURL: BASE_URL,
+  baseURL: BASE_URL, 
   withCredentials: true,
 });
 
