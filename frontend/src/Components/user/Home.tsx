@@ -1,11 +1,13 @@
+import React, { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { useSelector } from "react-redux";
 import { RootState } from "../../redux/store";
 import { toast } from "react-toastify";
 import SocialMediaIcons from "./socialMediaIcons";
-import { useEffect, useState } from "react";
 import { homePageData } from "../../api/user";
 import { useInView } from "react-intersection-observer";
+import { motion } from "framer-motion";
+import ResponsiveImage from './ResponsiveImage';
 
 function Home() {
   const navigate = useNavigate();
@@ -60,184 +62,214 @@ function Home() {
     }, stepTime);
   };
 
+  const fadeInUp = {
+    initial: { opacity: 0, y: 20 },
+    animate: { opacity: 1, y: 0 },
+    transition: { duration: 0.6 }
+  };
+
+  const staggerContainer = {
+    animate: { transition: { staggerChildren: 0.1 } }
+  };
+
+  const iconAnimation = {
+    initial: { scale: 0, opacity: 0 },
+    animate: { scale: 1, opacity: 1 },
+    transition: { type: "spring", stiffness: 260, damping: 20 }
+  };
+
   return (
-    <>
-      <div>
-        <div
-          className="bg-cover bg-center w-full h-[684px]"
-          style={{ backgroundImage: "url('/public/logo/slide3-3.jpg')" }}
+    <div className="flex flex-col w-full">
+      <motion.div
+        initial={{ opacity: 0 }}
+        animate={{ opacity: 1 }}
+        transition={{ duration: 1 }}
+        className="bg-cover bg-center w-full min-h-[50vh] md:min-h-[684px] relative"
+        style={{ backgroundImage: "url('/public/logo/slide3-3.jpg')" }}
+      >
+        <SocialMediaIcons />
+        <motion.div
+          {...fadeInUp}
+          className="absolute top-1/4 left-5 md:left-10 lg:left-40 w-full md:w-[600px] flex flex-col gap-3 p-4"
         >
-          <SocialMediaIcons />
-          <div className="relative w-full h-full">
-            <div className="absolute top-48 left-40 w-[600px]  flex flex-col  gap-3">
-              <h1 className="text-white text-6xl">Every Pet Deserves</h1>
-              <h1 className="text-white text-6xl  font-bold">Celebrity Care</h1>
-              <h1 className="text-white text-lg">
-                We provide personal uninterrupted attention for you and your pet
-                in a quiet and stress-free environment.
-              </h1>
-              <button
-                onClick={handleClick}
-                className="bg-[#192955] hover:bg-blue-900 text-white font-medium py-4 w-48 mt-3 rounded-full"
-              >
-                BOOK NOW
-              </button>
+          <h1 className="text-white text-3xl sm:text-4xl md:text-6xl">Every Pet Deserves</h1>
+          <h1 className="text-white text-3xl sm:text-4xl md:text-6xl font-bold">Celebrity Care</h1>
+          <h1 className="text-white text-sm sm:text-base md:text-lg">
+            We provide personal uninterrupted attention for you and your pet
+            in a quiet and stress-free environment.
+          </h1>
+          <motion.button
+            whileHover={{ scale: 1.05 }}
+            whileTap={{ scale: 0.95 }}
+            onClick={handleClick}
+            className="bg-[#192955] hover:bg-blue-900 text-white font-medium py-2 sm:py-3 md:py-4 w-32 sm:w-36 md:w-48 mt-3 rounded-full text-xs sm:text-sm md:text-base"
+          >
+            BOOK NOW
+          </motion.button>
+        </motion.div>
+      </motion.div>
+
+      <motion.div
+        initial={{ opacity: 0 }}
+        whileInView={{ opacity: 1 }}
+        transition={{ duration: 0.8 }}
+        viewport={{ once: true }}
+        className="min-h-[600px] md:min-h-[800px] bg-white flex flex-col md:flex-row items-center"
+        style={{
+          backgroundImage: "url('/public/logo/Homepage/Untitled design.png')",
+          backgroundSize: "cover",
+          backgroundRepeat: "no-repeat",
+          backgroundPosition: "center",
+        }}
+      >
+        <motion.div
+          {...fadeInUp}
+          className="flex justify-center items-center w-full md:w-1/2 md:mb-40"
+        >
+          <img
+            src="/public/logo/Homepage/2photo-pots-207533-unsplash-scaled-scaled-600x600.jpg"
+            alt="Pet grooming"
+            className="md:max-h-[500px] mt-8 hidden lg:block"
+          />
+        </motion.div>
+        <div className="w-full md:w-1/2 md:mb-48">
+          <motion.div
+            {...fadeInUp}
+            className="mt-8 md:mt-16 w-full max-w-[500px] mx-auto flex flex-col gap-3 text-[#344A5F] px-4 md:px-0"
+          >
+            <div className="flex items-center">
+              <img
+                className="opacity-60 w-8 sm:w-12 h-auto"
+                src="/public/logo/Homepage/WFF.png"
+                alt=""
+              />
+              <h1 className="text-2xl sm:text-3xl md:text-4xl font-bold text-[#3968B6] ml-2">Why Paw</h1>
             </div>
-          </div>
+            <p className="text-black text-xs sm:text-sm md:text-base">
+              Flying Fur Mobile pet grooming offers the utmost comfort for
+              your pet and convenience for you. Here are just some of the
+              benefits that a mobile grooming salon offers
+            </p>
+            <motion.div
+              variants={staggerContainer}
+              initial="initial"
+              whileInView="animate"
+              viewport={{ once: true }}
+              className="grid grid-cols-2 gap-2 sm:gap-4 md:gap-6 mt-3"
+            >
+              {[
+                { img: "flying-fur-iconsArtboard-4.png", title: "Doorstep Service" },
+                { img: "flying-fur-iconsArtboard-2.png", title: "AC Van" },
+                { img: "flying-fur-iconsArtboard-3.png", title: "Trained Staff" },
+                { img: "flying-fur-iconsArtboard-1.png", title: "Hot & Cold Water" },
+              ].map((item, index) => (
+                <motion.div key={index} variants={iconAnimation} className="flex flex-col items-center">
+                  <img
+                    className="w-12 h-12 sm:w-16 sm:h-16 md:w-20 md:h-20 mb-2 md:mb-4 transition-transform transform hover:scale-110"
+                    src={`/public/logo/Booking page/${item.img}`}
+                    alt=""
+                  />
+                  <h1 className="font-bold text-xs sm:text-sm md:text-lg text-center text-[#3968B6]">
+                    {item.title}
+                  </h1>
+                </motion.div>
+              ))}
+            </motion.div>
+          </motion.div>
         </div>
-        <div
-          className="h-[800px] bg-white flex items-start"
-          style={{
-            backgroundImage: "url('/public/logo/Homepage/Untitled design.png')",
-            backgroundSize: "cover",
-            backgroundRepeat: "no-repeat",
-            backgroundPosition: "center",
-          }}
-        >
-          <div className="flex justify-center items-center w-[50%]">
-            <img
-              className="h-[450px] mt-16"
-              src="/public/logo/Homepage/2photo-pots-207533-unsplash-scaled-scaled-600x600.jpg"
-              alt=""
-            />
-          </div>
-          <div className="w-[50%]">
-            <div className="mt-16 ml-5 w-[500px] flex flex-col gap-3 text-[#344A5F]">
+      </motion.div>
+
+      <motion.div
+        initial={{ opacity: 0 }}
+        whileInView={{ opacity: 1 }}
+        transition={{ duration: 0.8 }}
+        viewport={{ once: true }}
+        className="min-h-screen w-full"
+        style={{
+          backgroundImage: "url('/public/logo/Homepage/Untitled design (1).png')",
+          backgroundSize: "cover",
+          backgroundRepeat: "no-repeat",
+          backgroundPosition: "center",
+        }}
+      >
+        <div className="w-full flex flex-col md:flex-row min-h-[600px]">
+          <motion.div
+            {...fadeInUp}
+            className="w-full md:w-1/2 flex justify-center p-4"
+          >
+            <div className="mt-8 md:mt-16 w-full max-w-[500px] flex flex-col gap-3 text-[#344A5F]">
               <div className="flex items-center">
                 <img
-                  className="opacity-60"
+                  className="opacity-60 w-8 sm:w-12 h-auto"
                   src="/public/logo/Homepage/WFF.png"
                   alt=""
                 />
-                <h1 className="text-4xl font-bold text-[#3968B6]">Why Paw</h1>
+                <h1 className="text-2xl sm:text-3xl md:text-4xl font-bold text-[#3968B6] ml-2">Services</h1>
               </div>
-              <p className="text-black">
-                Flying Fur Mobile pet grooming offers the utmost comfort for
-                your pet and convenience for you. Here are just some of the
-                benefits that a mobile grooming salon offers
+              <p className="text-black text-xs sm:text-sm md:text-base" style={{ lineHeight: "1.8" }}>
+                Our Salon is equipped with hot & cold running water for a
+                comfortable bathing experience, it is also fully
+                air-conditioned keeping your pet's comfort in mind, full sized
+                tub and a state of the art grooming table. We provide personal
+                uninterrupted attention for you and your pet in a quiet and
+                stress-free environment.
               </p>
-              <div className="grid grid-cols-2 gap-6 mt-3">
-                <div className="flex flex-col items-center">
-                  <img
-                    className="w-20 h-20 mb-4 transition-transform transform hover:scale-110"
-                    src="/public/logo/Booking page/flying-fur-iconsArtboard-4.png"
-                    alt=""
-                  />
-                  <h1 className="font-bold text-lg text-center text-[#3968B6]">
-                    Doorstep Service
-                  </h1>
-                </div>
-                <div className="flex flex-col items-center">
-                  <img
-                    className="w-20 h-20 mb-4 transition-transform transform hover:scale-125"
-                    src="/public/logo/Booking page/flying-fur-iconsArtboard-2.png"
-                    alt=""
-                  />
-                  <h1 className="font-bold text-lg text-center text-[#3968B6]">
-                    AC Van
-                  </h1>
-                </div>
-                <div className="flex flex-col items-center">
-                  <img
-                    className="w-20 h-20 mb-4 transition-transform transform hover:scale-110"
-                    src="/public/logo/Booking page/flying-fur-iconsArtboard-3.png"
-                    alt=""
-                  />
-                  <h1 className="font-bold text-lg text-center text-[#3968B6]">
-                    Trained Staff
-                  </h1>
-                </div>
-                <div className="flex flex-col items-center">
-                  <img
-                    className="w-20 h-20 mb-4 transition-transform transform hover:scale-110"
-                    src="/public/logo/Booking page/flying-fur-iconsArtboard-1.png"
-                    alt=""
-                  />
-                  <h1 className="font-bold text-lg text-center text-[#3968B6]">
-                    Hot & Cold Water
-                  </h1>
-                </div>
-              </div>
+              <motion.button
+                whileHover={{ scale: 1.05 }}
+                whileTap={{ scale: 0.95 }}
+                className="bg-[#192955] text-white w-28 sm:w-32 h-8 sm:h-10 rounded-full text-xs sm:text-sm md:text-base mt-4"
+              >
+                Services
+              </motion.button>
             </div>
-          </div>
+          </motion.div>
+          <motion.div
+            {...fadeInUp}
+            className="w-full md:w-1/2 flex justify-center md:justify-start p-4"
+          >
+            <ResponsiveImage
+              src="/public/logo/Homepage/services.png"
+              alt="Our services"
+              className="max-h-[300px] md:max-h-[450px]"
+            />
+          </motion.div>
         </div>
-        <div
-          className="h-screen w-full "
-          style={{
-            backgroundImage:
-              "url('/public/logo/Homepage/Untitled design (1).png')",
-            backgroundSize: "cover",
-            backgroundRepeat: "no-repeat",
-            backgroundPosition: "center",
-          }}
-        >
-          <div className="w-full flex h-[600px]">
-            <div className="w-[50%] flex justify-center">
-              <div className="mt-16  w-[500px] flex flex-col gap-3 text-[#344A5F]">
-                <div className="flex items-center">
-                  <img
-                    className="opacity-60"
-                    src="/public/logo/Homepage/WFF.png"
-                    alt=""
-                  />
-                  <h1 className="text-4xl font-bold text-[#3968B6]">
-                    Services
-                  </h1>
-                </div>
-                <p className="text-[black]" style={{ lineHeight: "1.8" }}>
-                  Our Salon is equipped with hot & cold running water for a
-                  comfortable bathing experience, it is also fully
-                  air-conditioned keeping your pet’s comfort in mind, full sized
-                  tub and a state of the art grooming table. We provide personal
-                  uninterrupted attention for you and your pet in a quiet and
-                  stress-free environment.
-                </p>
+      </motion.div>
 
-                <button className="bg-[#192955] text-white w-32 h-10 rounded-full">
-                  Services
-                </button>
-              </div>
-            </div>
-
-            <div className="w-[50%] h-screen flex justify-start">
-              <img
-                className="h-[450px]"
-                src="/public/logo/Homepage/services.png"
-                alt=""
-              />
-            </div>
+      <motion.div
+        ref={ref}
+        initial={{ opacity: 0 }}
+        whileInView={{ opacity: 1 }}
+        transition={{ duration: 0.8 }}
+        viewport={{ once: true }}
+        className="min-h-[300px] md:min-h-[384px] w-full flex flex-wrap justify-center items-center gap-4 md:gap-8 p-4"
+      >
+        {[
+          { count: usersCount, label: "HAPPY CLIENTS" },
+          { count: franchisesCount, label: "TOTAL FRANCHISES" },
+          { count: bookingsCount, label: "PETS GROOMED" },
+        ].map((item, index) => (
+          <div key={index} className="bg-yellow-400 p-4 sm:p-6 md:p-10 rounded-lg shadow-md flex flex-col justify-center items-center">
+            <h2 className="text-2xl sm:text-4xl md:text-7xl font-semibold mb-2">{item.count}</h2>
+            <span className="text-sm sm:text-xl md:text-3xl font-semibold text-center">{item.label}</span>
           </div>
-        </div>
-        <div ref={ref} className=" h-96 w-full flex justify-center items-center gap-8">
-          <div className="bg-yellow-400 p-10 rounded-lg shadow-md flex flex-col justify-center items-center">
-            <h2 className="text-7xl font-semibold mb-2">{usersCount}</h2>
-            <span className="text-3xl font-semibold">HAPPY CLIENTS</span>
-          </div>
+        ))}
+      </motion.div>
 
-          <div className="bg-yellow-400 p-10 rounded-lg shadow-md flex flex-col justify-center items-center">
-            <h2 className="text-7xl font-semibold mb-2">{franchisesCount}</h2>
-            <span className="text-3xl font-semibold">TOTAL FRANCHISES</span>
-          </div>
-
-          <div className="bg-yellow-400 p-10 rounded-lg shadow-md flex flex-col justify-center items-center">
-            <h2 className="text-7xl font-semibold mb-2">{bookingsCount}</h2>
-            <span className="text-3xl font-semibold">PETS GROOMED</span>
-          </div>
-        </div>
-
-        <div className="flex justify-center md:mt-20">
-          <img
-            src="/public/logo/FranchisePage/footer-bottom-image-removebg.png"
-            alt="Footer Image"
-            style={{
-              width: "100%",
-              height: "auto",
-              backgroundColor: "transparent",
-            }}
-          />
-        </div>
-      </div>
-    </>
+      <motion.div
+        initial={{ opacity: 0, y: 20 }}
+        whileInView={{ opacity: 1, y: 0 }}
+        transition={{ duration: 0.6 }}
+        viewport={{ once: true }}
+        className="flex justify-center mt-10 md:mt-20"
+      >
+        <ResponsiveImage
+          src="/public/logo/FranchisePage/footer-bottom-image-removebg.png"
+          alt="Footer Image"
+          className="w-full"
+        />
+      </motion.div>
+    </div>
   );
 }
 

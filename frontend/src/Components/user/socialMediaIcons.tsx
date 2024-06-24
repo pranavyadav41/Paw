@@ -7,7 +7,7 @@ const SocialMediaIcons: React.FC = () => {
         href="https://facebook.com"
         target="_blank"
         rel="noopener noreferrer"
-        className=" bg-[#1877F2] text-white p-3"
+        className=" bg-[#1877F2] text-white p-1 md:p-3"
       >
         <img
           src="public/logo/Icons/facebook(1).png"
@@ -19,7 +19,7 @@ const SocialMediaIcons: React.FC = () => {
         href="https://twitter.com"
         target="_blank"
         rel="noopener noreferrer"
-        className="bg-white hover:bg-blue-500 text-white p-3"
+        className="bg-white hover:bg-blue-500 text-white p-1 md:p-3"
       >
         <img src="/public/logo/Icons/5296514_bird_tweet_twitter_twitter logo_icon.png" alt="Twitter" className="w-6 h-6" />
       </a>
@@ -27,7 +27,7 @@ const SocialMediaIcons: React.FC = () => {
         href="https://instagram.com"
         target="_blank"
         rel="noopener noreferrer"
-        className="bg-[#FF9349] hover:bg-pink-700 text-white p-3"
+        className="bg-[#FF9349] hover:bg-pink-700 text-white p-1 md:p-3"
       >
         <img
           src="public/logo/Icons/instagram_2111463.png"
@@ -39,7 +39,7 @@ const SocialMediaIcons: React.FC = () => {
         href="https://instagram.com"
         target="_blank"
         rel="noopener noreferrer"
-        className="bg-[#29A71A] hover:bg-pink-700 text-white p-3"
+        className="bg-[#29A71A] hover:bg-pink-700 text-white p-1 md:p-3"
       >
         <img
           src="public/logo/Icons/whatsapp(1).png"

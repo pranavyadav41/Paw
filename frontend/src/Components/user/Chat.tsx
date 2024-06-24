@@ -45,18 +45,20 @@ const ChatRoom: React.FC<ChatRoomProps> = ({ userId, franchiseId }) => {
   const [showPicker, setShowPicker] = useState(false);
   const [showAttachmentMenu, setShowAttachmentMenu] = useState(false);
   const [selectedImage, setSelectedImage] = useState<string | null>(null);
-  const [isTyping, setIsTyping] = useState<boolean>(false);
   const messagesEndRef = useRef<HTMLDivElement>(null);
+  const [incomingCall, setIncomingCall] = useState<{
+    from: string;
+    roomId: string;
+  } | null>(null);
 
   const navigate = useNavigate();
 
   useEffect(() => {
     socket.emit("join", { room: roomId });
 
-    // Fetch existing messages from the server
     const fetchMessages = async () => {
       try {
-        const response = await getMessages(sender, receiver);
+        const response = await getMessages(sender, receiver); 
         setMessages(response?.data);
       } catch (error) {
         console.error("Error fetching messages:", error);
@@ -64,41 +66,34 @@ const ChatRoom: React.FC<ChatRoomProps> = ({ userId, franchiseId }) => {
     };
     fetchMessages();
 
-    // Listen for new messages from the server
     const handleMessage = (message: msg) => {
-      console.log(message, "this is it");
       setMessages((prevMessages) => [...prevMessages, message]);
     };
 
     socket.on("newMessage", handleMessage);
 
-    socket.on("typing", ({ user }) => {
-      if (user !== sender) {
-        setIsTyping(true);
-      }
-    });
-
-    socket.on("stopTyping", ({ user }) => {
-      if (user !== sender) {
-        setIsTyping(false);
-      }
-    });
-
-    socket.on("incomingCall", ({ from, roomID }) => {
-      if (confirm(`Incoming call from ${from}. Answer?`)) {
-        const role = from === "user" ? "provider" : "user";
-        navigate(`/videoChat?roomID=${roomID}&role=${role}`);
-      }
+    socket.on("incomingCall", ({ from, roomId }) => {
+      setIncomingCall({ from, roomId });
     });
 
     return () => {
       socket.off("newMessage", handleMessage);
-      socket.off("typing");
-      socket.off("stopTyping");
       socket.off("incomingCall");
       socket.emit("leave", { room: roomId });
     };
   }, [sender, receiver, roomId, navigate]);
+
+  const handleAnswerCall = () => {
+    if (incomingCall) {
+      const role = incomingCall.from === "user" ? "provider" : "user";
+      navigate(`/videoChat?roomID=${incomingCall.roomId}&role=${role}`);
+      setIncomingCall(null);
+    }
+  };
+
+  const handleDeclineCall = () => {
+    setIncomingCall(null);
+  };
 
   useEffect(() => {
     messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
@@ -117,7 +112,6 @@ const ChatRoom: React.FC<ChatRoomProps> = ({ userId, franchiseId }) => {
         timestamp: new Date(),
       };
       try {
-        // Send the message to the server
         await sendMessage(formData);
         socket.emit("sendMessage", { room: roomId, message: newMessage });
         setMessageInput("");
@@ -195,19 +189,17 @@ const ChatRoom: React.FC<ChatRoomProps> = ({ userId, franchiseId }) => {
     setSelectedImage(null);
   };
 
-  const handleTyping = (e: React.ChangeEvent<HTMLInputElement>) => {
-    setMessageInput(e.target.value);
-    socket.emit("typing", { room: roomId, user: sender });
-  };
-
   const initiateCall = async () => {
     const roomID = randomID(10);
     if (roomID) {
-      socket.emit("initiateCall", { room: roomId, from: "user", roomId:roomID });
+      socket.emit("initiateCall", {
+        room: roomId,
+        from: "user",
+        roomId: roomID,
+      });
       navigate(`/videoChat?roomID=${roomID}&role=user`);
     }
   };
-
   return (
     <>
       <div
@@ -292,24 +284,16 @@ const ChatRoom: React.FC<ChatRoomProps> = ({ userId, franchiseId }) => {
               No messages to display
             </div>
           )}
-          {isTyping && (
-            <div className="text-gray-500 text-center text-sm">
-              The other user is typing...
-            </div>
-          )}
           <div ref={messagesEndRef} />
         </div>
         <div className="px-4 py-2">
           <input
             type="text"
             value={messageInput}
-            onChange={handleTyping}
+            onChange={(e) => setMessageInput(e.target.value)}
             onKeyPress={handleKeyPress}
             placeholder="Type your message..."
             className="w-full mb-2 px-4 py-3 rounded-md border text-sm font-light border-gray-300 focus:outline-none focus:ring-2 focus:ring-gray-400"
-            onBlur={() =>
-              socket.emit("stopTyping", { room: roomId, user: sender })
-            }
           />
           <div className="flex justify-end items-center">
             <div>
@@ -351,6 +335,30 @@ const ChatRoom: React.FC<ChatRoomProps> = ({ userId, franchiseId }) => {
       </div>
       {selectedImage && (
         <ImageModal imageUrl={selectedImage} onClose={closeModal} />
+      )}
+      {incomingCall && (
+        <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
+          <div className="bg-white p-6 rounded-lg shadow-lg">
+            <h2 className="text-xl font-semibold mb-4">Incoming Call</h2>
+            <p className="mb-6">
+              Incoming call from {incomingCall.from}. Answer?
+            </p>
+            <div className="flex justify-end space-x-4">
+              <button
+                onClick={handleDeclineCall}
+                className="px-4 py-1 bg-gray-300 text-gray-800 rounded hover:bg-gray-400"
+              >
+                Decline
+              </button>
+              <button
+                onClick={handleAnswerCall}
+                className="px-4 py-1 bg-green-500 text-white rounded hover:bg-green-600"
+              >
+                Answer
+              </button>
+            </div>
+          </div>
+        </div>
       )}
     </>
   );

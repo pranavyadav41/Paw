@@ -29,7 +29,7 @@ const MyBookings = () => {
           if (
             a.bookingStatus.toLowerCase() !== "pending" &&
             b.bookingStatus.toLowerCase() === "pending"
-          ) {   
+          ) {
             return 1;
           }
           return (
@@ -80,7 +80,9 @@ const MyBookings = () => {
   };
 
   const handlePageChange = (newPage: number) => {
-    setCurrentPage(newPage);
+    if (newPage >= 1 && newPage <= totalPages) {
+      setCurrentPage(newPage);
+    }
   };
 
   return (
@@ -157,6 +159,17 @@ const MyBookings = () => {
               ))}
             </div>
             <div className="mt-6 flex justify-center">
+              <button
+                onClick={() => handlePageChange(currentPage - 1)}
+                disabled={currentPage === 1}
+                className={`mx-1 px-3 py-1 rounded ${
+                  currentPage === 1
+                    ? "bg-gray-200 text-gray-400 cursor-not-allowed"
+                    : "bg-gray-400 text-white"
+                }`}
+              >
+                Previous
+              </button>
               {Array.from({ length: totalPages }, (_, i) => i + 1).map((page) => (
                 <button
                   key={page}
@@ -170,6 +183,17 @@ const MyBookings = () => {
                   {page}
                 </button>
               ))}
+              <button
+                onClick={() => handlePageChange(currentPage + 1)}
+                disabled={currentPage === totalPages}
+                className={`mx-1 px-3 py-1 rounded ${
+                  currentPage === totalPages
+                    ? "bg-gray-200 text-gray-400 cursor-not-allowed"
+                    : "bg-gray-400 text-white"
+                }`}
+              >
+                Next
+              </button>
             </div>
           </>
         )}

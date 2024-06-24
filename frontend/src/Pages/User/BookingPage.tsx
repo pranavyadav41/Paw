@@ -581,11 +581,11 @@ const BookingService: React.FC = () => {
         <div className="relative bg-white rounded-lg shadow-lg w-full max-w-4xl p-4">
           <button
             onClick={() => setModalIsOpen(false)}
-            className="absolute top-2 right-2 bg-red-500 text-white rounded-md px-4 p-1 focus:outline-none hover:bg-red-600"
+            className="absolute top-2 right-2 bg-red-500 text-white rounded-md px-4 py-1 focus:outline-none hover:bg-red-600"
           >
             Close
           </button>
-          <h2 className="text-xl font-bold mb-4 text-center">Mark Location</h2>
+          <h2 className="text-lg font-semibold mb-4 text-center">Mark Location</h2>
           <div className="w-full h-96 bg-gray-200 rounded-lg overflow-hidden">
             <MyMap onAddressSelect={handleAddress} />
           </div>

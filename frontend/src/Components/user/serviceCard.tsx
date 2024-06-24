@@ -17,7 +17,7 @@ interface Service {
 
 interface ServiceCardProps {
   service: Service;
-  imgIndex:number
+  imgIndex:number 
 } 
 
 const ServiceCard: React.FC<ServiceCardProps> = ({ service}) => {

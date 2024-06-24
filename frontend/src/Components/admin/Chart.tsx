@@ -13,7 +13,7 @@ import {
   weeklyReport,
   yearlyReport,
   getStats,
-  getFranchises,
+  getFranchisesData,
   franchiseweeklyReport,
   franchisemonthlyReport,
   franchiseyearlyReport,
@@ -96,9 +96,9 @@ const MyAreaChart = () => {
       setFranchiseCount(response?.data.totalfranchises);
     });
 
-    // getFranchises().then((response) => {
-    //   setFranchises(response?.data);
-    // });
+    getFranchisesData().then((response) => {
+      setFranchises(response?.data);
+    });
   }, []);
 
   useEffect(() => {

@@ -41,19 +41,19 @@ const FeedbackCard: React.FC<FeedbackCardProps> = ({ name, review, rating, image
   };
 
   return (
-    <div className="bg-white rounded-lg shadow-md w-[400px] h-[550px] overflow-hidden flex flex-col">
+    <div className="bg-[#3968b6] rounded-bl-3xl rounded-sm  shadow-md  w-full h-full md:w-[380px] md:h-[550px] overflow-hidden flex flex-col">
       <div className="flex items-center p-4">
-        <HiUserGroup className="text-lg mr-2" />
-        <h3 className="text-lg font-semibold">{name}</h3>
+        <HiUserGroup className="text-xl text-white mr-2" />
+        <h3 className="text-xl text-white font-semibold">{name}</h3>
       </div>
-      <div className="flex justify-between items-center p-4 border-b border-gray-200">
+      <div className="flex justify-between items-center p-5">
         <div className="flex">{stars}</div>
       </div>
       <div className="p-4 flex-grow overflow-y-auto">
-        <p className="text-gray-700 text-md">{review}</p>
+        <p className="text-white text-md">{review}</p>
       </div>
       {limitedImages.length > 0 && (
-        <div className="p-4 border-t border-gray-200">
+        <div className="p-4">
           <div className="flex flex-wrap gap-2">
             {limitedImages.map((imageUrl, index) => (
               <img
@@ -69,8 +69,8 @@ const FeedbackCard: React.FC<FeedbackCardProps> = ({ name, review, rating, image
       )}
 
 {showModal && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-50">
-          <div className="relative max-w-full max-h-full">
+        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-80">
+          <div className="relative w-[70%] h-[70%] flex justify-center">
             <img
               src={limitedImages[currentImageIndex]}
               alt={`Review Image ${currentImageIndex}`}

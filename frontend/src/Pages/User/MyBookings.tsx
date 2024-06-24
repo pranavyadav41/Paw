@@ -6,7 +6,7 @@ import { RootState } from "../../redux/store";
 
 const MyBookings = () => {
   const { userInfo } = useSelector((state: RootState) => state.auth);
-  const [bookings, setBookings] = useState<any>([]);
+  const [bookings, setBookings] = useState<any[]>([]);
   const [services, setServices] = useState<{ [key: string]: string }>({});
   const [currentPage, setCurrentPage] = useState(1);
   const [totalPages, setTotalPages] = useState(0);
@@ -68,7 +68,9 @@ const MyBookings = () => {
   };
 
   const handlePageChange = (newPage: number) => {
-    setCurrentPage(newPage);
+    if (newPage > 0 && newPage <= totalPages) {
+      setCurrentPage(newPage);
+    }
   };
 
   return ( 
@@ -135,6 +137,15 @@ const MyBookings = () => {
               ))}
             </div>
             <div className="mt-6 flex justify-center">
+              <button
+                onClick={() => handlePageChange(currentPage - 1)}
+                className={`mx-1 px-3 py-1 rounded ${
+                  currentPage === 1 ? "bg-gray-300 text-gray-500 cursor-not-allowed" : "bg-gray-200 text-gray-700"
+                }`}
+                disabled={currentPage === 1}
+              >
+                Previous
+              </button>
               {Array.from({ length: totalPages }, (_, i) => i + 1).map((page) => (
                 <button
                   key={page}
@@ -148,6 +159,15 @@ const MyBookings = () => {
                   {page}
                 </button>
               ))}
+              <button
+                onClick={() => handlePageChange(currentPage + 1)}
+                className={`mx-1 px-3 py-1 rounded ${
+                  currentPage === totalPages ? "bg-gray-300 text-gray-500 cursor-not-allowed" : "bg-gray-200 text-gray-700"
+                }`}
+                disabled={currentPage === totalPages}
+              >
+                Next
+              </button>
             </div>
           </>
         )}

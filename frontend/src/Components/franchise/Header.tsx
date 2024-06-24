@@ -1,5 +1,5 @@
 import { useSelector, useDispatch } from "react-redux";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 // import { useNavigate } from "react-router-dom";
 import { logout } from "../../redux/slices/franchiseSlice";
 import { FaUserAlt, FaCaretDown } from "react-icons/fa";
@@ -15,7 +15,6 @@ function Header() {
   const [isDropdownOpen, setIsDropdownOpen] = useBoolean();
   const [isHamburger, setIsHamburger] = useState(false);
   const [userDropdown, setIsDropdown] = useState(false);
-  // let navigate = useNavigate();
   let dispatch = useDispatch();
 
   const activeStyle = {
@@ -64,7 +63,7 @@ function Header() {
               </li>
               <li className="block p-1 font-sans text-md antialiased font-normal leading-normal text-blue-gray-900">
                 <NavLink
-                  to="/franchise/myBookings"
+                  to="/franchise/myBookings" 
                   className="flex items-center"
                   style={({ isActive }) => (isActive ? activeStyle : undefined)}
                 >

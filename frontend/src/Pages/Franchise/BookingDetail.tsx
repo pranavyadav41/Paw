@@ -3,7 +3,7 @@ import { useParams } from "react-router-dom";
 import Modal from "react-modal";
 import { toast } from "react-toastify";
 import { fetchBooking, changeStatus, getService } from "../../api/franchise";
-import { FaCheckCircle, FaTimesCircle } from "react-icons/fa";
+import { FaCheckCircle, FaTimesCircle, FaDirections } from "react-icons/fa";
 Modal.setAppElement("#root");
 
 interface Address {
@@ -12,7 +12,7 @@ interface Address {
   city: string;
   state: string;
   pincode: string;
-  location: [longitude: number, latitude: number];
+  location: [number, number];
 }
 
 interface Booking {
@@ -80,19 +80,18 @@ const BookingDetails = () => {
   const convertTo12HourFormat = (time: string) => {
     const [hour, minute] = time.split(":").map(Number);
     const period = hour >= 12 ? "PM" : "AM";
-    const adjustedHour = hour % 12 || 12; // Convert "0" hour to "12"
+    const adjustedHour = hour % 12 || 12;
     return `${adjustedHour}:${minute < 10 ? "0" + minute : minute} ${period}`;
   };
 
   const handleStatusChange = async () => {
     const response = await changeStatus(booking._id, newStatus);
-
     toast.success(response?.data.message, { position: "top-center" });
     setState(true);
   };
 
   return (
-    <div className="relative container mx-auto p-6 min-h-screen w-full flex flex-col items-center ">
+    <div className="relative container mx-auto p-6 min-h-screen w-full flex flex-col items-center">
       <div
         className="absolute inset-0 bg-cover bg-center opacity-50 z-0"
         style={{ backgroundImage: "url('/logo/pawBackground.jpg')" }}
@@ -100,7 +99,7 @@ const BookingDetails = () => {
       <h2 className="text-3xl font-bold mb-6 text-center z-10 text-[#3968B6]">
         Booking Details
       </h2>
-      <div className="relative z-10 bg-gray-100 shadow-md rounded-lg p-6 md:w-[80%] w-full md:h-[500px]   grid grid-cols-1 md:grid-cols-2 gap-8">
+      <div className="relative z-10 bg-gray-100 shadow-md rounded-lg p-6 md:w-[80%] w-full md:h-[470px] grid grid-cols-1 md:grid-cols-2 gap-8">
         <div>
           <div className="flex flex-col space-y-4">
             <p className="text-gray-800">

@@ -25,7 +25,7 @@ interface updateService {
   };
 }
 
-export const getUsers = async(page: number, limit: number, searchTerm: string) => {
+export const getUsers = async (page: number, limit: number, searchTerm: string) => {
   try {
     const response = await Api.get(`${adminRoutes.getUserDetails}?page=${page}&limit=${limit}&search=${searchTerm}`);
     return response;
@@ -91,6 +91,15 @@ export const rejectRequest = async ({
     return errorHandle(err);
   }
 };
+export const getFranchisesData = async () => {
+  try {
+    const response = await Api.get(adminRoutes.getFranchisesData)
+    return response
+  } catch (error) {
+    const err: Error = error as Error;
+    return errorHandle(err);
+  }
+}
 export const getFranchises = async (page: number, limit: number, searchTerm: string) => {
   try {
     const response = await Api.get(`${adminRoutes.getFranchises}?page=${page}&limit=${limit}&search=${searchTerm}`);

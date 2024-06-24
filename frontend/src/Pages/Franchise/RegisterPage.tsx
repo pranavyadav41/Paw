@@ -45,11 +45,12 @@ function RegisterPage() {
   const [pincode, setPincode] = useState<string>("");
   const [confirmPassword, setConfirmPassword] = useState<string>("");
   const [showPassword, setShowPassword] = useState<boolean>(false);
-  const [showConfirmPassword, setShowConfirmPassword] =useState<boolean>(false);
+  const [showConfirmPassword, setShowConfirmPassword] =
+    useState<boolean>(false);
   const [errors, setErrors] = useState<Errors>({});
   const [isModalOpen, setIsModalOpen] = useState<boolean>(false);
-  const [longitude,setLongitude] = useState(0)
-  const [latitude,setLatitude]=useState(0)
+  const [longitude, setLongitude] = useState(0);
+  const [latitude, setLatitude] = useState(0);
   const [addressSelected, setAddressSelected] = useState<boolean>(false);
 
   const handlePasswordVisibility = () => {
@@ -141,12 +142,12 @@ function RegisterPage() {
           state: state,
           pincode: pincode,
           longitude: longitude,
-          latitude:latitude
+          latitude: latitude,
         };
         resetForm();
-        setAddressSelected(false)
+        setAddressSelected(false);
         const response = await franchiseRegister(userData);
-        if (response) { 
+        if (response) {
           toast.success(response.data.message);
         }
       }
@@ -162,7 +163,7 @@ function RegisterPage() {
     setDistrict(address.district);
     setPincode(address.postcode);
     setLongitude(address.longitude);
-    setLatitude(address.latitude)
+    setLatitude(address.latitude);
     setIsModalOpen(false);
     setAddressSelected(true);
   };
@@ -395,14 +396,20 @@ function RegisterPage() {
         isOpen={isModalOpen}
         onRequestClose={() => setIsModalOpen(false)}
         contentLabel="Select Address"
+        className="w-full h-full"
       >
-        <h2 className="mb-4 text-xl font-semibold">Select Address</h2>
         <MyMap onAddressSelect={handleAddressSelect} />
         <button
           onClick={() => setIsModalOpen(false)}
-          className="px-4 py-2 mt-4 text-sm font-medium text-white bg-red-500 rounded-lg hover:bg-red-600"
+          className="px-4 py-1 text-sm font-medium text-white bg-red-600 rounded-md hover:bg-yellow-600"
+          style={{
+            position: "absolute",
+            bottom: "10px",
+            right: "10px",
+            zIndex: 9999,
+          }}
         >
-          Close
+          Close Map
         </button>
       </Modal>
     </>

@@ -16,8 +16,7 @@ const Services = () => {
       } finally {
         setLoading(false);
       }
-    };
-
+    }; 
     fetchServices();
   }, []);
 
@@ -34,23 +33,23 @@ const Services = () => {
           zIndex: -1,
         }}
       ></div>
-      <div className="mt-5 z-10 flex items-center">
-        <h1 className="text-3xl text-[#3968B6] font-semibold">
+      <div className="mt-5 z-10 flex flex-col sm:flex-row items-center">
+        <h1 className="text-2xl sm:text-3xl text-[#3968B6] font-semibold text-center sm:text-left mb-2 sm:mb-0">
           Inclusions & Pricelist
         </h1>
         <img
-          className="opacity-50"
+          className="opacity-50 w-24 sm:w-auto"
           src="/public/logo/Homepage/WFF.png"
           alt=""
         />
       </div>
-      <div className="w-[83%] h-full bg-transparent grid grid-cols-1 md:grid-cols-2 gap-3 p-5 z-10">
+      <div className="w-full sm:w-[83%] h-full bg-transparent grid grid-cols-1 sm:grid-cols-2 gap-3 p-2 sm:p-5 z-10">
         {services.map((service, index) => (
           <ServiceCard key={index} service={service} imgIndex={index} />
         ))}
       </div>
       {!loading && (
-        <div className="flex justify-center md:mt-20">
+        <div className="flex justify-center mt-10 sm:mt-20 w-full">
           <img
             src="/public/logo/FranchisePage/footer-bottom-image-removebg.png"
             alt="Footer Image"

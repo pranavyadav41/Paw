@@ -7,6 +7,7 @@ const adminRoutes={
     getRequests:'/admin/getRequests',
     approveRequest:'/admin/approveRequest',
     rejectRequest:'/admin/rejectRequest',
+    getFranchisesData:'/admin/getFranchisesData',
     getFranchises:'/admin/getFranchises',
     blockFranchise:'/admin/blockFranchise',
     unBlockFranchise:'/admin/unBlockFranchise',

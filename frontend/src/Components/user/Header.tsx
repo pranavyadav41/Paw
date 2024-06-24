@@ -29,7 +29,7 @@ function Header() {
     borderBottom: "1px solid currentColor",
     paddingBottom: "1px",
   };
-
+ 
   let handleLogout = () => {
     setIsDropdown(false);
     setIsHamburger(false);
@@ -52,7 +52,7 @@ function Header() {
   };
 
   return (
-    <nav className="sticky top-0 z-50 block w-full max-w-full px-4 py-2 text-white bg-[#1679AB] rounded-none shadow-md h-max backdrop-blur-2xl backdrop-saturate-200 lg:px-8 lg:py-4">
+    <nav className="sticky top-0 z-50 block w-full max-w-full px-4 py-2 text-white bg-[#3968b6] rounded-none shadow-md h-max backdrop-blur-2xl backdrop-saturate-200 lg:px-8 lg:py-4">
       <div className="flex items-center justify-between text-blue-gray-900">
         <img
           className="h-[40px]"

@@ -8,6 +8,7 @@ import { MdVideoCall } from "react-icons/md";
 import { ImAttachment } from "react-icons/im";
 import Picker from "emoji-picker-react";
 import socket from "../common/socket";
+import ImageModal from "../common/ImageModal";
 import { useNavigate } from "react-router-dom";
 import { randomID } from "../../utils/randomID";
 
@@ -45,8 +46,12 @@ const ChatRoom: React.FC<ChatRoomProps> = ({ userId, franchiseId, name }) => {
   const [roomId, setRoomId] = useState<string>(`${userId}-${franchiseId}`);
   const [showPicker, setShowPicker] = useState(false);
   const [showAttachmentMenu, setShowAttachmentMenu] = useState(false);
-  const [isTyping, setIsTyping] = useState<boolean>(false);
+  const [selectedImage, setSelectedImage] = useState<string | null>(null);
   const messagesEndRef = useRef<HTMLDivElement>(null);
+  const [incomingCall, setIncomingCall] = useState<{
+    from: string;
+    roomId: string;
+  } | null>(null);
 
   const navigate = useNavigate();
 
@@ -76,33 +81,30 @@ const ChatRoom: React.FC<ChatRoomProps> = ({ userId, franchiseId, name }) => {
 
     socket.on("newMessage", handleMessage);
 
-    socket.on("typing", ({ user }) => {
-      if (user !== sender) {
-        setIsTyping(true);
-      }
-    });
-
-    socket.on("stopTyping", ({ user }) => {
-      if (user !== sender) {
-        setIsTyping(false);
-      }
-    });
-
     socket.on("incomingCall", ({ from, roomId }) => {
-      if (confirm(`Incoming call from ${from}. Answer?`)) {
-        const role = from === "user" ? "provider" : "user";
-        navigate(`/franchise/videoChat?roomID=${roomId}&role=${role}`);
-      }
+      setIncomingCall({ from, roomId });
     });
 
     return () => {
       socket.off("newMessage", handleMessage);
-      socket.off("typing");
-      socket.off("stopTyping");
       socket.off("incomingCall");
       socket.emit("leave", { room: roomId });
     };
   }, [sender, receiver, roomId]);
+
+  const handleAnswerCall = () => {
+    if (incomingCall) {
+      const role = incomingCall.from === "user" ? "provider" : "user";
+      navigate(
+        `/franchise/videoChat?roomID=${incomingCall.roomId}&role=${role}`
+      );
+      setIncomingCall(null);
+    }
+  };
+
+  const handleDeclineCall = () => {
+    setIncomingCall(null);
+  };
 
   useEffect(() => {
     messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
@@ -189,15 +191,22 @@ const ChatRoom: React.FC<ChatRoomProps> = ({ userId, franchiseId, name }) => {
     }
   };
 
-  const handleTyping = (e: React.ChangeEvent<HTMLInputElement>) => {
-    setMessageInput(e.target.value);
-    socket.emit("typing", { room: roomId, user: sender });
+  const handleImageClick = (imageUrl: string) => {
+    setSelectedImage(imageUrl);
+  };
+
+  const closeModal = () => {
+    setSelectedImage(null);
   };
 
   const initiateCall = () => {
     const roomID = randomID(10);
     if (roomID) {
-      socket.emit("initiateCall", { room: roomId, from: "provider",roomId: roomID });
+      socket.emit("initiateCall", {
+        room: roomId,
+        from: "provider",
+        roomId: roomID,
+      });
       navigate(`/franchise/videoChat?roomID=${roomID}&role=provider`);
     }
   };
@@ -248,6 +257,7 @@ const ChatRoom: React.FC<ChatRoomProps> = ({ userId, franchiseId, name }) => {
                       src={message.content}
                       alt="Uploaded photo"
                       className="w-full h-full object-cover"
+                      onClick={() => handleImageClick(message.content)}
                     />
                   </div>
                 ) : message.contentType === "file" ? (
@@ -270,12 +280,6 @@ const ChatRoom: React.FC<ChatRoomProps> = ({ userId, franchiseId, name }) => {
             </div>
           </div>
         ))}
-        {isTyping && (
-          <div className="text-gray-500 text-center mb-10 text-sm">
-            The other user is typing...
-          </div>
-        )}
-
         <div ref={messagesEndRef} />
       </div>
       <div className="flex px-4 py-2 bg-white mt-12 justify-center items-center relative">
@@ -283,13 +287,10 @@ const ChatRoom: React.FC<ChatRoomProps> = ({ userId, franchiseId, name }) => {
           <input
             type="text"
             value={messageInput}
-            onChange={handleTyping}
+            onChange={(e) => setMessageInput(e.target.value)}
             onKeyPress={handleKeyPress}
             placeholder="Type your message..."
             className="w-full mb-2 px-4 py-3 rounded-md border text-sm font-light border-gray-300 focus:outline-none focus:ring-2 focus:ring-gray-400"
-            onBlur={() =>
-              socket.emit("stopTyping", { room: roomId, user: sender })
-            }
           />
         </div>
         <div className="relative">
@@ -324,6 +325,33 @@ const ChatRoom: React.FC<ChatRoomProps> = ({ userId, franchiseId, name }) => {
             >
               <FaFile className="inline-block mr-2 text-red-400" /> File
             </button>
+          </div>
+        )}
+        {selectedImage && (
+          <ImageModal imageUrl={selectedImage} onClose={closeModal} />
+        )}
+        {incomingCall && (
+          <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
+            <div className="bg-white p-6 rounded-lg shadow-lg">
+              <h2 className="text-xl font-semibold mb-4">Incoming Call</h2>
+              <p className="mb-6">
+                Incoming call from {incomingCall.from}. Answer?
+              </p>
+              <div className="flex justify-end space-x-4">
+                <button
+                  onClick={handleDeclineCall}
+                  className="px-4 py-1 bg-gray-300 text-gray-800 rounded hover:bg-gray-400"
+                >
+                  Decline
+                </button>
+                <button
+                  onClick={handleAnswerCall}
+                  className="px-4 py-1 bg-green-500 text-white rounded hover:bg-green-600"
+                >
+                  Answer
+                </button>
+              </div>
+            </div>
           </div>
         )}
       </div>
