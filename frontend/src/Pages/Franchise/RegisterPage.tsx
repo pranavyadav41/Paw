@@ -1,4 +1,4 @@
-import React, { useState, FormEvent } from "react";
+import { useState, FormEvent } from "react";
 import { IoEyeSharp, IoEyeOffSharp } from "react-icons/io5";
 import { Link } from "react-router-dom";
 import { franchiseRegister } from "../../api/franchise";

@@ -39,12 +39,6 @@ interface Service {
   };
 }
 
-interface Available {
-  opening: string;
-  closing: string;
-  available: AvailableService[];
-}
-
 const Services: React.FC = () => {
   const [modalIsOpen, setIsOpen] = useState(false);
   const [editModalIsOpen, setEditModalIsOpen] = useState(false);
@@ -139,10 +133,10 @@ const Services: React.FC = () => {
   const handleUpdateServiceTime = async (serviceId: string) => {
     if (!currentService) return;
 
-    const updatedService = {
-      ...currentService,
-      timeToComplete: { hours: editHours, minutes: editMinutes },
-    };
+    // const updatedService = {
+    //   ...currentService,
+    //   timeToComplete: { hours: editHours, minutes: editMinutes },
+    // };
 
     const response = await editTime(franchiseInfo._id, serviceId, editHours, editMinutes);
 

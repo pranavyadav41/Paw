@@ -46,7 +46,7 @@ const Card4: React.FC<UserCardProps> = ({ service, state }) => {
   const [services, setServices] = useState(service.services);
   const [prices, setPrices] = useState(service.price);
   const [editIndex, setEditIndex] = useState<number | null>(null);
-  const [errors, setErrors] = useState<{ [key: string]: string }>({});
+  const [errors] = useState<{ [key: string]: string }>({});
 
   const handleEdit = () => {
     setEditedService(service);

@@ -1,5 +1,5 @@
 import { useState, useEffect, useCallback } from "react";
-import Map, { Marker, MapLayerMouseEvent, ViewState } from "react-map-gl";
+import Map, { Marker, MapLayerMouseEvent} from "react-map-gl";
 import "mapbox-gl/dist/mapbox-gl.css";
 import { FaMapMarkerAlt, FaSearch } from "react-icons/fa";
 

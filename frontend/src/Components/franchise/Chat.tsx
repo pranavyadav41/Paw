@@ -42,7 +42,7 @@ const ChatRoom: React.FC<ChatRoomProps> = ({ userId, franchiseId, name }) => {
   const [messageInput, setMessageInput] = useState<string>("");
   const [sender, setSender] = useState<string>(franchiseId);
   const [receiver, setReceiver] = useState<string>(userId);
-  const [showChat, setShowChat] = useState<boolean>(true);
+  const [showChat] = useState<boolean>(true);
   const [roomId, setRoomId] = useState<string>(`${userId}-${franchiseId}`);
   const [showPicker, setShowPicker] = useState(false);
   const [showAttachmentMenu, setShowAttachmentMenu] = useState(false);

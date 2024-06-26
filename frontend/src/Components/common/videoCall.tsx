@@ -1,4 +1,3 @@
-import React from 'react';
 import { ZegoUIKitPrebuilt } from '@zegocloud/zego-uikit-prebuilt';
 
 interface VideoCallProps {

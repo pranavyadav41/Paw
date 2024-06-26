@@ -38,10 +38,10 @@ interface ChatRoomProps {
 const ChatRoom: React.FC<ChatRoomProps> = ({ userId, franchiseId }) => {
   const [messages, setMessages] = useState<msg[]>([]);
   const [messageInput, setMessageInput] = useState<string>("");
-  const [sender, setSender] = useState<string>(userId);
-  const [receiver, setReceiver] = useState<string>(franchiseId);
+  const [sender] = useState<string>(userId);
+  const [receiver] = useState<string>(franchiseId);
   const [showChat, setShowChat] = useState<boolean>(true);
-  const [roomId, setRoomId] = useState<string>(`${userId}-${franchiseId}`);
+  const [roomId] = useState<string>(`${userId}-${franchiseId}`);
   const [showPicker, setShowPicker] = useState(false);
   const [showAttachmentMenu, setShowAttachmentMenu] = useState(false);
   const [selectedImage, setSelectedImage] = useState<string | null>(null);

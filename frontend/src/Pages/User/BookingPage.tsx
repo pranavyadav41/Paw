@@ -6,10 +6,9 @@ import MyMap from "../../Components/common/mapBox";
 import LocationSearch from "../../Components/common/geoCoder";
 import { TbCurrentLocation } from "react-icons/tb";
 import { getServices } from "../../api/admin";
-import { bookService, confirmBooking } from "../../api/user";
+import { bookService} from "../../api/user";
 import { useSelector } from "react-redux";
 import { RootState } from "../../redux/store";
-import Checkout from "../../Components/common/payPal";
 import { useNavigate } from "react-router-dom";
 
 Modal.setAppElement("#root");
@@ -53,8 +52,6 @@ const BookingService: React.FC = () => {
   const [sizeChartModalIsOpen, setSizeChartModalIsOpen] =
     useState<boolean>(false);
   const [franchise, setFranchise] = useState("");
-  const [showCheckout, setShowCheckout] = useState(false);
-
   const [errors, setErrors] = useState<any>({});
 
   const { userInfo } = useSelector((state: RootState) => state.auth);

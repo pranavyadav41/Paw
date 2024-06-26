@@ -3,7 +3,7 @@ import { useParams } from "react-router-dom";
 import Modal from "react-modal";
 import { toast } from "react-toastify";
 import { fetchBooking, changeStatus, getService } from "../../api/franchise";
-import { FaCheckCircle, FaTimesCircle, FaDirections } from "react-icons/fa";
+import { FaCheckCircle, FaTimesCircle} from "react-icons/fa";
 import { motion } from "framer-motion";
 
 Modal.setAppElement("#root");

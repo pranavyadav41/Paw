@@ -1,19 +1,15 @@
-import { FaUsers, FaCalendarAlt, FaChartLine, FaCog } from 'react-icons/fa';
-import { useSelector } from 'react-redux';
-import { useNavigate } from 'react-router-dom';
 import MyAreaChart from '../../Components/admin/Chart';
 
 
 function Dashboard() {
-  const navigate =useNavigate();
 
 
-  const dashboardItems = [
-    { icon: FaUsers, title: 'User Management', description: 'Add, edit, or remove users' },
-    { icon: FaCalendarAlt, title: 'Appointments', description: 'View and manage schedules' },
-    { icon: FaChartLine, title: 'Analytics', description: 'Track site performance' },
-    { icon: FaCog, title: 'Settings', description: 'Configure site options' },
-  ];
+  // const dashboardItems = [
+  //   { icon: FaUsers, title: 'User Management', description: 'Add, edit, or remove users' },
+  //   { icon: FaCalendarAlt, title: 'Appointments', description: 'View and manage schedules' },
+  //   { icon: FaChartLine, title: 'Analytics', description: 'Track site performance' },
+  //   { icon: FaCog, title: 'Settings', description: 'Configure site options' },
+  // ];
 
   return (
     <div className="pt-16 w-full min-h-screen text-white relative overflow-hidden">

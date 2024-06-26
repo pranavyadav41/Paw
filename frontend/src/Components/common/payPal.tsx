@@ -25,6 +25,7 @@ const Payment: React.FC<PaymentProps> = ({ total, handleBooking }) => {
   }, [total]);
 
   const onCreateOrder = (data: any, actions: any) => {
+    console.log(data)
     return actions.order.create({
       purchase_units: [
         {
@@ -38,6 +39,7 @@ const Payment: React.FC<PaymentProps> = ({ total, handleBooking }) => {
 
   const onApproveOrder = (data: any, actions: any) => {
     return actions.order.capture().then((details: any) => {
+      console.log(data,details)
       handleBooking();
     });
   };
