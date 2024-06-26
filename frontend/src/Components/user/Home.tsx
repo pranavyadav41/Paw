@@ -131,7 +131,7 @@ function Home() {
         viewport={{ once: true }}
         className="min-h-[600px] md:min-h-[800px] bg-white flex flex-col md:flex-row items-center"
         style={{
-          backgroundImage: "url('/public/logo/Homepage/Untitled design.png')",
+          backgroundImage: "url('/logo/Homepage/Untitled design.png')",
           backgroundSize: "cover",
           backgroundRepeat: "no-repeat",
           backgroundPosition: "center",
@@ -142,7 +142,7 @@ function Home() {
           className="flex justify-center items-center w-full md:w-1/2 md:mb-40"
         >
           <img
-            src="/public/logo/Homepage/2photo-pots-207533-unsplash-scaled-scaled-600x600.jpg"
+            src="/logo/Homepage/2photo-pots-207533-unsplash-scaled-scaled-600x600.jpg"
             alt="Pet grooming"
             className="md:max-h-[500px] mt-8 hidden lg:block"
           />
@@ -155,7 +155,7 @@ function Home() {
             <div className="flex items-center">
               <img
                 className="opacity-60 w-8 sm:w-12 h-auto"
-                src="/public/logo/Homepage/WFF.png"
+                src="/logo/Homepage/WFF.png"
                 alt=""
               />
               <h1 className="text-2xl sm:text-3xl md:text-4xl font-bold text-[#3968B6] ml-2">
@@ -176,16 +176,16 @@ function Home() {
             >
               {[
                 {
-                  img: "flying-fur-iconsArtboard-4.png",
+                  img: "/logo/Booking page/flying-fur-iconsArtboard-4.png",
                   title: "Doorstep Service",
                 },
-                { img: "flying-fur-iconsArtboard-2.png", title: "AC Van" },
+                { img: "/logo/Booking page/flying-fur-iconsArtboard-2.png", title: "AC Van" },
                 {
-                  img: "flying-fur-iconsArtboard-3.png",
+                  img: "/logo/Booking page/flying-fur-iconsArtboard-3.png",
                   title: "Trained Staff",
                 },
                 {
-                  img: "flying-fur-iconsArtboard-1.png",
+                  img: "/logo/Booking page/flying-fur-iconsArtboard-1.png",
                   title: "Hot & Cold Water",
                 },
               ].map((item, index) => (
@@ -196,7 +196,7 @@ function Home() {
                 >
                   <img
                     className="w-12 h-12 sm:w-16 sm:h-16 md:w-20 md:h-20 mb-2 md:mb-4 transition-transform transform hover:scale-110"
-                    src={`/public/logo/Booking page/${item.img}`}
+                    src={`/logo/Booking page/${item.img}`}
                     alt=""
                   />
                   <h1 className="font-bold text-xs sm:text-sm md:text-lg text-center text-[#3968B6]">
@@ -217,7 +217,7 @@ function Home() {
         className="min-h-screen w-full"
         style={{
           backgroundImage:
-            "url('/public/logo/Homepage/Untitled design (1).png')",
+            "url('/logo/Homepage/Untitled design (1).png')",
           backgroundSize: "cover",
           backgroundRepeat: "no-repeat",
           backgroundPosition: "center",
@@ -232,7 +232,7 @@ function Home() {
               <div className="flex items-center">
                 <img
                   className="opacity-60 w-8 sm:w-12 h-auto"
-                  src="/public/logo/Homepage/WFF.png"
+                  src="/logo/Homepage/WFF.png"
                   alt=""
                 />
                 <h1 className="text-2xl sm:text-3xl md:text-4xl font-bold text-[#3968B6] ml-2">
@@ -266,7 +266,7 @@ function Home() {
             className="w-full md:w-1/2 flex justify-center md:justify-start p-4"
           >
             <ResponsiveImage
-              src="/public/logo/Homepage/services.png"
+              src="/logo/Homepage/services.png"
               alt="Our services"
               className="max-h-[300px] md:max-h-[450px]"
             />
@@ -309,7 +309,7 @@ function Home() {
         className="flex justify-center mt-10 md:mt-20"
       >
         <ResponsiveImage
-          src="/public/logo/FranchisePage/footer-bottom-image-removebg.png"
+          src="/logo/FranchisePage/footer-bottom-image-removebg.png"
           alt="Footer Image"
           className="w-full"
         />
