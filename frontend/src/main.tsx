@@ -15,7 +15,7 @@ ReactDOM.createRoot(document.getElementById("root")!).render(
   <Provider store={store}>
     <GoogleOAuthProvider clientId={import.meta.env.VITE_G_CLIENT_ID}>
       <React.StrictMode>
-        <PayPalScriptProvider options={{ clientId: CLIENT_ID }}>
+        <PayPalScriptProvider options={{ "clientId": CLIENT_ID }}>
           <App />
         </PayPalScriptProvider>
         <ToastContainer />

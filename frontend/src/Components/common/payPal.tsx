@@ -1,4 +1,4 @@
-import React, {  useEffect } from 'react';
+import React, { useEffect } from 'react';
 import { PayPalButtons, usePayPalScriptReducer, ReactPayPalScriptOptions } from "@paypal/react-paypal-js";
 
 interface Options extends ReactPayPalScriptOptions {
@@ -38,24 +38,23 @@ const Payment: React.FC<PaymentProps> = ({ total, handleBooking }) => {
   };
 
   const onApproveOrder = (data: any, actions: any) => {
+    console.log(data)
     return actions.order.capture().then((details: any) => {
-      console.log(data,details)
+      console.log(details)
       handleBooking();
     });
   };
 
   return (
-    <div className="checkout flex flex-col items-center justify-center p-4  rounded-lg">
+    <div className="checkout flex flex-col items-center justify-center p-4 rounded-lg">
       {isPending ? (
         <p className="text-lg font-semibold">LOADING...</p>
       ) : (
-        <>
-          <PayPalButtons
-            style={{ layout: "vertical", }}
-            createOrder={onCreateOrder}
-            onApprove={onApproveOrder}
-          />
-        </>
+        <PayPalButtons
+          style={{ layout: "vertical" }}
+          createOrder={onCreateOrder}
+          onApprove={onApproveOrder}
+        />
       )}
     </div>
   );
