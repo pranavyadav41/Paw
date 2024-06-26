@@ -1,9 +1,5 @@
-import React, {  useEffect } from 'react';
-import { PayPalButtons, usePayPalScriptReducer, ReactPayPalScriptOptions } from "@paypal/react-paypal-js";
-
-interface Options extends ReactPayPalScriptOptions {
-  currency: string;
-}
+import React from 'react';
+import { PayPalButtons } from "@paypal/react-paypal-js";
 
 interface PaymentProps {
   total: string;
@@ -11,19 +7,6 @@ interface PaymentProps {
 }
 
 const Payment: React.FC<PaymentProps> = ({ total, handleBooking }) => {
-  const [{ options, isPending }, dispatch] = usePayPalScriptReducer();
-
-  useEffect(() => {
-    dispatch({
-      type: "resetOptions",
-      value: {
-        ...options,
-        currency: (options as Options).currency,
-        "client-id": "AQfGdzRqN2AI8KMjftw1H6GyxshTx0QxieZ3oELTUfN0qH-1F5zCofB6GHtu0G6rxhGT8Kgg6MYyF8IW",
-      } as Options,
-    });
-  }, [total]);
-
   const onCreateOrder = (data: any, actions: any) => {
     console.log(data)
     return actions.order.create({
@@ -39,24 +22,18 @@ const Payment: React.FC<PaymentProps> = ({ total, handleBooking }) => {
 
   const onApproveOrder = (data: any, actions: any) => {
     return actions.order.capture().then((details: any) => {
-      console.log(data,details)
+      console.log(data, details)
       handleBooking();
     });
   };
 
   return (
-    <div className="checkout flex flex-col items-center justify-center p-4  rounded-lg">
-      {isPending ? (
-        <p className="text-lg font-semibold">LOADING...</p>
-      ) : (
-        <>
-          <PayPalButtons
-            style={{ layout: "vertical", }}
-            createOrder={onCreateOrder}
-            onApprove={onApproveOrder}
-          />
-        </>
-      )}
+    <div className="checkout flex flex-col items-center justify-center p-4 rounded-lg">
+      <PayPalButtons
+        style={{ layout: "vertical" }}
+        createOrder={onCreateOrder}
+        onApprove={onApproveOrder}
+      />
     </div>
   );
 };
