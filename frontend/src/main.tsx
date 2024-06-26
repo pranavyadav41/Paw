@@ -1,25 +1,41 @@
-import React from "react";
-import ReactDOM from "react-dom/client";
-import App from "./App";
-import store from "./redux/store";
-import { Provider } from "react-redux";
-import { ToastContainer } from "react-toastify";
-import { GoogleOAuthProvider } from "@react-oauth/google";
-import { PayPalScriptProvider } from "@paypal/react-paypal-js";
-import "react-toastify/dist/ReactToastify.css";
-import "./index.css";
+import React from 'react';
+import { PayPalButtons } from "@paypal/react-paypal-js";
 
-const CLIENT_ID =import.meta.env.VITE_PAYPAL_CLIENT_ID;
+interface PaymentProps {
+  total: string;
+  handleBooking: () => void;
+}
 
-ReactDOM.createRoot(document.getElementById("root")!).render(
-  <Provider store={store}>
-    <GoogleOAuthProvider clientId={import.meta.env.VITE_G_CLIENT_ID}>
-      <React.StrictMode>
-        <PayPalScriptProvider options={{ clientId: CLIENT_ID }}>
-          <App />
-        </PayPalScriptProvider>
-        <ToastContainer />
-      </React.StrictMode>
-    </GoogleOAuthProvider>
-  </Provider>
-);
+const Payment: React.FC<PaymentProps> = ({ total, handleBooking }) => {
+  const onCreateOrder = (data: any, actions: any) => {
+    console.log(data)
+    return actions.order.create({
+      purchase_units: [
+        {
+          amount: {
+            value: total,
+          },
+        },
+      ],
+    });
+  };
+
+  const onApproveOrder = (data: any, actions: any) => {
+    return actions.order.capture().then((details: any) => {
+      console.log(data, details)
+      handleBooking();
+    });
+  };
+
+  return (
+    <div className="checkout flex flex-col items-center justify-center p-4 rounded-lg">
+      <PayPalButtons
+        style={{ layout: "vertical" }}
+        createOrder={onCreateOrder}
+        onApprove={onApproveOrder}
+      />
+    </div>
+  );
+};
+
+export default Payment;
