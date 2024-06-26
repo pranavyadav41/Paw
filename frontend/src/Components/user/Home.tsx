@@ -96,7 +96,7 @@ function Home() {
         animate={{ opacity: 1 }}
         transition={{ duration: 1 }}
         className="bg-cover bg-center w-full min-h-[50vh] md:min-h-[684px] relative"
-        style={{ backgroundImage: "url('/public/logo/slide3-3.jpg')" }}
+        style={{ backgroundImage: "url('public/logo/slide3-3.jpg')" }}
       >
         <SocialMediaIcons />
         <motion.div

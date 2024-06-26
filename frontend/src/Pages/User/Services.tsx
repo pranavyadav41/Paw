@@ -1,31 +1,54 @@
+import React, { useState, useEffect } from "react";
 import ServiceCard from "../../Components/user/serviceCard";
 import { getServices } from "../../api/admin";
-import { useState, useEffect } from "react";
 
-const Services = () => {
-  const [services, setServices] = useState([]);
+const Services: React.FC = () => {
+  const [services, setServices] = useState<any[]>([]);
   const [loading, setLoading] = useState(true);
+  const [error, setError] = useState<string | null>(null);
 
   useEffect(() => {
     const fetchServices = async () => {
       try {
         const response = await getServices();
-        setServices(response?.data || []);
+        console.log('Services response:', response);
+        if (Array.isArray(response?.data)) {
+          setServices(response.data);
+        } else {
+          console.error('Unexpected response structure:', response);
+          setError('Unexpected data structure received');
+          setServices([]);
+        }
       } catch (error) {
-        console.log(error);
+        console.error('Error fetching services:', error);
+        setError('Failed to fetch services');
+        setServices([]);
       } finally {
         setLoading(false);
       }
     };
+
     fetchServices();
   }, []);
+
+  useEffect(() => {
+    console.log('Current services state:', services);
+  }, [services]);
+
+  if (loading) {
+    return <div className="text-center mt-10">Loading...</div>;
+  }
+
+  if (error) {
+    return <div className="text-center mt-10 text-red-500">{error}</div>;
+  }
 
   return (
     <div className="min-h-screen w-full flex flex-col items-center relative">
       <div
         className="absolute inset-0"
         style={{
-          backgroundImage: "url('/public/logo/pawBackground.jpg')",
+          backgroundImage: "url('/logo/pawBackground.jpg')",
           backgroundSize: "cover",
           backgroundPosition: "center",
           backgroundRepeat: "no-repeat",
@@ -39,13 +62,11 @@ const Services = () => {
         </h1>
         <img
           className="opacity-50 w-24 sm:w-auto"
-          src="/public/logo/Homepage/WFF.png"
+          src="/logo/Homepage/WFF.png"
           alt=""
         />
       </div>
-      {loading ? (
-        <div className="text-center mt-10">Loading...</div>
-      ) : services.length > 0 ? (
+      {Array.isArray(services) && services.length > 0 ? (
         <div className="w-full sm:w-[83%] h-full bg-transparent grid grid-cols-1 sm:grid-cols-2 gap-3 p-2 sm:p-5 z-10">
           {services.map((service, index) => (
             <ServiceCard key={index} service={service} imgIndex={index} />
@@ -54,19 +75,17 @@ const Services = () => {
       ) : (
         <div className="text-center mt-10 text-lg font-medium">No services available</div>
       )}
-      {!loading && (
-        <div className="flex justify-center mt-10 sm:mt-20 w-full">
-          <img
-            src="/public/logo/FranchisePage/footer-bottom-image-removebg.png"
-            alt="Footer Image"
-            style={{
-              width: "100%",
-              height: "auto",
-              backgroundColor: "transparent",
-            }}
-          />
-        </div>
-      )}
+      <div className="flex justify-center mt-10 sm:mt-20 w-full">
+        <img
+          src="/logo/FranchisePage/footer-bottom-image-removebg.png"
+          alt="Footer Image"
+          style={{
+            width: "100%",
+            height: "auto",
+            backgroundColor: "transparent",
+          }}
+        />
+      </div>
     </div>
   );
 };
