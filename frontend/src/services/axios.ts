@@ -1,7 +1,7 @@
 import axios from "axios";
 import errorHandle from "../api/error";
 
-const BASE_URL = import.meta.env.VITE_BASE_URL;
+const BASE_URL = "https://soundmagic.fun/api";
 
 const Api = axios.create({
   baseURL: BASE_URL, 
