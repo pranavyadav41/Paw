@@ -31,9 +31,9 @@ function Home() {
     }
   }
 
-  const handleService = ()=>{
-    navigate("/services")
-  }
+  const handleService = () => {
+    navigate("/services");
+  };
 
   useEffect(() => {
     homePageData()
@@ -103,13 +103,13 @@ function Home() {
           {...fadeInUp}
           className="absolute top-1/4 left-5 md:left-10 lg:left-40 w-full md:w-[600px] flex flex-col gap-3 p-4"
         >
-          <h1 className="text-white text-3xl sm:text-4xl md:text-6xl">
+          <h1 className="text-white text-2xl sm:text-3xl md:text-4xl lg:text-6xl">
             Every Pet Deserves
           </h1>
-          <h1 className="text-white text-3xl sm:text-4xl md:text-6xl font-bold">
+          <h1 className="text-white text-2xl sm:text-3xl md:text-4xl lg:text-6xl font-bold">
             Celebrity Care
           </h1>
-          <h1 className="text-white text-sm sm:text-base md:text-lg">
+          <h1 className="text-white text-xs sm:text-sm md:text-base lg:text-lg">
             We provide personal uninterrupted attention for you and your pet in
             a quiet and stress-free environment.
           </h1>
@@ -117,7 +117,7 @@ function Home() {
             whileHover={{ scale: 1.05 }}
             whileTap={{ scale: 0.95 }}
             onClick={handleClick}
-            className="bg-[#192955] hover:bg-blue-900 text-white font-medium py-2 sm:py-3 md:py-4 w-32 sm:w-36 md:w-48 mt-3 rounded-full text-xs sm:text-sm md:text-base"
+            className="bg-[#192955] hover:bg-blue-900 text-white font-medium py-3 px-4 sm:px-6 md:px-8 w-auto sm:w-auto md:w-[300px] mt-3 rounded-full text-xs sm:text-sm md:text-base"
           >
             BOOK NOW
           </motion.button>
@@ -154,11 +154,11 @@ function Home() {
           >
             <div className="flex items-center">
               <img
-                className="opacity-60 w-8 sm:w-12 h-auto"
+                className="opacity-60 w-6 sm:w-8 md:w-12 h-auto"
                 src="/logo/Homepage/WFF.png"
                 alt=""
               />
-              <h1 className="text-2xl sm:text-3xl md:text-4xl font-bold text-[#3968B6] ml-2">
+              <h1 className="text-xl sm:text-2xl md:text-3xl lg:text-4xl font-bold text-[#3968B6] ml-2">
                 Why Paw
               </h1>
             </div>
@@ -216,8 +216,7 @@ function Home() {
         viewport={{ once: true }}
         className="min-h-screen w-full"
         style={{
-          backgroundImage:
-            "url('/logo/Homepage/Untitled design (1).png')",
+          backgroundImage: "url('/logo/Homepage/Untitled design (1).png')",
           backgroundSize: "cover",
           backgroundRepeat: "no-repeat",
           backgroundPosition: "center",
@@ -231,16 +230,16 @@ function Home() {
             <div className="mt-8 md:mt-16 w-full max-w-[500px] flex flex-col gap-3 text-[#344A5F]">
               <div className="flex items-center">
                 <img
-                  className="opacity-60 w-8 sm:w-12 h-auto"
+                  className="opacity-60 w-6 sm:w-8 md:w-12 h-auto"
                   src="/logo/Homepage/WFF.png"
                   alt=""
                 />
-                <h1 className="text-2xl sm:text-3xl md:text-4xl font-bold text-[#3968B6] ml-2">
+                <h1 className="text-xl sm:text-2xl md:text-3xl lg:text-4xl font-bold text-[#3968B6] ml-2">
                   Services
                 </h1>
               </div>
               <p
-                className="text-black text-xs sm:text-sm md:text-base"
+                className="text-black text-xs sm:text-sm md:text-base lg:text-lg"
                 style={{ lineHeight: "1.8" }}
               >
                 Our Salon is equipped with hot & cold running water for a
@@ -253,9 +252,8 @@ function Home() {
               <motion.button
                 whileHover={{ scale: 1.05 }}
                 whileTap={{ scale: 0.95 }}
-                className="bg-[#192955] text-white w-28 sm:w-32 h-8 sm:h-10 rounded-full text-xs sm:text-sm md:text-base mt-4"
+                className="bg-[#192955] text-white w-32 sm:w-36 md:w-40 h-10 sm:h-12 rounded-full text-xs sm:text-sm md:text-base mt-4"
                 onClick={handleService}
-                
               >
                 Services
               </motion.button>
@@ -263,12 +261,12 @@ function Home() {
           </motion.div>
           <motion.div
             {...fadeInUp}
-            className="w-full md:w-1/2 flex justify-center md:justify-start p-4"
+            className="w-full h-[770px] md:w-1/2 flex justify-center md:justify-start"
           >
             <ResponsiveImage
               src="/logo/Homepage/services.png"
               alt="Our services"
-              className="max-h-[300px] md:max-h-[450px]"
+              className="max-h-[300px] md:max-h-[580px] w-full h-full object-contain"
             />
           </motion.div>
         </div>
@@ -289,12 +287,12 @@ function Home() {
         ].map((item, index) => (
           <div
             key={index}
-            className="bg-yellow-400 p-4 sm:p-6 md:p-10 rounded-lg shadow-md flex flex-col justify-center items-center"
+            className="bg-yellow-400 p-4 sm:p-6 md:p-8 lg:p-10 rounded-lg shadow-md flex flex-col justify-center items-center"
           >
-            <h2 className="text-2xl sm:text-4xl md:text-7xl font-semibold mb-2">
+            <h2 className="text-xl sm:text-2xl md:text-4xl lg:text-7xl font-semibold mb-2">
               {item.count}
             </h2>
-            <span className="text-sm sm:text-xl md:text-3xl font-semibold text-center">
+            <span className="text-xs sm:text-sm md:text-xl lg:text-3xl font-semibold text-center">
               {item.label}
             </span>
           </div>
