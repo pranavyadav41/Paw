@@ -24,7 +24,7 @@ function FranchisePage() {
           >
             <img
               className="w-full max-w-md h-auto rounded-sm"
-              src="public/logo/FranchisePage/home-1-shape-image-3.png"
+              src="/logo/FranchisePage/home-1-shape-image-3.png"
               alt="Cute Yorkshire Terrier Dog"
             />
           </motion.div>
