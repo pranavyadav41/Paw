@@ -16,7 +16,7 @@ const Header = () => {
       <div className="text-white font-bold text-xl flex items-center gap-3">
         {/* <span className="text-green-500 text-2xl">Paw</span>
         <FaPaw /> */}
-        <img className="h-11  " src="/public/logo/logo-white-removebg-preview.png" alt="" />
+        <img className="h-11  " src="/logo/logo-white-removebg-preview.png" alt="" />
       </div>
       <button
         className="bg-red-700 hover:bg-red-600 text-white font-semibold py-2 px-3 rounded-lg flex items-center"

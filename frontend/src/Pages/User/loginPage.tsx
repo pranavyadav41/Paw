@@ -18,7 +18,7 @@ interface Errors {
 }
 
 function LoginPage() {
-  const navigate = useNavigate();
+  const navigate = useNavigate(); 
   const dispatch = useDispatch();
 
   let { userInfo } = useSelector((state: RootState) => state.auth);
@@ -132,7 +132,7 @@ function LoginPage() {
         >
           <motion.img
             className="h-48 ml-12"
-            src="/public/logo/cut and PASTE.png"
+            src="/logo/cut and PASTE.png"
             alt=""
             initial={{ y: -50, opacity: 0 }}
             animate={{ y: 0, opacity: 1 }}

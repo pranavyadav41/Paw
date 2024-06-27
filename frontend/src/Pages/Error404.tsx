@@ -7,7 +7,7 @@ const Error404 = () => {
     <>
       <div
         className="bg-cover bg-center bg-[#F2F2F2] w-full min-h-screen flex items-center justify-center"
-        style={{ backgroundImage: "url('/public/logo/404.png')" }}
+        style={{ backgroundImage: "url('/logo/404.png')" }}
       >
         <div className="flex flex-col justify-center items-center gap-3">
           <div className="w-60 h-40">

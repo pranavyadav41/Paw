@@ -204,7 +204,7 @@ const BookingService: React.FC = () => {
       <div
         className="absolute inset-0 bg-cover bg-center"
         style={{
-          backgroundImage: "url('/public/logo/pawBackground.jpg')",
+          backgroundImage: "url('/logo/pawBackground.jpg')",
           opacity: "0.4",
         }}
       ></div>
@@ -456,7 +456,7 @@ const BookingService: React.FC = () => {
               <div className="flex flex-col items-center">
                 <img
                   className="w-20 h-20 mb-4 transition-transform transform hover:scale-110"
-                  src="/public/logo/Booking page/flying-fur-iconsArtboard-4.png"
+                  src="/logo/Booking page/flying-fur-iconsArtboard-4.png"
                   alt=""
                 />
                 <h1 className="font-bold text-lg text-center text-[#3968B6]">
@@ -466,7 +466,7 @@ const BookingService: React.FC = () => {
               <div className="flex flex-col items-center">
                 <img
                   className="w-20 h-20 mb-4 transition-transform transform hover:scale-125"
-                  src="/public/logo/Booking page/flying-fur-iconsArtboard-2.png"
+                  src="/logo/Booking page/flying-fur-iconsArtboard-2.png"
                   alt=""
                 />
                 <h1 className="font-bold text-lg text-center text-[#2c5caa]">
@@ -476,7 +476,7 @@ const BookingService: React.FC = () => {
               <div className="flex flex-col items-center">
                 <img
                   className="w-20 h-20 mb-4 transition-transform transform hover:scale-110"
-                  src="/public/logo/Booking page/flying-fur-iconsArtboard-3.png"
+                  src="/logo/Booking page/flying-fur-iconsArtboard-3.png"
                   alt=""
                 />
                 <h1 className="font-bold text-lg text-center text-[#3968B6]">
@@ -486,7 +486,7 @@ const BookingService: React.FC = () => {
               <div className="flex flex-col items-center">
                 <img
                   className="w-20 h-20 mb-4 transition-transform transform hover:scale-110"
-                  src="/public/logo/Booking page/flying-fur-iconsArtboard-1.png"
+                  src="/logo/Booking page/flying-fur-iconsArtboard-1.png"
                   alt=""
                 />
                 <h1 className="font-bold text-lg text-center text-[#3968B6]">

@@ -34,7 +34,7 @@ const AllChats: React.FC = () => {
     <div className="flex justify-center items-center min-h-screen bg-gray-100 flex-col">
       <div
         className="absolute inset-0 bg-cover bg-center opacity-40"
-        style={{ backgroundImage: "url('/public/logo/pawBackground.jpg')" }}
+        style={{ backgroundImage: "url('/logo/pawBackground.jpg')" }}
       ></div>
       <div className="w-[90%] max-w-6xl md:h-[550px] bg-gray-200 rounded-lg shadow-lg flex flex-col md:flex-row overflow-hidden z-20">
         <div className="w-full md:w-1/4 bg-gray-800 md:h-[560px] p-6 z-10 mt-5">

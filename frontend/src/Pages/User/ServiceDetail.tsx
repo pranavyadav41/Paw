@@ -46,7 +46,7 @@ const ServiceDetail: React.FC = () => {
   if (!service) return <div className="flex justify-center items-center h-screen">Loading...</div>;
 
   return ( 
-    <div className="min-h-screen bg-cover bg-center bg-no-repeat relative" style={{backgroundImage: "url('/public/logo/pawBackground.jpg')"}}>
+    <div className="min-h-screen bg-cover bg-center bg-no-repeat relative" style={{backgroundImage: "url('/logo/pawBackground.jpg')"}}>
       <div className="absolute inset-0 bg-white bg-opacity-60"></div>
       <div className="relative z-10 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
         <motion.div
@@ -60,7 +60,7 @@ const ServiceDetail: React.FC = () => {
             <div className="md:flex-shrink-0 ml-5"> 
               <img
                 className="h-48 w-full object-cover md:h-full md:w-48"
-                src="/public/logo/Homepage/pngFlying-fur-Service-IllustrationsArtboard-1.png"
+                src="/logo/Homepage/pngFlying-fur-Service-IllustrationsArtboard-1.png"
                 alt="Service Image"
               />
             </div>

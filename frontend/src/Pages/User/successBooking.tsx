@@ -48,7 +48,7 @@ const SuccessBooking: React.FC = () => {
             </h2>
             <img
               className="h-8"
-              src="/public/logo/checkout/success-svgrepo-com.svg"
+              src="/logo/checkout/success-svgrepo-com.svg"
               alt=""
             />
           </motion.div>

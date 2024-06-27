@@ -45,7 +45,7 @@ function Header() {
       <div className="flex items-center justify-between text-blue-gray-900">
         <img
           className="h-[40px]"
-          src="/public/logo/logo-white-removebg-preview.png"
+          src="/logo/logo-white-removebg-preview.png"
           alt=""
         />
 

@@ -42,7 +42,7 @@ const ServiceCard: React.FC<ServiceCardProps> = ({
       <div className="flex items-center md:mr-4">
         <div className="mr-4">
           <img
-            src="/public/logo/newOne.png"
+            src="/logo/newOne.png"
             alt="Service Image"
             className="w-20 h-15 rounded-lg"
           />

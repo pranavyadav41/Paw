@@ -70,7 +70,7 @@ const ProfilePage = () => {
       <div className="w-full max-w-screen-xl  shadow-2xl rounded-lg overflow-hidden md:grid md:grid-cols-4 min-h-[500px]">
         <div
           className="absolute inset-0 bg-cover bg-center bg-no-repeat opacity-40 -z-10"
-          style={{ backgroundImage: "url('/public/logo/pawBackground.jpg')" }}
+          style={{ backgroundImage: "url('/logo/pawBackground.jpg')" }}
         ></div>
         <motion.div
           className="bg-[#60a0b0] text-white p-4 md:p-8 md:col-span-1"

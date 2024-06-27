@@ -59,7 +59,7 @@ function Dashboard() {
     >
       <div
         className="absolute inset-0 bg-cover bg-center opacity-50"
-        style={{ backgroundImage: "url('/public/logo/pawBackground.jpg')" }}
+        style={{ backgroundImage: "url('/logo/pawBackground.jpg')" }}
       ></div>
       <div className="relative z-10 container mx-auto px-4 flex flex-col md:flex-row justify-center items-start h-auto md:h-[500px]">
         <motion.div className="w-full md:w-1/4 lg:w-1/4 mb-8 md:mb-0" variants={itemVariants}>

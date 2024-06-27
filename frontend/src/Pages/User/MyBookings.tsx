@@ -101,7 +101,7 @@ const MyBookings = () => {
     >
       <div 
         className="absolute inset-0 bg-cover bg-center opacity-40"
-        style={{ backgroundImage: "url('/public/logo/pawBackground.jpg')" }}
+        style={{ backgroundImage: "url('/logo/pawBackground.jpg')" }}
       ></div>
       <div className="relative container mx-auto p-6 max-w-6xl">
         <motion.h2 

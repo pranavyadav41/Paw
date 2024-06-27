@@ -7,7 +7,7 @@ function FranchisePage() {
       <motion.div
         className="absolute inset-0 bg-cover bg-center"
         style={{
-          backgroundImage: "url('/public/logo/pawBackground.jpg')",
+          backgroundImage: "url('/logo/pawBackground.jpg')",
           opacity: 0.3,
         }}
         initial={{ scale: 1.1 }}

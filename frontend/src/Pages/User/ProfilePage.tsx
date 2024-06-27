@@ -94,7 +94,7 @@ const ProfilePage = () => {
       >
         <div
           className="absolute inset-0 bg-cover bg-center bg-no-repeat opacity-50 -z-10"
-          style={{ backgroundImage: "url('/public/logo/pawBackground.jpg')" }}
+          style={{ backgroundImage: "url('/logo/pawBackground.jpg')" }}
         ></div>
         <div className="bg-[#60a0b0] text-white p-4 md:p-8  md:col-span-1">
           <motion.div 

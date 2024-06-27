@@ -188,7 +188,7 @@ const BookingDetails = () => {
     <div className="relative container mx-auto py-8 min-h-screen w-full flex flex-col items-center bg-gradient-to-br from-blue-50 to-purple-100">
       <div
         className="absolute inset-0 bg-cover bg-center opacity-40"
-        style={{ backgroundImage: "url('/public/logo/pawBackground.jpg')" }}
+        style={{ backgroundImage: "url('/logo/pawBackground.jpg')" }}
       />
       <motion.h2
         initial="hidden"

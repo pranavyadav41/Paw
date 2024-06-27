@@ -164,7 +164,7 @@ const Checkout = () => {
     <div className="min-h-screen flex justify-center items-center bg-gradient-to-br from-blue-50 to-purple-100">
       <div
         className="absolute inset-0 bg-cover bg-center bg-no-repeat opacity-40 parallax"
-        style={{ backgroundImage: "url('/public/logo/pawBackground.jpg')" }}
+        style={{ backgroundImage: "url('/logo/pawBackground.jpg')" }}
       ></div>
       <div className="bg-white rounded-lg shadow-lg max-w-7xl w-full mx-4 md:mx-0 md:mt-5 p-8 mb-20 z-10">
         <h2 className="text-3xl font-bold mb-6 text-[#3968B6]">Checkout</h2>

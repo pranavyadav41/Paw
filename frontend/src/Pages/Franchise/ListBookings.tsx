@@ -112,7 +112,7 @@ const MyBookings = () => {
     <div className="relative min-h-screen bg-gradient-to-br from-blue-50 to-purple-100">
       <div
         className="absolute inset-0 bg-cover bg-center opacity-40"
-        style={{ backgroundImage: "url('/public/logo/pawBackground.jpg')" }}
+        style={{ backgroundImage: "url('/logo/pawBackground.jpg')" }}
       ></div>
       <div className="relative container mx-auto p-6 max-w-6xl z-10">
         <motion.h2 

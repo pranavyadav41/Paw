@@ -139,7 +139,7 @@ function SignupPage() {
         >
           <motion.img 
             className="h-48 ml-12"
-            src="/public/logo/cut and PASTE.png" 
+            src="/logo/cut and PASTE.png" 
             alt=""
             initial={{ y: -50, opacity: 0 }}
             animate={{ y: 0, opacity: 1 }}

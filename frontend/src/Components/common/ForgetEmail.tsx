@@ -45,7 +45,7 @@ function ForgetEmail() {
           >
             <img
               className="h-48 ml-12"
-              src="/public/logo/cut and PASTE.png"
+              src="/logo/cut and PASTE.png"
               alt=""
             />
           </div>

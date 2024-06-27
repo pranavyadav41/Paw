@@ -214,7 +214,7 @@ const Services: React.FC = () => {
                 <div className="flex items-center">
                   <div className="relative mr-2 ml-2">
                     <img
-                      src="/public/logo/Homepage/pngFlying-fur-Service-IllustrationsArtboard-1.png"
+                      src="/logo/Homepage/pngFlying-fur-Service-IllustrationsArtboard-1.png"
                       alt="Service Image"
                       className="w-20 h-15 rounded-lg mb-10"
                     />

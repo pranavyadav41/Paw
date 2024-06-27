@@ -27,7 +27,7 @@ const ServiceCard: React.FC<ServiceCardProps> = ({ service}) => {
       {/* Content */}
       <div className="flex-1 flex gap-1">
         <div className="mr-4 ">
-          <img src="/public/logo/Homepage/pngFlying-fur-Service-IllustrationsArtboard-1.png" alt="Service Image" className="w-20 h-15 rounded-lg" />
+          <img src="/logo/Homepage/pngFlying-fur-Service-IllustrationsArtboard-1.png" alt="Service Image" className="w-20 h-15 rounded-lg" />
         </div>
         <div>
           <div className="flex justify-between items-center">
