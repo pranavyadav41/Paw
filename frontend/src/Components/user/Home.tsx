@@ -176,16 +176,16 @@ function Home() {
             >
               {[
                 {
-                  img: "logo/Booking page/flying-fur-iconsArtboard-4.png",
+                  img: "flying-fur-iconsArtboard-4.png",
                   title: "Doorstep Service",
                 },
-                { img: "logo/Booking page/flying-fur-iconsArtboard-2.png", title: "AC Van" },
+                { img: "flying-fur-iconsArtboard-2.png", title: "AC Van" },
                 {
-                  img: "logo/Booking page/flying-fur-iconsArtboard-3.png",
+                  img: "flying-fur-iconsArtboard-3.png",
                   title: "Trained Staff",
                 },
                 {
-                  img: "logo/Booking page/flying-fur-iconsArtboard-1.png",
+                  img: "flying-fur-iconsArtboard-1.png",
                   title: "Hot & Cold Water",
                 },
               ].map((item, index) => (
