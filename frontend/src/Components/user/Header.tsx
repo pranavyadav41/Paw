@@ -101,7 +101,6 @@ function Header() {
                   setIsDropdownOpen.on();
                   return;
                 }
-                redirect();
               }}
               onClick={() => {
                 if (userInfo) {
