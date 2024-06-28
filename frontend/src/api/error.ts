@@ -10,6 +10,7 @@ interface IErrorResponse {
 const errorHandle = (error: Error | AxiosError) => {
   if (axios.isAxiosError(error)) {
     const axiosError = error as AxiosError;
+    console.log(axiosError);
     if (axiosError.response?.data) {
       const errorResponse = axiosError.response.data as IErrorResponse;
       if (axiosError.response.status === 403 && errorResponse.accountType === "user") {
@@ -19,6 +20,8 @@ const errorHandle = (error: Error | AxiosError) => {
             window.location.href = "/home";
           }, 2000);
         }
+      } else if (axiosError.response.status === 400) {
+        toast.error(errorResponse.message);
       } else if (errorResponse.message) {
         toast.error(errorResponse.message);
       } else {
