@@ -11,6 +11,8 @@ import "./index.css";
 
 const CLIENT_ID ="AQfGdzRqN2AI8KMjftw1H6GyxshTx0QxieZ3oELTUfN0qH-1F5zCofB6GHtu0G6rxhGT8Kgg6MYyF8IW";
 
+console.log('Google Client ID:', import.meta.env.VITE_G_CLIENT_ID);
+
 ReactDOM.createRoot(document.getElementById("root")!).render(
   <Provider store={store}>
     <GoogleOAuthProvider clientId={import.meta.env.VITE_G_CLIENT_ID}>
