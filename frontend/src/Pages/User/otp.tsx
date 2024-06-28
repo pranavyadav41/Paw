@@ -29,6 +29,7 @@
                 if (data !== 'default value') {
                   navigate("/resetPassword", { state: { userId: data } });
                 } else {
+                  console.log(response)
                   localStorage.setItem("token", response?.data.token);
                   dispatch(setCredentials(response?.data.data));
                   navigate("/home");
