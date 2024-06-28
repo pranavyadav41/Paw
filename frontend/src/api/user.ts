@@ -197,13 +197,13 @@ export const applyCoupon = async (total: string, couponCode: string) => {
       total: total,
       couponCode: couponCode,
     });
-    return response; 
+    return response;
   } catch (error) {
-    const err: Error = error as Error; 
+    const err: Error = error as Error;
     return errorHandle(err);
   }
 };
-export const getBookings = async (userId: string,page=1,limit=4) => {
+export const getBookings = async (userId: string, page = 1, limit = 4) => {
   try {
     const response = await Api.post(`${userRoutes.getBookings}/${userId}?page=${page}&limit=${limit}`);
     return response;
@@ -320,6 +320,17 @@ export const homePageData = async () => {
 
     const err: Error = error as Error;
     return errorHandle(err);
+
+  }
+}
+export const logout = async () => {
+  try {
+    const response = await Api.post(userRoutes.logout)
+    return response
+  } catch (error) {
+    const err: Error = error as Error;
+    return errorHandle(err);
+
 
   }
 }

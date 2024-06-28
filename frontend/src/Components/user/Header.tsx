@@ -8,6 +8,7 @@ import { FaPowerOff } from "react-icons/fa6";
 import { toast } from "react-toastify";
 import { RootState } from "../../redux/store";
 import { useBoolean } from "@chakra-ui/react";
+import { logout } from "../../api/user";
 
 function Header() {
   let { userInfo } = useSelector((state: RootState) => state.auth);
@@ -30,13 +31,19 @@ function Header() {
     paddingBottom: "1px",
   };
  
-  let handleLogout = () => {
+  let handleLogout = async() => {
     setIsDropdown(false);
     setIsHamburger(false);
-    localStorage.removeItem("token");
-    dispatch(userLogout());
-    navigate("/");
-    toast.success("Logged out successfully");
+    let response = await logout()
+    if(response){
+      console.log(response)
+      localStorage.removeItem("token");
+      dispatch(userLogout());
+      navigate("/");
+      toast.success(response.data.message)
+
+    } 
+   
   };
 
   const dropDownMenu = () => {

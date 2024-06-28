@@ -30,7 +30,8 @@ const userRoutes={
     submitFeedback:'/user/submitFeedback',
     getFeedbacks:'/user/getFeedbacks',
     checkFeedback:'/user/checkFeedback',
-    homePageData:'/user/homePageData'
+    homePageData:'/user/homePageData',
+    logout:'/user/logout',
 }
 
 export default userRoutes 
