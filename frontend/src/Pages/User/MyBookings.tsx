@@ -135,7 +135,7 @@ const MyBookings = () => {
               repeat: Infinity,
               repeatType: "reverse",
             }}
-            className="text-2xl text-blue-600 font-semibold"
+            className="text-2xl text-blue-600 font-semibold flex items-center justify-center"
           >
             Loading...
           </motion.div>

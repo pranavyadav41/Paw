@@ -42,7 +42,7 @@ const Services: React.FC = () => {
         initial={{ scale: 0.8, opacity: 0 }}
         animate={{ scale: 1, opacity: 1 }}
         transition={{ duration: 0.5, repeat: Infinity, repeatType: "reverse" }}
-        className="text-2xl text-blue-600 font-semibold min-h-screen"
+        className="text-2xl text-blue-600 font-semibold min-h-screen flex items-center justify-center"
       >
         Loading...
       </motion.div>
