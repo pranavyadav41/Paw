@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from "react";
 import ServiceCard from "../../Components/user/serviceCard";
 import { getServices } from "../../api/admin";
+import { motion } from "framer-motion";
 
 const Services: React.FC = () => {
   const [services, setServices] = useState<any[]>([]);
@@ -11,17 +12,17 @@ const Services: React.FC = () => {
     const fetchServices = async () => {
       try {
         const response = await getServices();
-        console.log('Services response:', response);
+        console.log("Services response:", response);
         if (Array.isArray(response?.data)) {
           setServices(response.data);
         } else {
-          console.error('Unexpected response structure:', response);
-          setError('Unexpected data structure received');
+          console.error("Unexpected response structure:", response);
+          setError("Unexpected data structure received");
           setServices([]);
         }
       } catch (error) {
-        console.error('Error fetching services:', error);
-        setError('Failed to fetch services');
+        console.error("Error fetching services:", error);
+        setError("Failed to fetch services");
         setServices([]);
       } finally {
         setLoading(false);
@@ -32,15 +33,33 @@ const Services: React.FC = () => {
   }, []);
 
   useEffect(() => {
-    console.log('Current services state:', services);
+    console.log("Current services state:", services);
   }, [services]);
 
   if (loading) {
-    return <div className="text-center mt-10">Loading...</div>;
+    return (
+      <motion.div
+        initial={{ scale: 0.8, opacity: 0 }}
+        animate={{ scale: 1, opacity: 1 }}
+        transition={{ duration: 0.5, repeat: Infinity, repeatType: "reverse" }}
+        className="text-2xl text-blue-600 font-semibold min-h-screen"
+      >
+        Loading...
+      </motion.div>
+    );
   }
 
   if (error) {
-    return <div className="text-center mt-10 text-red-500">{error}</div>;
+    return (
+      <motion.div
+        initial={{ scale: 0.8, opacity: 0 }}
+        animate={{ scale: 1, opacity: 1 }}
+        transition={{ duration: 0.5, repeat: Infinity, repeatType: "reverse" }}
+        className="text-2xl text-red-600 font-semibold min-h-screen"
+      >
+        {error}
+      </motion.div>
+    );
   }
 
   return (
@@ -73,7 +92,9 @@ const Services: React.FC = () => {
           ))}
         </div>
       ) : (
-        <div className="text-center mt-10 text-lg font-medium">No services available</div>
+        <div className="text-center mt-10 text-lg font-medium">
+          No services available
+        </div>
       )}
       <div className="flex justify-center mt-10 sm:mt-20 w-full">
         <img
