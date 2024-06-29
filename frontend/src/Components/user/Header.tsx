@@ -8,7 +8,6 @@ import { FaPowerOff } from "react-icons/fa6";
 import { toast } from "react-toastify";
 import { RootState } from "../../redux/store";
 import { useBoolean } from "@chakra-ui/react";
-import { logout } from "../../api/user";
 
 function Header() {
   let { userInfo } = useSelector((state: RootState) => state.auth);
@@ -30,20 +29,14 @@ function Header() {
     borderBottom: "1px solid currentColor",
     paddingBottom: "1px",
   };
- 
-  let handleLogout = async() => {
+
+  let handleLogout = async () => {
     setIsDropdown(false);
     setIsHamburger(false);
-    let response = await logout()
-    if(response){
-      console.log(response)
-      localStorage.removeItem("token");
-      dispatch(userLogout());
-      navigate("/");
-      toast.success(response.data.message)
-
-    } 
-   
+    localStorage.removeItem("token");
+    dispatch(userLogout());
+    navigate("/");
+    toast.success("Logged out successfully", { position: "top-center" });
   };
 
   const dropDownMenu = () => {
@@ -133,7 +126,7 @@ function Header() {
               <div
                 className="absolute right-0 mt-2 py-2 w-48 bg-gray-600 rounded-md  shadow-lg z-10"
                 onMouseLeave={() => setIsDropdownOpen.off()}
-                onClick={()=> setIsDropdownOpen.toggle()}
+                onClick={() => setIsDropdownOpen.toggle()}
               >
                 <NavLink
                   to="/profile"
@@ -196,7 +189,7 @@ function Header() {
                       <span className="text-white text-xs ">
                         {userInfo.name}
                       </span>
-                      <FaCaretDown /> 
+                      <FaCaretDown />
                     </>
                   ) : (
                     <span className="text-white text-xs">Login</span>

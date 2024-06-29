@@ -26,12 +26,28 @@ export const signup = async (userData: userFormData) => {
 
 export const otpVerify = async (
   otp: { otp: number },
-  userId: { userId: string }
+  email: { email: string }
 ) => {
   try {
     const response = await Api.post(userRoutes.userOtpVerify, {
       ...otp,
-      ...userId,
+      ...email,
+    });
+    return response;
+  } catch (error) {
+    const err: Error = error as Error;
+    return errorHandle(err);
+  }
+};
+
+export const fOtpVerify = async (
+  otp: { otp: number },
+  email: { email: string }
+) => {
+  try {
+    const response = await Api.post(userRoutes.fuserOtpVerify, {
+      ...otp,
+      ...email,
     });
     return response;
   } catch (error) {
@@ -60,12 +76,12 @@ export const forgotPassword = async (email: { email: string }) => {
 };
 export const resetPassword = async (
   password: { password: string },
-  userId: { userId: string }
+  email: { email: string }
 ) => {
   try {
     const response = await Api.post(userRoutes.userResetPassword, {
       ...password,
-      ...userId,
+      ...email,
     });
     return response;
   } catch (error) {
@@ -73,9 +89,28 @@ export const resetPassword = async (
     return errorHandle(err);
   }
 };
-export const resendOTP = async () => {
+export const resendOTP = async (email: string) => {
   try {
-    const response = await Api.post(userRoutes.resendOtp);
+    const response = await Api.post(userRoutes.resendOtp, { email: email });
+    return response;
+  } catch (error) {
+    const err: Error = error as Error;
+    return errorHandle(err);
+  }
+};
+export const resentOTP = async (
+  email: string,
+  name: string,
+  password: string,
+  phone: string
+) => {
+  try {
+    const response = await Api.post(userRoutes.userOtpResend, {
+      email: email,
+      name: name,
+      password: password,
+      phone: phone,
+    });
     return response;
   } catch (error) {
     const err: Error = error as Error;
@@ -174,7 +209,7 @@ export const confirmBooking = async (
       phone,
       size,
       totalAmount: total,
-      isWallet: isWallet
+      isWallet: isWallet,
     });
     return response;
   } catch (error) {
@@ -205,7 +240,9 @@ export const applyCoupon = async (total: string, couponCode: string) => {
 };
 export const getBookings = async (userId: string, page = 1, limit = 4) => {
   try {
-    const response = await Api.post(`${userRoutes.getBookings}/${userId}?page=${page}&limit=${limit}`);
+    const response = await Api.post(
+      `${userRoutes.getBookings}/${userId}?page=${page}&limit=${limit}`
+    );
     return response;
   } catch (error) {
     const err: Error = error as Error;
@@ -313,24 +350,10 @@ export const checkFeedback = async (userId: string, serviceId: string) => {
 };
 export const homePageData = async () => {
   try {
-    const response = await Api.get(userRoutes.homePageData)
+    const response = await Api.get(userRoutes.homePageData);
     return response;
-
-  } catch (error) {
-
-    const err: Error = error as Error;
-    return errorHandle(err);
-
-  }
-}
-export const logout = async () => {
-  try {
-    const response = await Api.post(userRoutes.logout)
-    return response
   } catch (error) {
     const err: Error = error as Error;
     return errorHandle(err);
-
-
   }
-}
+};

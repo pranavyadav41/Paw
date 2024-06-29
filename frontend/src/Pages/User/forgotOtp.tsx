@@ -1,32 +1,30 @@
 import { useEffect, useState } from "react";
 import { useLocation, useNavigate } from "react-router-dom";
-import { useDispatch } from "react-redux";
-import { setCredentials } from "../../redux/slices/authSlice";
-import { otpVerify, resentOTP } from "../../api/user";
+import { fOtpVerify, resendOTP } from "../../api/user";
 import { toast } from "react-toastify";
-import errorHandle from "../../api/error"; 
+import errorHandle from "../../api/error"; // Adjust the path accordingly
 
 function Otp() {
   const [otp, setOtp] = useState("");
   const [resendButton, setShowResendButton] = useState(true);
   const [timerValue, setTimerValue] = useState(60);
   const navigate = useNavigate();
-  const dispatch = useDispatch();
 
   const location = useLocation();
   const data = location.state;
 
   const submitOtp = async () => {
     try {
-      let response = await otpVerify(
+      let response = await fOtpVerify(
         { otp: parseInt(otp) },
         { email: data.email }
       );
+
       if (response) {
-        toast.success(response.data.message);
-        localStorage.setItem("token", response?.data.token);
-        dispatch(setCredentials(response?.data.data));
-        navigate("/home");
+        toast.success(response.data);
+        navigate("/resetPassword", {
+          state: { email: data.email },
+        });
       }
     } catch (error: any) {
       errorHandle(error);
@@ -54,12 +52,7 @@ function Otp() {
     setShowResendButton(false);
     setTimerValue(60);
     try {
-      const response: any = await resentOTP(
-        data.email,
-        data.name,
-        data.password,
-        data.phone
-      );
+      const response: any = await resendOTP(data.email);
       if (response) {
         toast.success(response.data.message);
       }

@@ -19,7 +19,7 @@ function ResetPassword() {
   const [errors, setErrors] = useState<Errors>({});
 
   const location = useLocation();
-  const userId = location.state?.userId;
+  const email = location.state?.email;
   const navigate = useNavigate();
 
   const handlePasswordVisibility = () => {
@@ -43,14 +43,14 @@ function ResetPassword() {
       newErrors.confirmPassword = "Passwords do not match";
     }
 
-    setErrors(newErrors); 
+    setErrors(newErrors);
     return Object.keys(newErrors).length === 0;
   };
 
   const submitPassword = async () => {
     const valid = validateForm();
     if (valid) {
-      const response = await resetPassword({ password }, { userId });
+      const response = await resetPassword({ password }, { email });
       toast.success(response?.data);
       navigate("/login");
     }
@@ -64,11 +64,7 @@ function ResetPassword() {
             className=" h-full  bg-customColor "
             style={{ clipPath: "polygon(0 0, 55% 0, 45% 100%, 0% 100%)" }}
           >
-            <img
-              className="h-48 ml-12"
-              src="/logo/cut and PASTE.png"
-              alt=""
-            />
+            <img className="h-48 ml-12" src="/logo/cut and PASTE.png" alt="" />
           </div>
         </div>
         <div className="min-h-screen  sm:bg-white bg-customColor flex flex-col justify-center items-center md:items-start py-12 sm:px-6 lg:px-8 w-full sm:w-3/5">
@@ -128,7 +124,7 @@ function ResetPassword() {
                 onClick={submitPassword}
                 className="mt-7 w-full flex justify-center py-2 px-4 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-customColor hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500"
               >
-                Verify
+                Reset password
               </button>
             </div>
           </div>

@@ -21,6 +21,7 @@ const Success = lazy(() => import("../Pages/User/successBooking"));
 const MyBookings = lazy(() => import("../Pages/User/MyBookings"));
 const Booking = lazy(() => import("../Pages/User/BookingDetail"));
 const VideoCall = lazy(()=>import("../Pages/User/VideoChat"))
+const ForgotOtp = lazy(()=>import("../Pages/User/forgotOtp"))
 
 function UserRoutes() {
   return (
@@ -36,7 +37,7 @@ function UserRoutes() {
             <Route path="/booking" element={<BookingService />} />
             <Route path="/profile" element={<ProfilePage />} />
             <Route path="/checkout" element={<Checkout />} />
-            <Route path="/success" element={<Success />} />
+            <Route path="/success" element={<Success />} /> 
             <Route path="/myBookings" element={<MyBookings />} />
             <Route path="/bookingDetail/:id" element={<Booking />} />
             <Route path="/videoChat" element={<VideoCall />} />
@@ -46,6 +47,7 @@ function UserRoutes() {
         <Route path="login" element={<LoginPage />} />
         <Route path="register" element={<SignupPage />} />
         <Route path="Otp" element={<Otp />} />
+        <Route path="fOtp" element={<ForgotOtp/>} />
         <Route path="verifyEmail" element={<ForgetEmail />} />
         <Route path="resetPassword" element={<ResetPassword />} />
         <Route path="*" element={<Error404 />} />

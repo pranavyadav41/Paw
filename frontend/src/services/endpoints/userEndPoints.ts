@@ -3,6 +3,7 @@ const userRoutes={
     
 
     signup:'/user/sign_up',
+    fuserOtpVerify:'/user/fVerify',
     userOtpVerify:'/user/verify',
     userOtpResend:'user/resend_otp',
     userLogin:'user/login',
